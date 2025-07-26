@@ -1,0 +1,254 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import { addListeningQuestionNumbering } from "@/lib/addListeningQuestionNumbering";
+import { IELTSListeningTestSection } from "@/types/exam/ielts-academic/listening/listening";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { QuestionsPageHeader } from "./questions-page/QuestionsPageHeader";
+import { QuestionFilters } from "./questions-page/QuestionFilters";
+import { AudioCard } from "./questions-page/AudioCard";
+import { QuestionsPagination } from "./questions-page/QuestionsPagination";
+import { AudioDetailView } from "./questions-page/AudioDetailView";
+import { useGetIeltsListeningQuestions } from "@/hooks/organization/ielts-academic/listening/use-get-ielts-listening-questions";
+
+export interface QuestionsPageClientProps {
+  organizationId: number;
+}
+
+export default function QuestionsPageClient({
+  organizationId,
+}: QuestionsPageClientProps) {
+  // State for search, filters, pagination
+  const [search, setSearch] = useState("");
+  const [questionType, setQuestionType] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<
+    "audioTitle" | "questionType" | "createdAt"
+  >("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(1);
+  const [selectedAudio, setSelectedAudio] =
+    useState<IELTSListeningTestSection | null>(null);
+
+  const { data, isLoading, isFetching, error } = useGetIeltsListeningQuestions(
+    organizationId,
+    page,
+    10,
+    search,
+    sortBy,
+    sortOrder
+  );
+
+  const formattedData = data?.questions
+    ? addListeningQuestionNumbering(
+        data.questions as unknown as IELTSListeningTestSection[]
+      )
+    : {
+        numberedSections: [],
+        totalQuestions: 0,
+        audioStats: [],
+        summary: {
+          totalAudios: 0,
+          totalQuestions: 0,
+          averageQuestionsPerAudio: 0,
+          difficultyBreakdown: {},
+        },
+      };
+
+  const formattedAudios = formattedData.numberedSections;
+
+  const audios = formattedAudios;
+  const totalPages = data?.totalPages || 0;
+
+  // Reset pagination when search/filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, questionType, sortBy, sortOrder]);
+
+  // Set the first audio as selected by default on page load/data fetch
+  useEffect(() => {
+    if (audios && audios.length > 0 && !selectedAudio) {
+      setSelectedAudio(audios[0]);
+    }
+  }, [audios, selectedAudio]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setQuestionType("all");
+    setSortBy("createdAt");
+    setSortOrder("desc");
+  };
+
+  const handleSort = (field: "audioTitle" | "questionType" | "createdAt") => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const questionTypeOptions = [
+    { value: "all", label: "All Types" },
+    { value: "multiple_choice", label: "Multiple Choice" },
+    {
+      value: "multiple_choice_multiple_answers",
+      label: "Multiple Choice (Multiple Answers)",
+    },
+    { value: "sentence_completion", label: "Sentence Completion" },
+    { value: "form_completion", label: "Form Completion" },
+    { value: "note_completion", label: "Note Completion" },
+    { value: "table_completion", label: "Table Completion" },
+    { value: "flow_chart_completion", label: "Flow Chart Completion" },
+    { value: "diagram_label_completion", label: "Diagram Label Completion" },
+    { value: "matching", label: "Matching" },
+    { value: "short_answer", label: "Short Answer" },
+  ];
+
+  const getQuestionTypeLabel = (type: string): string => {
+    const found = questionTypeOptions.find((option) => option.value === type);
+    return found ? found.label : type;
+  };
+
+  const isDataLoading = isLoading || isFetching;
+
+  return (
+    <div className="space-y-6 p-2 md:p-4">
+      <QuestionsPageHeader
+        organizationId={organizationId}
+        dashboardText={{
+          title: "IELTS Listening Questions",
+          subtitle:
+            "These questions are used to create tests. Each question is part of an audio section and can be used in multiple tests.",
+        }}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left column: List of audios */}
+        <div className="lg:col-span-5 xl:col-span-4">
+          <Card className="p-4 sm:p-6">
+            <div className="space-y-4">
+              <QuestionFilters
+                search={search}
+                questionType={questionType}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                questionTypeOptions={questionTypeOptions}
+                handleSearchChange={handleSearchChange}
+                setQuestionType={setQuestionType}
+                handleSort={handleSort}
+                clearFilters={clearFilters}
+              />
+
+              <div className="space-y-4 min-h-[400px]">
+                {isDataLoading ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i} className="p-4">
+                      <Skeleton className="h-5 w-3/5 mb-3" />
+                      <Skeleton className="h-4 w-4/5 mb-4" />
+                    </Card>
+                  ))
+                ) : error ? (
+                  <div className="text-center py-8 text-red-500">
+                    <p>Error loading questions.</p>
+                    <Button onClick={() => window.location.reload()}>
+                      Retry
+                    </Button>
+                  </div>
+                ) : audios && audios.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No questions found.</p>
+                  </div>
+                ) : (
+                  audios &&
+                  audios.map((item, index) => (
+                    <AudioCard
+                      key={index}
+                      item={item}
+                      organizationId={organizationId}
+                      getQuestionTypeLabel={getQuestionTypeLabel}
+                      isSelected={
+                        selectedAudio?.audio?.title === item.audio?.title
+                      }
+                      onSelect={() => setSelectedAudio(item)}
+                    />
+                  ))
+                )}
+              </div>
+
+              {!isDataLoading &&
+                audios &&
+                audios.length > 0 &&
+                totalPages > 1 && (
+                  <QuestionsPagination
+                    totalPages={totalPages}
+                    page={page}
+                    setPage={setPage}
+                  />
+                )}
+            </div>
+          </Card>
+        </div>
+
+        {/* Right column: Audio details */}
+        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-200px)] sticky top-20">
+          <Card className="h-full overflow-y-auto">
+            {isDataLoading && !selectedAudio ? (
+              <div className="p-6 space-y-4">
+                <Skeleton className="h-8 w-1/2" />
+                <Skeleton className="h-4 w-1/3" />
+                <div className="space-y-4 mt-8">
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                </div>
+              </div>
+            ) : (
+              <AudioDetailView
+                selectedAudio={selectedAudio}
+                getQuestionTypeLabel={getQuestionTypeLabel}
+              />
+            )}
+          </Card>
+        </div>
+      </div>
+
+      {/* Mobile Drawer for details */}
+      {selectedAudio && (
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button
+              variant="outline"
+              className="fixed bottom-4 right-4 z-10 lg:hidden bg-primary text-primary-foreground dark:bg-primary-foreground dark:text-primary"
+            >
+              View Selected Audio
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="max-h-[90vh]">
+            <DrawerHeader>
+              <DrawerTitle>{selectedAudio.audio?.title}</DrawerTitle>
+            </DrawerHeader>
+            <div className="flex-grow overflow-y-auto p-4">
+              <AudioDetailView
+                selectedAudio={selectedAudio}
+                getQuestionTypeLabel={getQuestionTypeLabel}
+              />
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+    </div>
+  );
+}
