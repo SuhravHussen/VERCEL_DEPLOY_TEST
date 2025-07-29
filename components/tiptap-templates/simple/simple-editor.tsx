@@ -176,8 +176,10 @@ const MobileToolbarContent = ({
 
 export function SimpleEditor({
   onEditorReady,
+  initialContent,
 }: {
   onEditorReady?: (editor: Editor | null) => void;
+  initialContent?: string;
 }) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
@@ -220,7 +222,7 @@ export function SimpleEditor({
       TextStyle,
       Color,
     ],
-    content: "Get started", // Simple starter text instead of importing content
+    content: initialContent || "Get started", // Use provided content or default starter text
   });
 
   React.useEffect(() => {

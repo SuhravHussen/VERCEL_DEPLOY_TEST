@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { StepperContext } from "../CreateWritingPageClient";
+import { StepperContext } from "../StepperContext";
 import {
   Form,
   FormControl,
@@ -43,6 +43,14 @@ export default function TaskTypeSelectionStep({
       taskType: formData.taskType || "task_1",
     },
   });
+
+  // Update form values when formData changes (for edit mode)
+  useEffect(() => {
+    form.reset({
+      testType: formData.testType || "academic",
+      taskType: formData.taskType || "task_1",
+    });
+  }, [formData, form]);
 
   function onSubmit(values: z.infer<typeof taskTypeSchema>) {
     updateFormData({

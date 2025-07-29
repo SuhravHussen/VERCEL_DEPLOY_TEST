@@ -15,7 +15,6 @@ const fetchIeltsReadingQuestions = async (
   sort: "passageTitle" | "questionType" | "createdAt" = "createdAt",
   order: "asc" | "desc" = "desc"
 ) => {
-  console.log(organizationId, page, limit, search, sort, order);
   const questions = mockdb.getIeltsReadingQuestions();
 
   if (questions.length === 0) {

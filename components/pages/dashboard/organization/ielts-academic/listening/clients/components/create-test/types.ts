@@ -37,6 +37,7 @@ export interface TestPreviewStepProps {
   formData: FormData;
   onSave: () => Promise<void>;
   isSaving: boolean;
+  submitButtonText?: string;
 }
 
 export interface StepperContextType {

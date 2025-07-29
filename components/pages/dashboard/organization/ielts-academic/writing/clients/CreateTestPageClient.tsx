@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, createContext } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useToasts } from "@/components/ui/toast";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/stepper";
 
 import { IELTSWritingTest } from "@/types/exam/ielts-academic/writing/writing";
+import { TestStepperContext } from "./TestStepperContext";
 import BasicInfoStep from "./test-page/BasicInfoStep";
 import SelectQuestionsStep from "./test-page/SelectQuestionsStep";
 import PreviewStep from "./test-page/PreviewStep";
@@ -28,13 +29,6 @@ import PreviewStep from "./test-page/PreviewStep";
 export interface CreateTestPageClientProps {
   organizationId: number;
 }
-
-// Create a context for the stepper to be used across steps
-export const TestStepperContext = createContext<{
-  stepperRef: React.RefObject<IStepperMethods | null>;
-}>({
-  stepperRef: { current: null },
-});
 
 export default function CreateTestPageClient({
   organizationId,
@@ -175,6 +169,7 @@ export default function CreateTestPageClient({
                     testData={testData}
                     isSubmitting={isPending}
                     onSubmit={handleSubmit}
+                    isEditMode={false}
                   />
                 </div>
               </InteractiveStepperContent>

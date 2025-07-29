@@ -39,6 +39,7 @@ export interface TestPreviewStepProps {
   formData: FormData;
   onSave: () => void;
   isSaving: boolean;
+  isEditing?: boolean;
 }
 
 export interface PassageCardProps {

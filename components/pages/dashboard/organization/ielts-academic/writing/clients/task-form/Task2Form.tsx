@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { StepperContext } from "../CreateWritingPageClient";
+import { StepperContext } from "../StepperContext";
 import {
   Form,
   FormControl,
@@ -100,6 +100,29 @@ export default function Task2Form({
       sampleAnswer: task.sampleAnswer || "",
     },
   });
+
+  // Update form values when formData changes (for edit mode)
+  useEffect(() => {
+    if (task) {
+      form.reset({
+        detailType: (task.detailType as Task2EssayType) || "opinion_essay",
+        instruction: task.instruction || "",
+        prompt: task.prompt || "",
+        timeLimit: task.timeLimit || 40,
+        minimumWords: task.minimumWords || 250,
+        topic: task.topic || "",
+        backgroundInfo: task.backgroundInfo || "",
+        specificQuestion: task.specificQuestion || "",
+        keyWords: task.keyWords?.join(", ") || "",
+        sampleAnswer: task.sampleAnswer || "",
+      });
+
+      // Update image URL if it exists
+      if (task.backgroundImage) {
+        setImageUrl(task.backgroundImage);
+      }
+    }
+  }, [formData, task, form]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

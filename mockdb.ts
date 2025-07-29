@@ -3,7 +3,10 @@ import { LoginDTO, RegisterDTO } from "@/types/dto/auth.dto";
 import { v4 as uuidv4 } from "uuid";
 import { Organization } from "@/types/organization";
 import { Role } from "./types/role";
-import { IELTSReadingQuestionGroup } from "./types/exam/ielts-academic/reading/question/question";
+import {
+  IELTSReadingQuestionGroup,
+  IELTSReadingTestSection,
+} from "./types/exam/ielts-academic/reading/question/question";
 import { IELTSReadingTest } from "./types/exam/ielts-academic/reading/test/test";
 import { CreateReadingTestDto } from "./types/dto/ielts/reading/test.dto";
 import ieltsTestSections from "./mockdata/mockIeltsTestReadingSections";
@@ -28,100 +31,10 @@ import {
 } from "./types/dto/ielts/writing/writing.dto";
 import { mockIeltsWritingTasks } from "./mockdata/mockIeltsWritingQuestion";
 import { mockIeltsWritingTests } from "./mockdata/mockIeltsWritingTests";
-
-// Mock organizations data
-export const mockOrganizations: Organization[] = [
-  {
-    id: 1,
-    name: "Acme Corporation",
-    description: "Leading provider of innovative solutions",
-    logo: "/images/home-laptop.png",
-    users: [
-      {
-        id: "user-123",
-        name: "Test User",
-        email: "test@example.com",
-        createdAt: "2023-03-10T00:00:00.000Z",
-        updatedAt: "2023-03-10T00:00:00.000Z",
-        role: Role.USER,
-      },
-      {
-        id: "user-admin",
-        name: "Admin User",
-        email: "admin@example.com",
-        createdAt: "2023-02-15T00:00:00.000Z",
-        updatedAt: "2023-02-15T00:00:00.000Z",
-        role: Role.ADMIN,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "TechSolutions Inc",
-    description: "Enterprise technology solutions provider",
-    logo: "/images/home-laptop.png",
-    users: [
-      {
-        id: "user-456",
-        name: "Jane Smith",
-        email: "jane@example.com",
-        createdAt: "2023-04-05T00:00:00.000Z",
-        updatedAt: "2023-04-05T00:00:00.000Z",
-        role: Role.USER,
-      },
-      {
-        id: "user-101",
-        name: "Sarah Williams",
-        email: "sarah@example.com",
-        createdAt: "2023-06-20T00:00:00.000Z",
-        updatedAt: "2023-06-20T00:00:00.000Z",
-        role: Role.ADMIN,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Global Innovations",
-    description: "Cutting-edge research and development",
-    logo: "",
-  },
-  {
-    id: 4,
-    name: "EduTech Academy",
-    description: "Educational technology and learning solutions",
-    logo: "/images/home-laptop.png",
-  },
-  {
-    id: 5,
-    name: "HealthCare Partners",
-    description: "Healthcare management and services",
-    logo: "",
-  },
-  {
-    id: 6,
-    name: "Green Solutions",
-    description: "Sustainable and eco-friendly technologies",
-    logo: "/images/home-laptop.png",
-  },
-  {
-    id: 7,
-    name: "Financial Strategies",
-    description: "Financial planning and investment services",
-    logo: "",
-  },
-  {
-    id: 8,
-    name: "Creative Studios",
-    description: "Digital design and creative solutions",
-    logo: "/images/home-laptop.png",
-  },
-  {
-    id: 9,
-    name: "Global Logistics",
-    description: "Supply chain and logistics management",
-    logo: "",
-  },
-];
+import { mockOrganizations } from "./mockdata/mockOrganizations";
+import { mockUsers } from "./mockdata/mockUsers";
+import { IELTSExamModel } from "./types/exam/ielts-academic/exam";
+import { mockIELTSExams } from "./mockdata/mockIeltsExam";
 
 // Mock database to simulate server-side storage
 interface MockDB {
@@ -145,11 +58,25 @@ interface MockDB {
     question: IELTSReadingQuestionGroup
   ) => IELTSReadingQuestionGroup;
   getIeltsReadingQuestions: () => IELTSReadingQuestionGroup[];
+  getIeltsReadingQuestionById: (
+    questionId: string
+  ) => IELTSReadingQuestionGroup | undefined;
+  updateIeltsReadingQuestion: (
+    questionId: string,
+    questionData: Partial<IELTSReadingQuestionGroup>
+  ) => IELTSReadingQuestionGroup | null;
+  deleteIeltsReadingQuestion: (questionId: string) => boolean;
 
   // ielts reading tests
   ieltsReadingTests: IELTSReadingTest[];
   createIeltsReadingTest: (test: CreateReadingTestDto) => IELTSReadingTest;
   getIeltsReadingTests: () => IELTSReadingTest[];
+  getIeltsReadingTestById: (testId: string) => IELTSReadingTest | undefined;
+  updateIeltsReadingTest: (
+    testId: string,
+    testData: Partial<IELTSReadingTest>
+  ) => IELTSReadingTest | null;
+  deleteIeltsReadingTest: (testId: string) => boolean;
 
   // ielts listening questions
   ieltsListeningQuestions: IELTSListeningTestSection[];
@@ -157,6 +84,10 @@ interface MockDB {
     question: CreateListeningTestSectionDto
   ) => IELTSListeningTestSection;
   getIeltsListeningQuestions: () => IELTSListeningTestSection[];
+  getIeltsListeningQuestionById: (
+    questionId: string
+  ) => IELTSListeningTestSection | undefined;
+  deleteIeltsListeningQuestion: (questionId: string) => boolean;
 
   // ielts listening tests
   ieltsListeningTests: IELTSListeningTest[];
@@ -164,117 +95,49 @@ interface MockDB {
     test: CreateListeningTestDto
   ) => IELTSListeningTest;
   getIeltsListeningTests: () => IELTSListeningTest[];
+  getIeltsListeningTestById: (id: string) => IELTSListeningTest | undefined;
+  updateIeltsListeningTest: (
+    id: string,
+    test: Partial<IELTSListeningTest>
+  ) => IELTSListeningTest | null;
+  deleteIeltsListeningTest: (id: string) => boolean;
 
   // ielts writing questions
   ieltsWritingQuestions: IELTSWritingTask[];
   createIeltsWritingQuestion: (
     question: CreateWritingTaskDto
   ) => IELTSWritingTask;
+  getIeltsWritingQuestionById: (
+    questionId: string
+  ) => IELTSWritingTask | undefined;
+  updateIeltsWritingQuestion: (
+    questionId: string,
+    questionData: Partial<IELTSWritingTask>
+  ) => IELTSWritingTask | null;
+  deleteIeltsWritingQuestion: (questionId: string) => boolean;
 
   // ielts writing tests
   ieltsWritingTests: IELTSWritingTest[];
   createIeltsWritingTest: (test: CreateIELTSWritingTestDto) => IELTSWritingTest;
   getIeltsWritingTests: () => IELTSWritingTest[];
+  getIeltsWritingTestById: (testId: string) => IELTSWritingTest | undefined;
+  updateIeltsWritingTest: (
+    testId: string,
+    testData: Partial<IELTSWritingTest>
+  ) => IELTSWritingTest | null;
+  deleteIeltsWritingTest: (testId: string) => boolean;
+
+  // ielts exams
+  ieltsExams: IELTSExamModel[];
+  createIeltsExam: (exam: Partial<IELTSExamModel>) => IELTSExamModel;
+  getIeltsExams: () => IELTSExamModel[];
+  getIeltsExamById: (id: string) => IELTSExamModel | undefined;
 }
 
 const mockdb: MockDB = {
   organizations: mockOrganizations.slice(0, 2),
 
-  users: [
-    // Super admin user
-    {
-      id: "user-super-admin",
-      name: "Super Admin",
-      email: "super@example.com",
-      password: "password123",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2023-01-01T00:00:00.000Z",
-      role: Role.SUPER_ADMIN,
-      avatar: "/placeholder-avatar.jpg",
-    },
-    // Admin user
-    {
-      id: "user-admin",
-      name: "Admin User",
-      email: "admin@example.com",
-      password: "password123",
-      createdAt: "2023-02-15T00:00:00.000Z",
-      updatedAt: "2023-02-15T00:00:00.000Z",
-      role: Role.ADMIN,
-      organizations_admin: [
-        {
-          id: 1,
-          name: "Acme Corporation",
-          description: "Leading provider of innovative solutions",
-          logo: "/images/home-laptop.png",
-        },
-      ],
-    },
-    // Regular user
-    {
-      id: "user-123",
-      name: "Test User",
-      email: "test@example.com",
-      password: "password123", // In a real app, this would be hashed
-      createdAt: "2023-03-10T00:00:00.000Z",
-      updatedAt: "2023-03-10T00:00:00.000Z",
-      role: Role.USER,
-      avatar: "/placeholder-avatar.jpg",
-      organizations_admin: [
-        {
-          id: 1,
-          name: "Organization 1",
-          description: "Organization 1 description",
-          logo: "/images/home-laptop.png",
-        },
-      ],
-    },
-    // More test users
-    {
-      id: "user-456",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      password: "password123",
-      createdAt: "2023-04-05T00:00:00.000Z",
-      updatedAt: "2023-04-05T00:00:00.000Z",
-      role: Role.USER,
-      organizations_admin: [
-        {
-          id: 2,
-          name: "Organization 2",
-          description: "Organization 2 description",
-          logo: "/images/home-laptop.png",
-        },
-      ],
-    },
-    {
-      id: "user-789",
-      name: "Mike Johnson",
-      email: "mike@example.com",
-      password: "password123",
-      createdAt: "2023-05-12T00:00:00.000Z",
-      updatedAt: "2023-05-12T00:00:00.000Z",
-      role: Role.USER,
-    },
-    {
-      id: "user-101",
-      name: "Sarah Williams",
-      email: "sarah@example.com",
-      password: "password123",
-      createdAt: "2023-06-20T00:00:00.000Z",
-      updatedAt: "2023-06-20T00:00:00.000Z",
-      role: Role.ADMIN,
-      avatar: "/placeholder-avatar.jpg",
-      organizations_admin: [
-        {
-          id: 2,
-          name: "Organization 2",
-          description: "Organization 2 description",
-          logo: "/images/home-laptop.png",
-        },
-      ],
-    },
-  ],
+  users: mockUsers,
 
   // Find a user by email
   findUserByEmail(email: string) {
@@ -372,6 +235,123 @@ const mockdb: MockDB = {
   getIeltsReadingQuestions() {
     return this.ieltsReadingQuestions;
   },
+  getIeltsReadingQuestionById(questionId: string) {
+    // The mock data is actually test sections with passage and questions
+    const testSections = this
+      .ieltsReadingQuestions as unknown as IELTSReadingTestSection[];
+
+    // Search through test sections and their question groups
+    for (const section of testSections) {
+      // Check if any question group in this section matches the ID
+      if (section.questions) {
+        const foundQuestion = section.questions.find(
+          (q) => q.id === questionId
+        );
+        if (foundQuestion) {
+          // Return the entire section with all question groups, not just one
+          return {
+            passage: section.passage,
+            questions: section.questions, // Return all question groups in the section
+            // Include metadata for tracking which question was requested
+            selectedQuestionId: questionId,
+          } as unknown as IELTSReadingQuestionGroup;
+        }
+      }
+    }
+    return undefined;
+  },
+  updateIeltsReadingQuestion(
+    questionId: string,
+    questionData: Partial<IELTSReadingQuestionGroup>
+  ) {
+    const testSections = this
+      .ieltsReadingQuestions as unknown as IELTSReadingTestSection[];
+
+    // Find the section containing the question
+    for (
+      let sectionIndex = 0;
+      sectionIndex < testSections.length;
+      sectionIndex++
+    ) {
+      const section = testSections[sectionIndex];
+      if (section.questions) {
+        const questionIndex = section.questions.findIndex(
+          (q) => q.id === questionId
+        );
+        if (questionIndex !== -1) {
+          // Update the question in the section
+          if (questionData.questions && questionData.questions.length > 0) {
+            // Update the specific question group
+            testSections[sectionIndex].questions[questionIndex] = {
+              ...section.questions[questionIndex],
+              ...questionData.questions[0],
+              id: questionId,
+            };
+          }
+
+          // Update passage if provided
+          const updateData = questionData as unknown as {
+            passage?: {
+              title: string;
+              content: string;
+              difficulty: "easy" | "medium" | "hard";
+            };
+          };
+
+          if (updateData.passage && section.passage) {
+            testSections[sectionIndex].passage = {
+              ...section.passage,
+              ...updateData.passage,
+            };
+          }
+
+          // Return the updated question in the expected format
+          return {
+            id: questionId,
+            questionType:
+              testSections[sectionIndex].questions[questionIndex].questionType,
+            instruction:
+              testSections[sectionIndex].questions[questionIndex].instruction,
+            questions:
+              testSections[sectionIndex].questions[questionIndex].questions,
+            passage: testSections[sectionIndex].passage,
+          } as unknown as IELTSReadingQuestionGroup;
+        }
+      }
+    }
+
+    return null;
+  },
+  deleteIeltsReadingQuestion(questionId: string) {
+    const testSections = this
+      .ieltsReadingQuestions as unknown as IELTSReadingTestSection[];
+
+    // Find the section containing the question
+    for (
+      let sectionIndex = 0;
+      sectionIndex < testSections.length;
+      sectionIndex++
+    ) {
+      const section = testSections[sectionIndex];
+      if (section.questions) {
+        const questionIndex = section.questions.findIndex(
+          (q) => q.id === questionId
+        );
+        if (questionIndex !== -1) {
+          // If this is the only question in the section, remove the entire section
+          if (section.questions.length === 1) {
+            testSections.splice(sectionIndex, 1);
+          } else {
+            // Otherwise just remove the specific question group
+            section.questions.splice(questionIndex, 1);
+          }
+          return true;
+        }
+      }
+    }
+
+    return false; // Question not found
+  },
 
   // ielts reading tests
   ieltsReadingTests: [...ieltsReadingTest],
@@ -386,6 +366,42 @@ const mockdb: MockDB = {
   getIeltsReadingTests() {
     return this.ieltsReadingTests;
   },
+  getIeltsReadingTestById(testId: string) {
+    return this.ieltsReadingTests.find((test) => test.id === testId);
+  },
+  updateIeltsReadingTest(testId: string, testData: Partial<IELTSReadingTest>) {
+    const testIndex = this.ieltsReadingTests.findIndex(
+      (test) => test.id === testId
+    );
+
+    if (testIndex === -1) {
+      return null;
+    }
+
+    const updatedTest = {
+      ...this.ieltsReadingTests[testIndex],
+      ...testData,
+      id: testId, // Ensure ID remains the same
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.ieltsReadingTests[testIndex] = updatedTest;
+
+    return updatedTest;
+  },
+  deleteIeltsReadingTest(testId: string) {
+    const testIndex = this.ieltsReadingTests.findIndex(
+      (test) => test.id === testId
+    );
+
+    if (testIndex === -1) {
+      return false; // Test not found
+    }
+
+    // Remove the test from the array
+    this.ieltsReadingTests.splice(testIndex, 1);
+    return true; // Successfully deleted
+  },
 
   // ielts listening questions
   ieltsListeningQuestions: [
@@ -397,6 +413,24 @@ const mockdb: MockDB = {
   },
   getIeltsListeningQuestions() {
     return this.ieltsListeningQuestions;
+  },
+  getIeltsListeningQuestionById(questionId: string) {
+    return this.ieltsListeningQuestions.find((q) =>
+      q.questions.some((questionGroup) => questionGroup.id === questionId)
+    );
+  },
+  deleteIeltsListeningQuestion(questionId: string) {
+    const questionIndex = this.ieltsListeningQuestions.findIndex((q) =>
+      q.questions.some((questionGroup) => questionGroup.id === questionId)
+    );
+
+    if (questionIndex === -1) {
+      return false; // Question not found
+    }
+
+    // Remove the question from the array
+    this.ieltsListeningQuestions.splice(questionIndex, 1);
+    return true; // Successfully deleted
   },
 
   // ielts listening tests
@@ -414,6 +448,40 @@ const mockdb: MockDB = {
   getIeltsListeningTests() {
     return this.ieltsListeningTests;
   },
+  getIeltsListeningTestById(id: string) {
+    return this.ieltsListeningTests.find((test) => test.id === id);
+  },
+  updateIeltsListeningTest(id: string, testData: Partial<IELTSListeningTest>) {
+    const testIndex = this.ieltsListeningTests.findIndex(
+      (test) => test.id === id
+    );
+
+    if (testIndex === -1) {
+      return null;
+    }
+
+    const updatedTest = {
+      ...this.ieltsListeningTests[testIndex],
+      ...testData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.ieltsListeningTests[testIndex] = updatedTest;
+
+    return updatedTest;
+  },
+  deleteIeltsListeningTest(id: string) {
+    const testIndex = this.ieltsListeningTests.findIndex(
+      (test) => test.id === id
+    );
+
+    if (testIndex === -1) {
+      return false;
+    }
+
+    this.ieltsListeningTests.splice(testIndex, 1);
+    return true;
+  },
 
   // ielts writing questions
   ieltsWritingQuestions: [...mockIeltsWritingTasks],
@@ -424,6 +492,43 @@ const mockdb: MockDB = {
     };
     this.ieltsWritingQuestions.push(newQuestion);
     return newQuestion;
+  },
+  getIeltsWritingQuestionById(questionId: string) {
+    return this.ieltsWritingQuestions.find((q) => q.id === questionId);
+  },
+  updateIeltsWritingQuestion(
+    questionId: string,
+    questionData: Partial<IELTSWritingTask>
+  ) {
+    const questionIndex = this.ieltsWritingQuestions.findIndex(
+      (q) => q.id === questionId
+    );
+
+    if (questionIndex === -1) {
+      return null;
+    }
+
+    const updatedQuestion = {
+      ...this.ieltsWritingQuestions[questionIndex],
+      ...questionData,
+      id: questionId, // Ensure ID remains the same
+    };
+
+    this.ieltsWritingQuestions[questionIndex] = updatedQuestion;
+    return updatedQuestion;
+  },
+  deleteIeltsWritingQuestion(questionId: string) {
+    const questionIndex = this.ieltsWritingQuestions.findIndex(
+      (q) => q.id === questionId
+    );
+
+    if (questionIndex === -1) {
+      return false; // Question not found
+    }
+
+    // Remove the question from the array
+    this.ieltsWritingQuestions.splice(questionIndex, 1);
+    return true; // Successfully deleted
   },
 
   // ielts writing tests
@@ -442,6 +547,59 @@ const mockdb: MockDB = {
   },
   getIeltsWritingTests() {
     return this.ieltsWritingTests;
+  },
+  getIeltsWritingTestById(testId: string) {
+    return this.ieltsWritingTests.find((test) => test.id === testId);
+  },
+  updateIeltsWritingTest(testId: string, testData: Partial<IELTSWritingTest>) {
+    const testIndex = this.ieltsWritingTests.findIndex(
+      (test) => test.id === testId
+    );
+
+    if (testIndex === -1) {
+      return null;
+    }
+
+    const updatedTest = {
+      ...this.ieltsWritingTests[testIndex],
+      ...testData,
+      id: testId, // Ensure ID remains the same
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.ieltsWritingTests[testIndex] = updatedTest;
+    return updatedTest;
+  },
+  deleteIeltsWritingTest(testId: string) {
+    const testIndex = this.ieltsWritingTests.findIndex(
+      (test) => test.id === testId
+    );
+
+    if (testIndex === -1) {
+      return false;
+    }
+
+    this.ieltsWritingTests.splice(testIndex, 1);
+    return true;
+  },
+
+  // ielts exams
+  ieltsExams: [...mockIELTSExams],
+  createIeltsExam(exam: Partial<IELTSExamModel>) {
+    const newExam: IELTSExamModel = {
+      ...exam,
+      id: uuidv4(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as IELTSExamModel;
+    this.ieltsExams.push(newExam);
+    return newExam;
+  },
+  getIeltsExams() {
+    return this.ieltsExams;
+  },
+  getIeltsExamById(id: string) {
+    return this.ieltsExams.find((exam) => exam.id === id);
   },
 };
 

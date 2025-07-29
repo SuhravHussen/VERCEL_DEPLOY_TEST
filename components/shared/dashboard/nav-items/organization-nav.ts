@@ -27,6 +27,13 @@ const getOrganizationNavItems = (id: string): NavItem[] => [
     isActive: false,
     items: [
       {
+        title: "Exams",
+        url: `/dashboard/organization/${id}/ielts-academic/exam`,
+        icon: "book",
+        isActive: false,
+      
+      },
+      {
         title: "Reading",
         url: `#`,
         icon: "book",

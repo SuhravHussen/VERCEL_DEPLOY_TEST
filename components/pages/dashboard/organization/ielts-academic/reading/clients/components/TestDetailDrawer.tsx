@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo } from "react";
 import { IELTSReadingTest } from "@/types/exam/ielts-academic/reading/test/test";
 import { Badge } from "@/components/ui/badge";
@@ -27,14 +26,12 @@ import { BarChart, PieChart, Clock } from "lucide-react";
 interface TestDetailDrawerProps {
   test: IELTSReadingTest | null;
   open: boolean;
-  organizationId: number;
   onClose: () => void;
 }
 
 export function TestDetailDrawer({
   test,
   open,
-  organizationId,
   onClose,
 }: TestDetailDrawerProps) {
   // Calculate detailed test statistics
@@ -323,11 +320,6 @@ export function TestDetailDrawer({
                   Close
                 </Button>
               </DrawerClose>
-              <Link
-                href={`/dashboard/organization/${organizationId}/ielts-academic/reading/tests/${test.id}`}
-              >
-                <Button size="sm">View Details</Button>
-              </Link>
             </div>
           </DrawerFooter>
         </div>

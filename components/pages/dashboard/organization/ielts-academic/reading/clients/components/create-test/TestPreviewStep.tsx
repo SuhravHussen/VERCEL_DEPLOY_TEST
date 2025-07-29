@@ -21,6 +21,7 @@ export function TestPreviewStep({
   formData,
   onSave,
   isSaving,
+  isEditing = false,
 }: TestPreviewStepProps) {
   const { stepperRef } = useContext(StepperContext);
 
@@ -281,7 +282,13 @@ export function TestPreviewStep({
             !formData.section_three
           }
         >
-          {isSaving ? "Creating..." : "Create Test"}
+          {isSaving
+            ? isEditing
+              ? "Updating..."
+              : "Creating..."
+            : isEditing
+            ? "Update Test"
+            : "Create Test"}
         </Button>
       </div>
     </div>

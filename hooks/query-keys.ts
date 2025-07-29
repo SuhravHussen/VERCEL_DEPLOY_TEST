@@ -31,4 +31,19 @@ export const QUERY_KEYS = {
     QUESTION_BY_ID: (id: string) => ["ielts-writing-question", id],
     TEST_BY_ID: (id: string) => ["ielts-writing-test", id],
   },
+  IELTS_EXAM: {
+    LIST: ["ielts-exams"],
+    PAGINATED: (page: number, pageSize: number, searchQuery?: string) => [
+      "ielts-exams",
+      "paginated",
+      { page, pageSize, searchQuery: searchQuery || "" },
+    ],
+    BY_ID: (id: string) => ["ielts-exam", id],
+    DETAILS: (id: string) => ["ielts-exam", "details", id],
+    BY_ORGANIZATION: (organizationId: string) => [
+      "ielts-exams",
+      "organization",
+      organizationId,
+    ],
+  },
 };

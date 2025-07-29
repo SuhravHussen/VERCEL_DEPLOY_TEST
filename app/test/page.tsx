@@ -1,134 +1,57 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  InteractiveStepper,
-  InteractiveStepperContent,
-  InteractiveStepperDescription,
-  InteractiveStepperIndicator,
-  InteractiveStepperItem,
-  InteractiveStepperSeparator,
-  InteractiveStepperTitle,
-  InteractiveStepperTrigger,
-  IStepperMethods,
-} from "@/components/ui/stepper";
-import { useRef } from "react";
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
-interface CardProps {
-  title: string;
-  description: string;
-}
-
-const Card: React.FC<CardProps> = ({ title, description }) => (
-  <div className="w-full rounded-lg border border-gray-700 bg-gray-900 p-4">
-    <span className="font-semibold text-gray-300">{title}</span>
-    <p className="text-sm text-gray-400">{description}</p>
-  </div>
+// Dynamically import JitsiMeeting component to avoid SSR issues
+const JitsiMeeting = dynamic(
+  () => import("@jitsi/react-sdk").then((mod) => mod.JitsiMeeting),
+  { ssr: false }
 );
 
-const InteractiveStepperExternalInteractions = () => {
-  const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
+export default function JitsiMeetPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-lg font-medium">Loading Jitsi Meet...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-11/12">
-      <InteractiveStepper ref={stepperRef}>
-        <InteractiveStepperItem completed>
-          <InteractiveStepperTrigger>
-            <InteractiveStepperIndicator />
-            <div>
-              <InteractiveStepperTitle>Order Placed</InteractiveStepperTitle>
-              <InteractiveStepperDescription>
-                A few days ago
-              </InteractiveStepperDescription>
-            </div>
-          </InteractiveStepperTrigger>
-          <InteractiveStepperSeparator />
-        </InteractiveStepperItem>
-
-        <InteractiveStepperItem>
-          <InteractiveStepperTrigger>
-            <InteractiveStepperIndicator />
-            <div>
-              <InteractiveStepperTitle>Processing</InteractiveStepperTitle>
-              <InteractiveStepperDescription>
-                Currently active
-              </InteractiveStepperDescription>
-            </div>
-          </InteractiveStepperTrigger>
-          <InteractiveStepperSeparator />
-        </InteractiveStepperItem>
-
-        <InteractiveStepperItem disabled>
-          <InteractiveStepperTrigger>
-            <InteractiveStepperIndicator />
-            <div>
-              <InteractiveStepperTitle>Skipped</InteractiveStepperTitle>
-              <InteractiveStepperDescription>
-                On your way
-              </InteractiveStepperDescription>
-            </div>
-          </InteractiveStepperTrigger>
-          <InteractiveStepperSeparator />
-        </InteractiveStepperItem>
-
-        <InteractiveStepperItem>
-          <InteractiveStepperTrigger>
-            <InteractiveStepperIndicator />
-            <div>
-              <InteractiveStepperTitle>Delivered</InteractiveStepperTitle>
-              <InteractiveStepperDescription>
-                At your address
-              </InteractiveStepperDescription>
-            </div>
-          </InteractiveStepperTrigger>
-        </InteractiveStepperItem>
-
-        <InteractiveStepperContent step={1}>
-          <Card
-            title={"Order Confirmed"}
-            description={"Order #12345 placed on Jan 15, 2024"}
-          />
-        </InteractiveStepperContent>
-
-        <InteractiveStepperContent step={2}>
-          <Card
-            title={"Processing Your Order"}
-            description={"Estimated processing time: 1-2 business days"}
-          />
-        </InteractiveStepperContent>
-
-        <InteractiveStepperContent step={3}>
-          <Card
-            title={"Skipped"}
-            description={"This should not be seen because it is disabled"}
-          />
-        </InteractiveStepperContent>
-
-        <InteractiveStepperContent step={4}>
-          <Card
-            title={"Order Delivered"}
-            description={"Delivered to your location"}
-          />
-        </InteractiveStepperContent>
-      </InteractiveStepper>
-
-      <div className="mt-4 flex justify-between gap-2">
-        <Button
-          disabled={stepperRef.current?.isPrevDisabled}
-          onClick={() => stepperRef.current?.prevStep()}
-        >
-          Previous
-        </Button>
-
-        <Button
-          disabled={stepperRef.current?.isNextDisabled}
-          onClick={() => stepperRef.current?.nextStep()}
-        >
-          Next
-        </Button>
+    <div className="flex flex-col h-screen">
+      <div className="bg-blue-600 text-white p-4">
+        <h1 className="text-xl font-bold">Fluency Checker - Jitsi Meet Test</h1>
+      </div>
+      <div id="jitsi-container" className="flex-1">
+        <JitsiMeeting
+          domain="localhost:8443"
+          roomName="fluency-checker-test-room"
+          jwt="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJteWFwcGlkIiwiaXNzIjoibXlhcHBpZCIsInN1YiI6IioiLCJyb29tIjoiKiIsImlhdCI6MTc1MzYzMDEwNiwibmJmIjoxNzUzNjE2MTAwLCJleHAiOjE3NTM5NzYxMDAsImNvbnRleHQiOnsidXNlciI6eyJpZCI6IjEyMzQ1Njc4IiwibmFtZSI6InNvdXJvdiIsImVtYWlsIjoic3VocmF2c2hhbkBnbWFpbC5jb20iLCJhZmZpbGlhdGlvbiI6Im1lbWJlciJ9fX0.33hVxNx8PGt3ULEIJJElROhE96L18MfvhKrWBsekj7s"
+          getIFrameRef={(iframeRef) => {
+            iframeRef.style.height = "100%";
+            iframeRef.style.width = "100%";
+          }}
+          configOverwrite={{
+            prejoinPageEnabled: false,
+            startWithAudioMuted: true,
+            enableWelcomePage: false,
+          }}
+          onApiReady={() => {
+            console.log("Jitsi Meet API ready");
+            // You can control the meeting using the API if needed
+          }}
+          onReadyToClose={() => {
+            console.log("Jitsi Meet ready to close");
+          }}
+        />
       </div>
     </div>
   );
-};
-
-export default InteractiveStepperExternalInteractions;
+}

@@ -20,9 +20,11 @@ export const useCreateIeltsReadingQuestion = () => {
         )
       ),
     onSuccess: () => {
+      // Invalidate all questions lists (with any parameters)
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.IELTS_READING.QUESTIONS],
       });
+      // Note: No need to invalidate specific question queries for creation
     },
     onError: (error) => {
       console.error("Failed to create reading question:", error);

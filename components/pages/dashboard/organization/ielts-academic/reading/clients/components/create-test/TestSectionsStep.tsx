@@ -86,8 +86,26 @@ export function TestSectionsStep({
       }
     });
 
-    return Array.from(groupedByPassage.values());
-  }, [questions]);
+    const groups = Array.from(groupedByPassage.values());
+
+    // Debug logging - remove after testing
+    console.log(
+      "Available passage titles:",
+      groups.map((g) => g.passage?.title)
+    );
+    console.log("Currently selected passages:", {
+      section_one: formData.section_one?.passage?.title,
+      section_two: formData.section_two?.passage?.title,
+      section_three: formData.section_three?.passage?.title,
+    });
+
+    return groups;
+  }, [
+    questions,
+    formData.section_one,
+    formData.section_two,
+    formData.section_three,
+  ]);
 
   // Filter by difficulty if needed
   const filteredPassages =
@@ -153,18 +171,33 @@ export function TestSectionsStep({
     }
   };
 
-  const isPassageSelected = (passageId: string) => {
-    return (
-      formData.section_one?.passage?.id === passageId ||
-      formData.section_two?.passage?.id === passageId ||
-      formData.section_three?.passage?.id === passageId
-    );
+  const isPassageSelected = (passageTitle: string) => {
+    const selectedTitles = {
+      section_one: formData.section_one?.passage?.title,
+      section_two: formData.section_two?.passage?.title,
+      section_three: formData.section_three?.passage?.title,
+    };
+
+    const isSelected =
+      formData.section_one?.passage?.title === passageTitle ||
+      formData.section_two?.passage?.title === passageTitle ||
+      formData.section_three?.passage?.title === passageTitle;
+
+    // Debug logging - remove after testing
+    if (isSelected) {
+      console.log(
+        `Passage "${passageTitle}" is selected. Current selections:`,
+        selectedTitles
+      );
+    }
+
+    return isSelected;
   };
 
-  const getSectionForPassage = (passageId: string): number | null => {
-    if (formData.section_one?.passage?.id === passageId) return 1;
-    if (formData.section_two?.passage?.id === passageId) return 2;
-    if (formData.section_three?.passage?.id === passageId) return 3;
+  const getSectionForPassage = (passageTitle: string): number | null => {
+    if (formData.section_one?.passage?.title === passageTitle) return 1;
+    if (formData.section_two?.passage?.title === passageTitle) return 2;
+    if (formData.section_three?.passage?.title === passageTitle) return 3;
     return null;
   };
 
@@ -294,18 +327,18 @@ export function TestSectionsStep({
                     <PassageCard
                       key={group.passage?.id}
                       group={group}
-                      isSelected={isPassageSelected(group.passage?.id || "")}
+                      isSelected={isPassageSelected(group.passage?.title || "")}
                       sectionNumber={getSectionForPassage(
-                        group.passage?.id || ""
+                        group.passage?.title || ""
                       )}
                       onSelect={() => {
                         const sectionNum = getSectionForPassage(
-                          group.passage?.id || ""
+                          group.passage?.title || ""
                         );
                         if (sectionNum) {
                           clearSelection(sectionNum);
                         }
-                        if (!isPassageSelected(group.passage?.id || "")) {
+                        if (!isPassageSelected(group.passage?.title || "")) {
                           selectPassage(section, group);
                         }
                       }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
-import { Headphones, FileAudio, Calendar, Users } from "lucide-react";
+import { Headphones, FileAudio, Calendar, Users, Edit } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,12 +10,15 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface TestGridProps {
   tests?: IELTSListeningTest[];
   selectedTestId?: string;
   onSelectTest?: (test: IELTSListeningTest) => void;
   isLoading: boolean;
+  organizationId?: number;
 }
 
 export function TestGrid({
@@ -23,6 +26,7 @@ export function TestGrid({
   selectedTestId,
   onSelectTest,
   isLoading,
+  organizationId,
 }: TestGridProps) {
   if (isLoading) {
     // Display skeleton UI while loading
@@ -131,19 +135,36 @@ export function TestGrid({
             </CardContent>
 
             <CardFooter className="p-5 pt-3 border-t flex justify-between items-center">
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium
-                ${
-                  test.status === "published"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {test.status.charAt(0).toUpperCase() + test.status.slice(1)}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {test.timeLimit} min
-              </span>
+              <div className="flex items-center gap-3">
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium
+                  ${
+                    test.status === "published"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {test.status.charAt(0).toUpperCase() + test.status.slice(1)}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {test.timeLimit} min
+                </span>
+              </div>
+
+              {organizationId && (
+                <Link
+                  href={`/dashboard/organization/${organizationId}/ielts-academic/listening/tests/edit/${test.id}`}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                </Link>
+              )}
             </CardFooter>
           </Card>
         );

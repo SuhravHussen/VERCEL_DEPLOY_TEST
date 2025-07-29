@@ -128,7 +128,11 @@ export default function TestsPageClient({
       />
 
       {isLoading ? (
-        <TestGrid isLoading={true} viewMode={viewMode} />
+        <TestGrid
+          isLoading={true}
+          viewMode={viewMode}
+          organizationId={organizationId}
+        />
       ) : filteredTests.length > 0 ? (
         <>
           {/* Tests Display */}
@@ -139,12 +143,14 @@ export default function TestsPageClient({
               onSelectTest={handleSelectTest}
               viewMode={viewMode}
               isLoading={false}
+              organizationId={organizationId}
             />
           ) : (
             <TestList
               tests={filteredTests}
               selectedTestId={selectedTest?.id}
               onSelectTest={handleSelectTest}
+              organizationId={organizationId}
             />
           )}
 
@@ -169,7 +175,6 @@ export default function TestsPageClient({
       <TestDetailDrawer
         test={selectedTest}
         open={isTestDetailOpen}
-        organizationId={organizationId}
         onClose={handleCloseTestDetail}
       />
     </div>

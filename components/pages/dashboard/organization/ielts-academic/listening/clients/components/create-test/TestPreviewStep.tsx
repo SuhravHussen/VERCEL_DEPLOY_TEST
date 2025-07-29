@@ -49,6 +49,7 @@ export function TestPreviewStep({
   formData,
   onSave,
   isSaving,
+  submitButtonText = "Create Test",
 }: TestPreviewStepProps) {
   const context = useContext(StepperContext);
   const [openSections, setOpenSections] = useState<string>("section-0");
@@ -387,7 +388,7 @@ export function TestPreviewStep({
                 disabled={isSaving || !isComplete}
                 className="w-full sm:w-auto"
               >
-                {isSaving ? "Creating test..." : "Create Test"}
+                {isSaving ? "Saving..." : submitButtonText}
               </Button>
             </div>
           </CardFooter>

@@ -20,6 +20,9 @@ import { AudioCard } from "./questions-page/AudioCard";
 import { QuestionsPagination } from "./questions-page/QuestionsPagination";
 import { AudioDetailView } from "./questions-page/AudioDetailView";
 import { useGetIeltsListeningQuestions } from "@/hooks/organization/ielts-academic/listening/use-get-ielts-listening-questions";
+import { useDeleteIeltsListeningQuestion } from "@/hooks/organization/ielts-academic/listening/use-delete-ielts-listening-question";
+import { useToasts } from "@/components/ui/toast";
+import { useConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export interface QuestionsPageClientProps {
   organizationId: number;
@@ -47,6 +50,10 @@ export default function QuestionsPageClient({
     sortBy,
     sortOrder
   );
+
+  const toast = useToasts();
+  const deleteQuestionMutation = useDeleteIeltsListeningQuestion();
+  const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
 
   const formattedData = data?.questions
     ? addListeningQuestionNumbering(
@@ -90,6 +97,32 @@ export default function QuestionsPageClient({
     setQuestionType("all");
     setSortBy("createdAt");
     setSortOrder("desc");
+  };
+
+  const handleDeleteQuestion = async (questionId: string) => {
+    await showConfirmation({
+      title: "Delete Listening Question",
+      description:
+        "Are you sure you want to delete this listening question? This action cannot be undone and will permanently remove all associated audio and questions.",
+      confirmText: "Delete Question",
+      cancelText: "Cancel",
+      variant: "destructive",
+      onConfirm: async () => {
+        try {
+          await deleteQuestionMutation.mutateAsync(questionId);
+          toast.success("Question deleted successfully!");
+
+          // If the deleted question was the selected one, clear the selection
+          if (selectedAudio?.questions.some((q) => q.id === questionId)) {
+            setSelectedAudio(null);
+          }
+        } catch (error) {
+          console.error("Error deleting question:", error);
+          toast.error("Failed to delete question. Please try again.");
+          throw error; // Re-throw to let the dialog handle the error state
+        }
+      },
+    });
   };
 
   const handleSort = (field: "audioTitle" | "questionType" | "createdAt") => {
@@ -184,6 +217,7 @@ export default function QuestionsPageClient({
                         selectedAudio?.audio?.title === item.audio?.title
                       }
                       onSelect={() => setSelectedAudio(item)}
+                      onDelete={handleDeleteQuestion}
                     />
                   ))
                 )}
@@ -249,6 +283,8 @@ export default function QuestionsPageClient({
           </DrawerContent>
         </Drawer>
       )}
+
+      <ConfirmationDialog />
     </div>
   );
 }

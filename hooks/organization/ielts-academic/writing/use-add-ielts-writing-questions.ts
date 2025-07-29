@@ -12,6 +12,7 @@ import {
   CreateTask2Dto,
 } from "@/types/dto/ielts/writing/writing.dto";
 import { IELTSWritingTask } from "@/types/exam/ielts-academic/writing/writing";
+import mockdb from "@/mockdb";
 
 // Union type for creating writing questions
 export type CreateWritingQuestionDto =
@@ -34,27 +35,14 @@ export function useCreateIeltsWritingQuestion(
 
   return useMutation({
     mutationFn: async (questionData: CreateWritingQuestionDto) => {
-      const { organizationId } = questionData;
+      const { organizationId, ...createData } = questionData;
 
-      const response = await fetch(
-        `/api/organizations/${organizationId}/ielts-academic/writing/questions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(questionData),
-        }
-      );
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || "Failed to create IELTS Writing question"
-        );
-      }
+      const newQuestion = mockdb.createIeltsWritingQuestion(createData);
 
-      return await response.json();
+      return newQuestion;
     },
     onSuccess: (data) => {
       // Invalidate questions list query to refetch

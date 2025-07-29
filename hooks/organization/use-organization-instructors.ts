@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../query-keys";
 import mockdb from "@/mockdb";
 import { Role } from "@/types/role";
+import { mockUsers } from "@/mockdata/mockUsers";
 
 // Define types for sort and pagination
 export type SortField = "name" | "email" | "createdAt";
@@ -53,61 +54,13 @@ export const useOrganizationInstructors = (
         };
       }
 
-      // Get users from mock db with INSTRUCTOR role
-      // In a real app, this would filter by organization_id as well
-      const allInstructors = mockdb.organizations.find(
-        (org) => org.id === organizationId
-      )?.instructors;
-
-      if (allInstructors?.length === 0 || !allInstructors) {
-        return {
-          instructors: [],
-          meta: { total: 0, pages: 0, page, pageSize },
-        };
-      }
-
-      // Filter by search term
-      const filteredInstructors = search
-        ? allInstructors.filter(
-            (user) =>
-              user.name.toLowerCase().includes(search.toLowerCase()) ||
-              user.email.toLowerCase().includes(search.toLowerCase())
-          )
-        : allInstructors;
-
-      // Sort instructors
-      const sortedInstructors = [...filteredInstructors].sort((a, b) => {
-        const fieldA = a[sortField];
-        const fieldB = b[sortField];
-
-        if (typeof fieldA === "string" && typeof fieldB === "string") {
-          return sortOrder === "asc"
-            ? fieldA.localeCompare(fieldB)
-            : fieldB.localeCompare(fieldA);
-        }
-
-        return sortOrder === "asc"
-          ? fieldA > fieldB
-            ? 1
-            : -1
-          : fieldA < fieldB
-          ? 1
-          : -1;
-      });
-
-      // Calculate pagination
-      const totalInstructors = sortedInstructors.length;
-      const totalPages = Math.ceil(totalInstructors / pageSize);
-      const paginatedInstructors = sortedInstructors.slice(
-        (page - 1) * pageSize,
-        page * pageSize
-      );
+      
 
       return {
-        instructors: paginatedInstructors,
+        instructors: mockUsers,
         meta: {
-          total: totalInstructors,
-          pages: totalPages,
+          total: mockUsers.length,
+          pages: 2,
           page,
           pageSize,
         },

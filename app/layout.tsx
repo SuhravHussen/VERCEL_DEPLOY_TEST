@@ -9,8 +9,6 @@ import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { unstable_ViewTransition as ViewTransition } from "react";
-import { StagewiseToolbar } from "@stagewise/toolbar-next";
-import ReactPlugin from "@stagewise-plugins/react";
 const elMessiri = El_Messiri({
   variable: "--font-el-messiri",
   subsets: ["latin"],
@@ -87,11 +85,7 @@ export default async function RootLayout({
                   enableSystem
                   disableTransitionOnChange
                 >
-                  <StagewiseToolbar
-                    config={{
-                      plugins: [ReactPlugin],
-                    }}
-                  />
+
                   {children}
                 </ThemeProvider>
               </ReactQueryProvider>

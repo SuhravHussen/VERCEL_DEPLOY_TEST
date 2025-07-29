@@ -29,18 +29,55 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useToasts } from "@/components/ui/toast";
+import { useDeleteIeltsWritingQuestion } from "@/hooks/organization/ielts-academic/writing/use-delete-ielts-writing-question";
+import { useConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import Link from "next/link";
 
 export interface QuestionDetailViewProps {
   selectedQuestion: IELTSWritingTask | null;
   getQuestionTypeLabel: (type: string) => string;
   getQuestionTypeFromQuestion: (question: IELTSWritingTask) => string;
+  organizationId: number;
 }
 
 export function QuestionDetailView({
   selectedQuestion,
   getQuestionTypeLabel,
   getQuestionTypeFromQuestion,
+  organizationId,
 }: QuestionDetailViewProps) {
+  const { success, error: showError } = useToasts();
+  const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
+
+  const deleteMutation = useDeleteIeltsWritingQuestion({
+    onSuccess: () => {
+      success("Writing question deleted successfully");
+    },
+    onError: (error) => {
+      showError(error.message || "Failed to delete writing question");
+    },
+  });
+
+  const handleDelete = async () => {
+    if (!selectedQuestion) return;
+
+    await showConfirmation({
+      title: "Delete Writing Question",
+      description:
+        "Are you sure you want to delete this writing question? This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "destructive",
+      isLoading: deleteMutation.isPending,
+      onConfirm: async () => {
+        deleteMutation.mutate({
+          organizationId,
+          questionId: selectedQuestion.id,
+        });
+      },
+    });
+  };
   if (!selectedQuestion) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -153,13 +190,23 @@ export function QuestionDetailView({
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex gap-1">
-              <Edit className="h-3 w-3" />
-              Edit
-            </Button>
-            <Button variant="destructive" size="sm" className="flex gap-1">
+            <Link
+              href={`/dashboard/organization/${organizationId}/ielts-academic/writing/questions/${selectedQuestion.id}/edit`}
+            >
+              <Button variant="outline" size="sm" className="flex gap-1">
+                <Edit className="h-3 w-3" />
+                Edit
+              </Button>
+            </Link>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="flex gap-1"
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+            >
               <Trash2 className="h-3 w-3" />
-              Delete
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </div>
         </div>
@@ -436,6 +483,8 @@ export function QuestionDetailView({
           </Card>
         )}
       </div>
+
+      <ConfirmationDialog />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { StepperContext } from "../CreateWritingPageClient";
+import { StepperContext } from "../StepperContext";
 import {
   Form,
   FormControl,
@@ -95,6 +95,27 @@ export default function Task1AcademicForm({
       keyFeatures: task.keyFeatures?.join("\n") || "",
     },
   });
+
+  // Update form values when formData changes (for edit mode)
+  useEffect(() => {
+    if (task) {
+      form.reset({
+        detailType: (task.detailType as AcademicTask1Type) || "line_graph",
+        instruction: task.instruction || "",
+        prompt: task.prompt || "",
+        timeLimit: task.timeLimit || 20,
+        minimumWords: task.minimumWords || 150,
+        sampleAnswer: task.sampleAnswer || "",
+        chartDescription: task.visualData?.chartDescription || "",
+        keyFeatures: task.keyFeatures?.join("\n") || "",
+      });
+
+      // Update image URL if it exists
+      if (task.visualData?.chartImage) {
+        setImageUrl(task.visualData.chartImage);
+      }
+    }
+  }, [formData, task, form]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

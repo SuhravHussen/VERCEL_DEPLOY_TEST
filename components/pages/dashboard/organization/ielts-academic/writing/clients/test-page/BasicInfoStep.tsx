@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { TestStepperContext } from "../CreateTestPageClient";
+import { useContext, useEffect } from "react";
+import { TestStepperContext } from "../TestStepperContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +58,18 @@ export default function BasicInfoStep({
       instructions: testData.instructions || "",
     },
   });
+
+  // Update form values when testData changes (for edit mode)
+  useEffect(() => {
+    form.reset({
+      title: testData.title || "",
+      description: testData.description || "",
+      difficulty: testData.difficulty || "medium",
+      status: testData.status || "published",
+      totalTimeLimit: testData.totalTimeLimit || 60,
+      instructions: testData.instructions || "",
+    });
+  }, [testData, form]);
 
   const onSubmit = (values: z.infer<typeof basicInfoSchema>) => {
     updateTestData(values);

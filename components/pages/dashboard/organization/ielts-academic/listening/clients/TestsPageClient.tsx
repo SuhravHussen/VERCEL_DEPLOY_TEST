@@ -137,12 +137,14 @@ export default function TestsPageClient({
               selectedTestId={selectedTest?.id}
               onSelectTest={handleSelectTest}
               isLoading={false}
+              organizationId={organizationId}
             />
           ) : (
             <TestList
               tests={filteredTests}
               selectedTestId={selectedTest?.id}
               onSelectTest={handleSelectTest}
+              organizationId={organizationId}
             />
           )}
 

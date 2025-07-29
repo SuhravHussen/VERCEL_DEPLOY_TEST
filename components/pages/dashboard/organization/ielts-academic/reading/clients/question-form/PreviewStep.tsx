@@ -39,12 +39,14 @@ interface PreviewStepProps {
   };
   onSave?: () => void;
   isSaving?: boolean;
+  isEditing?: boolean;
 }
 
 export default function PreviewStep({
   formData,
   onSave,
   isSaving,
+  isEditing = false,
 }: PreviewStepProps) {
   const { stepperRef } = useContext(StepperContext);
 
@@ -122,7 +124,11 @@ export default function PreviewStep({
           }
           className="w-full sm:w-auto"
         >
-          {isSaving ? "Saving..." : "Create Question"}
+          {isSaving
+            ? "Saving..."
+            : isEditing
+            ? "Update Question"
+            : "Create Question"}
         </Button>
       </div>
     </div>

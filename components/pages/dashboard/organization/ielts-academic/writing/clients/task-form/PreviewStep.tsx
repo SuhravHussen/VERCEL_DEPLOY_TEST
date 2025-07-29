@@ -4,7 +4,7 @@
 import React, { useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { StepperContext } from "../CreateWritingPageClient";
+import { StepperContext } from "../StepperContext";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 

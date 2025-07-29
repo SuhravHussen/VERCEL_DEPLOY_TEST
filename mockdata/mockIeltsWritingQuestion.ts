@@ -17,6 +17,7 @@ export const mockIeltsWritingTasks: IELTSWritingTask[] = [
     timeLimit: 20,
     minimumWords: 150,
     visualData: {
+      chartImage: "/images/ielts/diagram.webp",
       chartDescription:
         "Line graph showing tourist arrivals from 2010-2017, with visitors staying on cruise ships and visitors staying on island shown as separate lines",
     },
@@ -40,6 +41,7 @@ export const mockIeltsWritingTasks: IELTSWritingTask[] = [
     timeLimit: 20,
     minimumWords: 150,
     visualData: {
+      chartImage: "/images/ielts/diagram.webp",
       chartDescription:
         "Bar chart comparing percentage of people who bought fresh coffee, bought instant coffee, and went to café for coffee or tea in Sydney, Melbourne, Brisbane, Adelaide, and Hobart",
     },
@@ -61,6 +63,7 @@ export const mockIeltsWritingTasks: IELTSWritingTask[] = [
     timeLimit: 20,
     minimumWords: 150,
     visualData: {
+      chartImage: "/images/ielts/diagram.webp",
       chartDescription:
         "Flow diagram showing chocolate production from cacao tree to finished chocolate bars",
     },

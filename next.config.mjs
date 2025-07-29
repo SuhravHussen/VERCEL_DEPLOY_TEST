@@ -31,14 +31,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      {
+        protocol: "https",
+        hostname: "example.com",
+      },
     ],
   },
   experimental: {
     viewTransition: true,
   },
-  env: {
-    NEXT_PUBLIC_LIVEKIT_URL: process.env.NEXT_PUBLIC_LIVEKIT_URL,
-  },
+  env: {},
 };
 
 // @ts-ignore

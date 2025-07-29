@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useContext } from "react";
-import { TestStepperContext } from "../CreateTestPageClient";
+import { TestStepperContext } from "../TestStepperContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,12 +12,14 @@ interface PreviewStepProps {
   testData: Partial<IELTSWritingTest>;
   isSubmitting: boolean;
   onSubmit: () => void;
+  isEditMode?: boolean;
 }
 
 export default function PreviewStep({
   testData,
   isSubmitting,
   onSubmit,
+  isEditMode = false,
 }: PreviewStepProps) {
   const { stepperRef } = useContext(TestStepperContext);
 
@@ -303,7 +305,13 @@ export default function PreviewStep({
             disabled={isSubmitting || !task1 || !task2}
           >
             <Save className="h-4 w-4" />
-            {isSubmitting ? "Creating Test..." : "Create Test"}
+            {isSubmitting
+              ? isEditMode
+                ? "Updating Test..."
+                : "Creating Test..."
+              : isEditMode
+              ? "Update Test"
+              : "Create Test"}
           </Button>
         </div>
       </CardContent>

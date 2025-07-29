@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import AudioStep from "./question-form/AudioStep";
 import QuestionStep from "./question-form/QuestionStep";
 import PreviewStep from "./question-form/PreviewStep";
@@ -20,29 +20,13 @@ import {
   IStepperMethods,
 } from "@/components/ui/stepper";
 
-import {
-  IELTSListeningQuestionGroup,
-  IELTSListeningAudio,
-} from "@/types/exam/ielts-academic/listening/listening";
+import { IELTSListeningQuestionGroup } from "@/types/exam/ielts-academic/listening/listening";
 
 interface CreateListeningQuestionPageClientProps {
   organizationId: number;
 }
 
-export interface FormData {
-  audio: IELTSListeningAudio;
-  questions: IELTSListeningQuestionGroup[];
-}
-
-interface StepperContextType {
-  stepperRef: React.RefObject<HTMLDivElement & IStepperMethods>;
-}
-
-export const StepperContext = createContext<StepperContextType>({
-  stepperRef: { current: null } as unknown as React.RefObject<
-    HTMLDivElement & IStepperMethods
-  >,
-});
+import { StepperContext, FormData } from "./shared/StepperContext";
 
 export default function CreateListeningQuestionPageClient({
   organizationId,

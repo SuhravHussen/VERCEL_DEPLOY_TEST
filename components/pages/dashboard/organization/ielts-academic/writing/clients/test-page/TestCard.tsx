@@ -8,14 +8,16 @@ import {
   FileText,
   MoreHorizontal,
   PenLine,
-  ArchiveIcon,
-  BookOpen,
   ScrollText,
   FileImage,
   User,
   Hourglass,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
+import { useToasts } from "@/components/ui/toast";
+import { useDeleteIeltsWritingTest } from "@/hooks/organization/ielts-academic/writing/use-delete-ielts-writing-test";
+import { useConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +47,19 @@ export interface TestCardProps {
 export function TestCard({ test, organizationId }: TestCardProps) {
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { error, success } = useToasts();
+  const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
+
+  const { mutate: deleteTest, isPending: isDeleting } =
+    useDeleteIeltsWritingTest({
+      onSuccess: () => {
+        success("Test deleted successfully");
+        setDrawerOpen(false);
+      },
+      onError: (err) => {
+        error(err.message || "Failed to delete test");
+      },
+    });
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -59,16 +74,26 @@ export function TestCard({ test, organizationId }: TestCardProps) {
     }
   };
 
-  const viewTest = () => {
+  const editTest = () => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/writing/test/${test.id}`
+      `/dashboard/organization/${organizationId}/ielts-academic/writing/tests/${test.id}/edit`
     );
   };
 
-  const editTest = () => {
-    router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/writing/test/${test.id}/edit`
-    );
+  const handleDelete = () => {
+    showConfirmation({
+      title: "Delete Test",
+      description: `Are you sure you want to delete "${test.title}"? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "destructive",
+      onConfirm: () => {
+        deleteTest({
+          organizationId,
+          testId: test.id.toString(),
+        });
+      },
+    });
   };
 
   // Format the detail type for display
@@ -143,15 +168,6 @@ export function TestCard({ test, organizationId }: TestCardProps) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    viewTest();
-                  }}
-                >
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  View Test
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
                     editTest();
                   }}
                 >
@@ -161,13 +177,13 @@ export function TestCard({ test, organizationId }: TestCardProps) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    // Handle archive logic here
+                    handleDelete();
                   }}
+                  className="text-destructive"
+                  disabled={isDeleting}
                 >
-                  <ArchiveIcon className="mr-2 h-4 w-4" />
-                  {test.status === "published"
-                    ? "Archive Test"
-                    : "Publish Test"}
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Test
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -489,13 +505,17 @@ export function TestCard({ test, organizationId }: TestCardProps) {
                   Close
                 </Button>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={editTest}>
-                    <PenLine className="mr-2 h-4 w-4" />
-                    Edit
+                  <Button
+                    variant="destructive"
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
                   </Button>
-                  <Button onClick={viewTest}>
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    View Full Test
+                  <Button onClick={editTest}>
+                    <PenLine className="mr-2 h-4 w-4" />
+                    Edit Test
                   </Button>
                 </div>
               </div>
@@ -503,6 +523,9 @@ export function TestCard({ test, organizationId }: TestCardProps) {
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog />
     </>
   );
 }

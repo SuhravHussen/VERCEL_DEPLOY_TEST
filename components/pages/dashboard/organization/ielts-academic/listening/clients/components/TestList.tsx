@@ -1,19 +1,23 @@
 "use client";
 
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
-import { FileAudio, Calendar, Users, ChevronRight } from "lucide-react";
+import { FileAudio, Calendar, Users, ChevronRight, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface TestListProps {
   tests: IELTSListeningTest[];
   selectedTestId?: string;
   onSelectTest: (test: IELTSListeningTest) => void;
+  organizationId?: number;
 }
 
 export function TestList({
   tests,
   selectedTestId,
   onSelectTest,
+  organizationId,
 }: TestListProps) {
   return (
     <div className="flex flex-col gap-3 mb-8">
@@ -89,7 +93,21 @@ export function TestList({
                 </div>
               </div>
             </div>
-            <div className="self-end md:self-center">
+            <div className="self-end md:self-center flex items-center gap-2">
+              {organizationId && (
+                <Link
+                  href={`/dashboard/organization/${organizationId}/ielts-academic/listening/tests/edit/${test.id}`}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                </Link>
+              )}
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </div>
           </div>

@@ -23,6 +23,7 @@ interface AudioCardProps {
   getQuestionTypeLabel: (type: string) => string;
   isSelected: boolean;
   onSelect: () => void;
+  onDelete?: (questionId: string) => void;
 }
 
 export function AudioCard({
@@ -31,6 +32,7 @@ export function AudioCard({
   getQuestionTypeLabel,
   isSelected,
   onSelect,
+  onDelete,
 }: AudioCardProps) {
   // Extract basic info
   const audioTitle = item.audio?.title || "Untitled Audio";
@@ -105,15 +107,24 @@ export function AudioCard({
             <DropdownMenuItem asChild>
               <Link
                 href={`/dashboard/organization/${organizationId}/ielts-academic/listening/questions/edit/${
-                  item.audio?.audioUrl
-                    ? item.audio?.audioUrl.split("/").pop()
-                    : ""
+                  item.questions[0]?.id || ""
                 }`}
               >
                 Edit questions
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={(e) => {
+                e.stopPropagation();
+                const questionId = item.questions[0]?.id;
+                if (questionId && onDelete) {
+                  onDelete(questionId);
+                }
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { ieltsListeningTest } from "../../../../mockdata/mockIeltsListeningTest";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
+import { QUERY_KEYS } from "@/hooks/query-keys";
+import mockdb from "@/mockdb";
 
 interface GetIeltsListeningTestsResponse {
   tests: IELTSListeningTest[];
@@ -22,7 +23,7 @@ const fetchIeltsListeningTests = async (
   await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API delay
 
   // Mock filtering by search term
-  let filteredTests = [...ieltsListeningTest];
+  let filteredTests = [...mockdb.getIeltsListeningTests()];
 
   if (search) {
     const searchLower = search.toLowerCase();
@@ -91,7 +92,7 @@ export const useGetIeltsListeningTests = (
 ) => {
   return useQuery({
     queryKey: [
-      "ielts-listening-tests",
+      QUERY_KEYS.IELTS_LISTENING.TESTS,
       organizationId,
       page,
       pageSize,

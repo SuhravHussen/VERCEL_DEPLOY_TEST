@@ -48,7 +48,7 @@ export function useCreateIeltsWritingTest(
       }
     },
     onSuccess: (data) => {
-      // Invalidate tests list query to refetch
+      // Invalidate all tests-related queries (including paginated and filtered ones)
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.IELTS_WRITING.TESTS],
       });

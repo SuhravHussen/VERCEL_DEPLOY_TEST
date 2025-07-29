@@ -24,8 +24,19 @@ export const useCreateIeltsListeningQuestion = () => {
         mockdb.createIeltsListeningQuestion(questionData)
       ),
     onSuccess: () => {
+      // Invalidate all listening questions queries
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.IELTS_LISTENING.QUESTIONS],
+      });
+
+      // Also invalidate any paginated queries
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return (
+            Array.isArray(query.queryKey) &&
+            query.queryKey[0] === QUERY_KEYS.IELTS_LISTENING.QUESTIONS
+          );
+        },
       });
     },
     onError: (error) => {

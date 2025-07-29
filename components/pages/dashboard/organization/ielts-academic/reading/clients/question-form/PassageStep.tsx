@@ -38,25 +38,36 @@ export default function PassageStep({
 
       editor.on("update", handleUpdate);
 
-      // Set initial content if available
-      if (formData.content && editor.isEmpty) {
-        editor.commands.setContent(formData.content);
-      }
-
       return () => {
         editor.off("update", handleUpdate);
       };
     }
-  }, [editor, updateFormData, formData.content]);
+  }, [editor, updateFormData]);
 
   // Validate form
   useEffect(() => {
-    setIsValid(!!formData.title && !!formData.content && !!formData.difficulty);
+    const valid =
+      !!formData.title && !!formData.content && !!formData.difficulty;
+    console.log("Form validation:", {
+      title: !!formData.title,
+      content: !!formData.content,
+      difficulty: !!formData.difficulty,
+      valid,
+    });
+    setIsValid(valid);
   }, [formData]);
 
   const handleNext = () => {
+    console.log("Handle next clicked", {
+      stepperRef: stepperRef.current,
+      isValid,
+      formData,
+    });
     if (stepperRef.current) {
+      console.log("Calling nextStep...");
       stepperRef.current.nextStep();
+    } else {
+      console.error("stepperRef.current is null");
     }
   };
 
@@ -102,7 +113,11 @@ export default function PassageStep({
         <div className="space-y-2">
           <Label>Passage Content</Label>
           <div className="border rounded-md min-h-[400px]">
-            <SimpleEditor onEditorReady={setEditor} />
+            <SimpleEditor
+              key={formData.content} // Re-initialize editor when content changes
+              onEditorReady={setEditor}
+              initialContent={formData.content}
+            />
           </div>
         </div>
 

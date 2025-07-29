@@ -15,8 +15,6 @@ const fetchIeltsReadingTests = async (
   sort: "title" | "createdAt" = "createdAt",
   order: "asc" | "desc" = "desc"
 ) => {
-  console.log("fetching ielts reading tests");
-  console.log(organizationId, page, limit, search, sort, order);
   const tests = mockdb.getIeltsReadingTests();
 
   if (tests.length === 0) {

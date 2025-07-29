@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { StepperContext } from "../CreateWritingPageClient";
+import { StepperContext } from "../StepperContext";
 import {
   Form,
   FormControl,
@@ -79,6 +79,24 @@ export default function Task1GeneralForm({
       sampleAnswer: task.sampleAnswer || "",
     },
   });
+
+  // Update form values when formData changes (for edit mode)
+  useEffect(() => {
+    if (task) {
+      form.reset({
+        detailType: (task.detailType as GeneralTask1Type) || "formal_letter",
+        instruction: task.instruction || "",
+        prompt: task.prompt || "",
+        timeLimit: task.timeLimit || 20,
+        minimumWords: task.minimumWords || 150,
+        scenario: task.scenario || "",
+        bulletPoints: task.bulletPoints?.join("\n") || "",
+        recipient: task.recipient || "",
+        tone: task.tone || "formal",
+        sampleAnswer: task.sampleAnswer || "",
+      });
+    }
+  }, [formData, task, form]);
 
   function onSubmit(values: z.infer<typeof generalTask1Schema>) {
     const { bulletPoints, ...rest } = values;

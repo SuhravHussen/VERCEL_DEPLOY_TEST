@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useToasts } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import {
@@ -18,6 +18,7 @@ import {
   InteractiveStepperContent,
   IStepperMethods,
 } from "@/components/ui/stepper";
+import { StepperContext } from "./StepperContext";
 
 import {
   IELTSAcademicTask1,
@@ -43,16 +44,6 @@ export interface FormData {
   taskType: IELTSWritingTaskType;
   task: Partial<IELTSAcademicTask1 | IELTSGeneralTask1 | IELTSTask2>;
 }
-
-interface StepperContextType {
-  stepperRef: React.RefObject<HTMLDivElement & IStepperMethods>;
-}
-
-export const StepperContext = createContext<StepperContextType>({
-  stepperRef: { current: null } as unknown as React.RefObject<
-    HTMLDivElement & IStepperMethods
-  >,
-});
 
 export default function CreateWritingPageClient({
   organizationId,

@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useContext } from "react";
-import { StepperContext, FormData } from "../CreateListeningQuestionPageClient";
+import { StepperContext, FormData } from "../shared/StepperContext";
 import { Badge } from "@/components/ui/badge";
 import React from "react";
 import {
@@ -25,12 +25,14 @@ interface PreviewStepProps {
   formData: FormData;
   onSave?: () => void;
   isSaving?: boolean;
+  submitButtonText?: string;
 }
 
 export default function PreviewStep({
   formData,
   onSave,
   isSaving,
+  submitButtonText = "Create Question",
 }: PreviewStepProps) {
   const { stepperRef } = useContext(StepperContext);
 
@@ -125,7 +127,7 @@ export default function PreviewStep({
           }
           className="w-full sm:w-auto"
         >
-          {isSaving ? "Saving..." : "Create Question"}
+          {isSaving ? "Saving..." : submitButtonText}
         </Button>
       </div>
     </div>

@@ -63,6 +63,18 @@ export default function QuestionsPageClient({
     }
   }, [questions, selectedQuestion]);
 
+  // Clear selected question if it's no longer in the list (e.g., deleted)
+  useEffect(() => {
+    if (selectedQuestion && questions.length > 0) {
+      const questionExists = questions.some(
+        (q) => q.id === selectedQuestion.id
+      );
+      if (!questionExists) {
+        setSelectedQuestion(questions[0] || null);
+      }
+    }
+  }, [questions, selectedQuestion]);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
@@ -234,6 +246,7 @@ export default function QuestionsPageClient({
                   selectedQuestion={selectedQuestion}
                   getQuestionTypeLabel={getQuestionTypeLabel}
                   getQuestionTypeFromQuestion={getQuestionTypeFromQuestion}
+                  organizationId={organizationId}
                 />
               )}
             </div>
@@ -267,6 +280,7 @@ export default function QuestionsPageClient({
                 selectedQuestion={selectedQuestion}
                 getQuestionTypeLabel={getQuestionTypeLabel}
                 getQuestionTypeFromQuestion={getQuestionTypeFromQuestion}
+                organizationId={organizationId}
               />
             </div>
           </DrawerContent>
