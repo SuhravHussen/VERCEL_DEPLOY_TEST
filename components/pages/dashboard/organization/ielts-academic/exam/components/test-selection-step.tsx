@@ -5,13 +5,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsContents,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
@@ -740,34 +734,32 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             </TabsTrigger>
           </TabsList>
 
-          <TabsContents>
-            <TabsContent value="listening" className="mt-8">
-              {renderTestSection(
-                "listening",
-                listeningData,
-                listeningLoading,
-                "Listening Tests"
-              )}
-            </TabsContent>
+          <TabsContent value="listening" className="mt-8">
+            {renderTestSection(
+              "listening",
+              listeningData,
+              listeningLoading,
+              "Listening Tests"
+            )}
+          </TabsContent>
 
-            <TabsContent value="reading" className="mt-8">
-              {renderTestSection(
-                "reading",
-                readingData,
-                readingLoading,
-                "Reading Tests"
-              )}
-            </TabsContent>
+          <TabsContent value="reading" className="mt-8">
+            {renderTestSection(
+              "reading",
+              readingData,
+              readingLoading,
+              "Reading Tests"
+            )}
+          </TabsContent>
 
-            <TabsContent value="writing" className="mt-8">
-              {renderTestSection(
-                "writing",
-                writingData,
-                writingLoading,
-                "Writing Tests"
-              )}
-            </TabsContent>
-          </TabsContents>
+          <TabsContent value="writing" className="mt-8">
+            {renderTestSection(
+              "writing",
+              writingData,
+              writingLoading,
+              "Writing Tests"
+            )}
+          </TabsContent>
         </Tabs>
 
         {/* Navigation */}

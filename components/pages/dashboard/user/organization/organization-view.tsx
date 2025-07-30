@@ -3,10 +3,15 @@
 import { useUserOrganization } from "@/hooks/user/use-user-organization";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2 } from "lucide-react";
+import { Building2, FileText, Bell, CalendarDays } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+// import { ExamsTab } from "./exams-tab";
+import { AnnouncementsTab } from "./announcements-tab";
+import { CalendarTab } from "./calendar-tab";
+import { ExamsTab } from "./exams-tab";
 
 interface OrganizationViewProps {
   organizationId: string;
@@ -187,6 +192,60 @@ export function OrganizationView({ organizationId }: OrganizationViewProps) {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Tabs Section */}
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-0">
+            <Tabs defaultValue="exams" className="w-full">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b overflow-x-auto overflow-y-hidden">
+                <TabsList className="!w-max !min-w-0 h-8 sm:h-9 flex-nowrap">
+                  <TabsTrigger
+                    value="exams"
+                    className="px-2 sm:px-3 py-1 text-xs sm:text-sm gap-1 sm:gap-1.5 flex-shrink-0 whitespace-nowrap"
+                  >
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="hidden sm:inline">Exams</span>
+                    <span className="sm:hidden">Exams</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="announcements"
+                    className="px-2 sm:px-3 py-1 text-xs sm:text-sm gap-1 sm:gap-1.5 flex-shrink-0 whitespace-nowrap"
+                  >
+                    <Bell className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="hidden sm:inline">Announcements</span>
+                    <span className="sm:hidden">News</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="calendar"
+                    className="px-2 sm:px-3 py-1 text-xs sm:text-sm gap-1 sm:gap-1.5 flex-shrink-0 whitespace-nowrap"
+                  >
+                    <CalendarDays className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="hidden sm:inline">Calendar</span>
+                    <span className="sm:hidden">Cal</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="exams" className="mt-0">
+                <div className="p-6">
+                  <ExamsTab organizationId={organizationId} />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="announcements" className="mt-0">
+                <div className="p-6">
+                  <AnnouncementsTab organizationId={organizationId} />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="calendar" className="mt-0">
+                <div className="p-6">
+                  <CalendarTab organizationId={organizationId} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

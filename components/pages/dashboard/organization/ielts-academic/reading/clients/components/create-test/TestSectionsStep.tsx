@@ -11,13 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsContent,
-  TabsContents,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TestSectionsStepProps, IELTSReadingTestSection } from "./types";
 import { StepperContext } from "./StepperContext";
@@ -271,147 +265,143 @@ export function TestSectionsStep({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContents>
-          {[1, 2, 3].map((section) => (
-            <TabsContent
-              key={section}
-              value={`section-${section}`}
-              className="space-y-4"
-            >
-              <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Section {section}</h3>
+        {[1, 2, 3].map((section) => (
+          <TabsContent
+            key={section}
+            value={`section-${section}`}
+            className="space-y-4"
+          >
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-4">Section {section}</h3>
 
-                {/* Show currently selected passage for this section */}
-                <SelectedPassageDisplay
-                  section={section}
-                  formData={formData}
-                  clearSelection={clearSelection}
-                />
+              {/* Show currently selected passage for this section */}
+              <SelectedPassageDisplay
+                section={section}
+                formData={formData}
+                clearSelection={clearSelection}
+              />
 
-                <div className="flex flex-col md:flex-row gap-3 mb-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search passages..."
-                      className="pl-8"
-                      value={search}
-                      onChange={handleSearchChange}
-                    />
+              <div className="flex flex-col md:flex-row gap-3 mb-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search passages..."
+                    className="pl-8"
+                    value={search}
+                    onChange={handleSearchChange}
+                  />
+                </div>
+                <Select value={difficulty} onValueChange={setDifficulty}>
+                  <SelectTrigger className="w-full md:w-[180px]">
+                    <SelectValue placeholder="Difficulty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {difficultyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2 mt-4">
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-10">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <span className="ml-3">Loading passages...</span>
                   </div>
-                  <Select value={difficulty} onValueChange={setDifficulty}>
-                    <SelectTrigger className="w-full md:w-[180px]">
-                      <SelectValue placeholder="Difficulty" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {difficultyOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2 mt-4">
-                  {isLoading ? (
-                    <div className="flex items-center justify-center py-10">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      <span className="ml-3">Loading passages...</span>
-                    </div>
-                  ) : isError ? (
-                    <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Error</AlertTitle>
-                      <AlertDescription>
-                        Failed to load passages. Please try again.
-                        {fetchError instanceof Error && (
-                          <p className="text-xs mt-1">{fetchError.message}</p>
-                        )}
-                      </AlertDescription>
-                    </Alert>
-                  ) : filteredPassages.length > 0 ? (
-                    filteredPassages.map((group) => (
-                      <PassageCard
-                        key={group.passage?.id}
-                        group={group}
-                        isSelected={isPassageSelected(
-                          group.passage?.title || ""
-                        )}
-                        sectionNumber={getSectionForPassage(
-                          group.passage?.title || ""
-                        )}
-                        onSelect={() => {
-                          const sectionNum = getSectionForPassage(
-                            group.passage?.title || ""
-                          );
-                          if (sectionNum) {
-                            clearSelection(sectionNum);
-                          }
-                          if (!isPassageSelected(group.passage?.title || "")) {
-                            selectPassage(section, group);
-                          }
-                        }}
-                      />
-                    ))
-                  ) : (
-                    <div className="text-center py-10 border-2 border-dashed rounded-md">
-                      <p>No passages found matching your search</p>
-                      {search && (
-                        <Button
-                          variant="outline"
-                          onClick={() => setSearch("")}
-                          className="mt-2"
-                        >
-                          Clear search
-                        </Button>
+                ) : isError ? (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
+                      Failed to load passages. Please try again.
+                      {fetchError instanceof Error && (
+                        <p className="text-xs mt-1">{fetchError.message}</p>
                       )}
-                    </div>
-                  )}
-                </div>
+                    </AlertDescription>
+                  </Alert>
+                ) : filteredPassages.length > 0 ? (
+                  filteredPassages.map((group) => (
+                    <PassageCard
+                      key={group.passage?.id}
+                      group={group}
+                      isSelected={isPassageSelected(group.passage?.title || "")}
+                      sectionNumber={getSectionForPassage(
+                        group.passage?.title || ""
+                      )}
+                      onSelect={() => {
+                        const sectionNum = getSectionForPassage(
+                          group.passage?.title || ""
+                        );
+                        if (sectionNum) {
+                          clearSelection(sectionNum);
+                        }
+                        if (!isPassageSelected(group.passage?.title || "")) {
+                          selectPassage(section, group);
+                        }
+                      }}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-10 border-2 border-dashed rounded-md">
+                    <p>No passages found matching your search</p>
+                    {search && (
+                      <Button
+                        variant="outline"
+                        onClick={() => setSearch("")}
+                        className="mt-2"
+                      >
+                        Clear search
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
 
-                {/* Pagination if needed */}
-                {!isLoading &&
-                  !isError &&
-                  data?.totalPages &&
-                  data.totalPages > 1 && (
-                    <div className="flex justify-center mt-4">
-                      <div className="flex space-x-1">
+              {/* Pagination if needed */}
+              {!isLoading &&
+                !isError &&
+                data?.totalPages &&
+                data.totalPages > 1 && (
+                  <div className="flex justify-center mt-4">
+                    <div className="flex space-x-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(page - 1)}
+                        disabled={page === 1}
+                      >
+                        Previous
+                      </Button>
+                      {Array.from(
+                        { length: data.totalPages },
+                        (_, i) => i + 1
+                      ).map((pageNum) => (
                         <Button
-                          variant="outline"
+                          key={pageNum}
+                          variant={page === pageNum ? "default" : "outline"}
                           size="sm"
-                          onClick={() => setPage(page - 1)}
-                          disabled={page === 1}
+                          onClick={() => setPage(pageNum)}
                         >
-                          Previous
+                          {pageNum}
                         </Button>
-                        {Array.from(
-                          { length: data.totalPages },
-                          (_, i) => i + 1
-                        ).map((pageNum) => (
-                          <Button
-                            key={pageNum}
-                            variant={page === pageNum ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setPage(pageNum)}
-                          >
-                            {pageNum}
-                          </Button>
-                        ))}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setPage(page + 1)}
-                          disabled={page === data.totalPages}
-                        >
-                          Next
-                        </Button>
-                      </div>
+                      ))}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(page + 1)}
+                        disabled={page === data.totalPages}
+                      >
+                        Next
+                      </Button>
                     </div>
-                  )}
-              </Card>
-            </TabsContent>
-          ))}
-        </TabsContents>
+                  </div>
+                )}
+            </Card>
+          </TabsContent>
+        ))}
       </Tabs>
 
       <div className="flex justify-between">

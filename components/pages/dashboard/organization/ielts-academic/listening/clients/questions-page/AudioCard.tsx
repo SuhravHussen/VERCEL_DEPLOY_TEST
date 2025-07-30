@@ -6,6 +6,7 @@ import {
   FileQuestion,
   Clock,
   Calendar,
+  Check,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -63,18 +64,41 @@ export function AudioCard({
 
   return (
     <Card
-      className={`p-4 hover:bg-muted/50 transition-colors cursor-pointer ${
-        isSelected ? "ring-2 ring-primary" : ""
+      className={`p-3 sm:p-4 hover:bg-muted/50 active:bg-muted/70 transition-all duration-200 cursor-pointer relative touch-manipulation ${
+        isSelected
+          ? "ring-2 ring-primary bg-primary/5 border-primary/20"
+          : "border-border/50"
       }`}
       onClick={onSelect}
     >
+      {/* Selected indicator */}
+      {isSelected && (
+        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-primary text-primary-foreground rounded-full p-1 z-10 shadow-sm">
+          <Check className="h-3 w-3 sm:h-3 sm:w-3" />
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-2">
         <div className="flex gap-3 items-center">
-          <div className="bg-primary/10 p-2 rounded-md">
-            <FileAudio className="h-5 w-5 text-primary" />
+          <div
+            className={`p-2 rounded-md transition-colors ${
+              isSelected ? "bg-primary/20" : "bg-primary/10"
+            }`}
+          >
+            <FileAudio
+              className={`h-5 w-5 ${
+                isSelected ? "text-primary" : "text-primary"
+              }`}
+            />
           </div>
           <div>
-            <h3 className="font-medium line-clamp-1">{audioTitle}</h3>
+            <h3
+              className={`font-medium line-clamp-1 ${
+                isSelected ? "text-primary" : ""
+              }`}
+            >
+              {audioTitle}
+            </h3>
             <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
               <Badge
                 variant="outline"
@@ -98,7 +122,14 @@ export function AudioCard({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-8 w-8 sm:h-8 sm:w-8 touch-manipulation ${
+                isSelected ? "mr-8" : ""
+              }`}
+              onClick={(e) => e.stopPropagation()}
+            >
               <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>

@@ -6,7 +6,7 @@ const getNavItems = () => {
       title: "Dashboard",
       url: "/dashboard/user",
       icon: "dashboard",
-      isActive: true,
+      isActive: false,
       items: [],
     },
 
@@ -22,7 +22,7 @@ const getNavItems = () => {
       title: "Organizations",
       url: "/dashboard/user/organizations",
       icon: "organization",
-      isActive: true,
+      isActive: false,
       items: [],
     },
   ];

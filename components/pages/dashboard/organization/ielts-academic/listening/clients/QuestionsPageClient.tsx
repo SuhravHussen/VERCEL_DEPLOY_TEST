@@ -159,7 +159,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   return (
-    <div className="space-y-6 p-2 md:p-6">
+    <div className="space-y-4 sm:space-y-6 p-2 sm:p-4 md:p-6">
       <QuestionsPageHeader
         organizationId={organizationId}
         dashboardText={{
@@ -169,11 +169,11 @@ export default function QuestionsPageClient({
         }}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         {/* Left column: List of audios */}
         <div className="lg:col-span-5 xl:col-span-4">
           <Card className="overflow-hidden border-none shadow-lg">
-            <div className="bg-muted/30 backdrop-blur-sm p-4">
+            <div className="bg-muted/30 backdrop-blur-sm p-3 sm:p-4">
               <QuestionFilters
                 search={search}
                 questionType={questionType}
@@ -188,18 +188,18 @@ export default function QuestionsPageClient({
             </div>
 
             {/* Audios list */}
-            <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
+            <div className="p-3 sm:p-4 space-y-2 sm:space-y-3  overflow-y-auto touch-pan-y">
               {isDataLoading ? (
                 Array.from({ length: 3 }).map((_, i) => (
                   <div
                     key={i}
-                    className="p-4 rounded-lg border border-border/50"
+                    className="p-3 sm:p-4 rounded-lg border border-border/50"
                   >
-                    <Skeleton className="h-5 w-3/5 mb-3" />
-                    <Skeleton className="h-4 w-4/5 mb-4" />
-                    <div className="flex justify-between mt-3">
-                      <Skeleton className="h-3 w-16" />
-                      <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-5 w-3/5 mb-2 sm:mb-3" />
+                    <Skeleton className="h-4 w-4/5 mb-3 sm:mb-4" />
+                    <div className="flex justify-between mt-2 sm:mt-3">
+                      <Skeleton className="h-3 w-12 sm:w-16" />
+                      <Skeleton className="h-3 w-12 sm:w-16" />
                     </div>
                   </div>
                 ))
@@ -247,7 +247,7 @@ export default function QuestionsPageClient({
               audios &&
               audios.length > 0 &&
               totalPages > 1 && (
-                <div className="border-t p-4 bg-background">
+                <div className="border-t p-3 sm:p-4 bg-background">
                   <QuestionsPagination
                     totalPages={totalPages}
                     page={page}
@@ -259,16 +259,16 @@ export default function QuestionsPageClient({
         </div>
 
         {/* Right column: Audio details */}
-        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-200px)] sticky top-24">
+        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-180px)] xl:h-[calc(100vh-200px)] sticky top-20 xl:top-24">
           <Card className="h-full overflow-hidden border-none shadow-lg">
-            <div className="absolute inset-0 overflow-y-auto">
+            <div className="absolute inset-0 overflow-y-auto overscroll-contain">
               {isDataLoading && !selectedAudio ? (
-                <div className="p-6 space-y-4">
+                <div className="p-4 lg:p-6 space-y-4">
                   <Skeleton className="h-8 w-1/2" />
                   <Skeleton className="h-4 w-1/3" />
-                  <div className="space-y-4 mt-8">
-                    <Skeleton className="h-20 w-full" />
-                    <Skeleton className="h-20 w-full" />
+                  <div className="space-y-4 mt-6 lg:mt-8">
+                    <Skeleton className="h-16 lg:h-20 w-full" />
+                    <Skeleton className="h-16 lg:h-20 w-full" />
                   </div>
                 </div>
               ) : (
@@ -288,21 +288,25 @@ export default function QuestionsPageClient({
           <DrawerTrigger asChild>
             <Button
               variant="default"
-              className="fixed bottom-4 right-4 z-10 lg:hidden shadow-lg flex items-center gap-2"
+              className="fixed bottom-4 right-4 z-10 lg:hidden shadow-lg flex items-center gap-2 h-12 px-4 text-sm font-medium"
             >
               <Volume2 className="h-4 w-4" />
               View Details
             </Button>
           </DrawerTrigger>
-          <DrawerContent className="max-h-[90vh]">
-            <DrawerHeader className="border-b">
-              <DrawerTitle>{selectedAudio.audio?.title}</DrawerTitle>
+          <DrawerContent className="max-h-[95vh] sm:max-h-[90vh] flex flex-col">
+            <DrawerHeader className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
+              <DrawerTitle className="text-left truncate pr-4">
+                {selectedAudio.audio?.title}
+              </DrawerTitle>
             </DrawerHeader>
-            <div className="flex-grow overflow-y-auto p-4">
-              <AudioDetailView
-                selectedAudio={selectedAudio}
-                getQuestionTypeLabel={getQuestionTypeLabel}
-              />
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+              <div className="p-3 sm:p-4 pb-safe">
+                <AudioDetailView
+                  selectedAudio={selectedAudio}
+                  getQuestionTypeLabel={getQuestionTypeLabel}
+                />
+              </div>
             </div>
           </DrawerContent>
         </Drawer>

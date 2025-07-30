@@ -149,7 +149,7 @@ export function ListeningTestDetails({
                         </div>
 
                         {questionGroup.questionType && (
-                          <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                          <div className="mb-3 p-3  border border-blue-200 rounded text-sm">
                             <strong>Question Type:</strong>{" "}
                             {questionGroup.questionType.replace(/_/g, " ")}
                           </div>

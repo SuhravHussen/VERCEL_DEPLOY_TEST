@@ -157,7 +157,7 @@ export function ReadingTestDetails({
                       </div>
 
                       {questionGroup.instruction && (
-                        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                        <div className="mb-3 p-3  border border-blue-200 rounded text-sm">
                           <strong>Instructions:</strong>{" "}
                           {questionGroup.instruction}
                         </div>

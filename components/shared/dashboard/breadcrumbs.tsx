@@ -17,26 +17,35 @@ export function Breadcrumbs() {
   if (items.length === 0) return null;
 
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        {items.map((item, index) => (
-          <Fragment key={item.title}>
-            {index !== items.length - 1 && (
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href={item.link}>{item.title}</BreadcrumbLink>
-              </BreadcrumbItem>
-            )}
-            {index < items.length - 1 && (
-              <BreadcrumbSeparator className="hidden md:block">
-                <IconSlash />
-              </BreadcrumbSeparator>
-            )}
-            {index === items.length - 1 && (
-              <BreadcrumbPage>{item.title}</BreadcrumbPage>
-            )}
-          </Fragment>
-        ))}
-      </BreadcrumbList>
-    </Breadcrumb>
+    <div className="w-full overflow-hidden">
+      <Breadcrumb>
+        <BreadcrumbList className="flex-nowrap">
+          {items.map((item, index) => (
+            <Fragment key={item.title}>
+              {index !== items.length - 1 && (
+                <BreadcrumbItem className="hidden md:block flex-shrink-0">
+                  <BreadcrumbLink
+                    href={item.link}
+                    className="truncate max-w-[150px] lg:max-w-[200px]"
+                  >
+                    {item.title}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              )}
+              {index < items.length - 1 && (
+                <BreadcrumbSeparator className="hidden md:block flex-shrink-0">
+                  <IconSlash />
+                </BreadcrumbSeparator>
+              )}
+              {index === items.length - 1 && (
+                <BreadcrumbPage className="truncate max-w-[150px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-none">
+                  {item.title}
+                </BreadcrumbPage>
+              )}
+            </Fragment>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
   );
 }

@@ -401,7 +401,7 @@ export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                <div className=" dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
                   <div className="flex items-start space-x-3">
                     <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                     <div>

@@ -101,7 +101,7 @@ export function ExamCard({
               {exam.is_active && (
                 <Badge
                   variant="default"
-                  className="bg-blue-50 text-blue-700 border-blue-200"
+                  className=" text-blue-700 border-blue-200"
                 >
                   Active
                 </Badge>

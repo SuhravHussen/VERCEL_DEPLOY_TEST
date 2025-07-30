@@ -1,290 +1,260 @@
 "use client";
 
 import * as React from "react";
-import { motion, type Transition, type HTMLMotionProps } from "motion/react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
-import {
-  MotionHighlight,
-  MotionHighlightItem,
-} from "@/components/animate-ui/effects/motion-highlight";
 
-type TabsContextType<T extends string> = {
-  activeValue: T;
-  handleValueChange: (value: T) => void;
-  registerTrigger: (value: T, node: HTMLElement | null) => void;
-};
+const Tabs = TabsPrimitive.Root;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TabsContext = React.createContext<TabsContextType<any> | undefined>(
-  undefined
-);
+const TabsList = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    className={cn(
+      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground relative",
+      className
+    )}
+    {...props}
+  />
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
 
-function useTabs<T extends string = string>(): TabsContextType<T> {
-  const context = React.useContext(TabsContext);
-  if (!context) {
-    throw new Error("useTabs must be used within a TabsProvider");
-  }
-  return context;
-}
+const TabsTrigger = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm hover:bg-background/50 hover:text-foreground/80 relative z-10",
+      className
+    )}
+    {...props}
+  />
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
-type BaseTabsProps = React.ComponentProps<"div"> & {
-  children: React.ReactNode;
-};
-
-type UnControlledTabsProps<T extends string = string> = BaseTabsProps & {
-  defaultValue?: T;
-  value?: never;
-  onValueChange?: never;
-};
-
-type ControlledTabsProps<T extends string = string> = BaseTabsProps & {
-  value: T;
-  onValueChange?: (value: T) => void;
-  defaultValue?: never;
-};
-
-type TabsProps<T extends string = string> =
-  | UnControlledTabsProps<T>
-  | ControlledTabsProps<T>;
-
-function Tabs<T extends string = string>({
-  defaultValue,
-  value,
-  onValueChange,
-  children,
-  className,
-  ...props
-}: TabsProps<T>) {
-  const [activeValue, setActiveValue] = React.useState<T | undefined>(
-    defaultValue ?? undefined
-  );
-  const triggersRef = React.useRef(new Map<string, HTMLElement>());
-  const initialSet = React.useRef(false);
-  const isControlled = value !== undefined;
-
-  React.useEffect(() => {
-    if (
-      !isControlled &&
-      activeValue === undefined &&
-      triggersRef.current.size > 0 &&
-      !initialSet.current
-    ) {
-      const firstTab = Array.from(triggersRef.current.keys())[0];
-      setActiveValue(firstTab as T);
-      initialSet.current = true;
-    }
-  }, [activeValue, isControlled]);
-
-  const registerTrigger = (value: string, node: HTMLElement | null) => {
-    if (node) {
-      triggersRef.current.set(value, node);
-      if (!isControlled && activeValue === undefined && !initialSet.current) {
-        setActiveValue(value as T);
-        initialSet.current = true;
-      }
-    } else {
-      triggersRef.current.delete(value);
-    }
-  };
-
-  const handleValueChange = (val: T) => {
-    if (!isControlled) setActiveValue(val);
-    else onValueChange?.(val);
-  };
-
-  return (
-    <TabsContext.Provider
-      value={{
-        activeValue: (value ?? activeValue)!,
-        handleValueChange,
-        registerTrigger,
-      }}
-    >
-      <div
-        data-slot="tabs"
-        className={cn("flex flex-col gap-2", className)}
-        {...props}
-      >
-        {children}
-      </div>
-    </TabsContext.Provider>
-  );
-}
-
-type TabsListProps = React.ComponentProps<"div"> & {
-  children: React.ReactNode;
-  activeClassName?: string;
-  transition?: Transition;
-};
-
-function TabsList({
-  children,
-  className,
-  activeClassName,
-  transition = {
-    type: "spring",
-    stiffness: 200,
-    damping: 25,
-  },
-  ...props
-}: TabsListProps) {
-  const { activeValue } = useTabs();
-
-  return (
-    <MotionHighlight
-      controlledItems
-      className={cn("rounded-sm bg-background shadow-sm", activeClassName)}
-      value={activeValue}
-      transition={transition}
-    >
-      <div
-        role="tablist"
-        data-slot="tabs-list"
-        className={cn(
-          "bg-muted text-muted-foreground inline-flex h-10 w-fit items-center justify-center rounded-lg p-[4px]",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    </MotionHighlight>
-  );
-}
-
-type TabsTriggerProps = HTMLMotionProps<"button"> & {
-  value: string;
-  children: React.ReactNode;
-};
-
-function TabsTrigger({
-  ref,
-  value,
-  children,
-  className,
-  ...props
-}: TabsTriggerProps) {
-  const { activeValue, handleValueChange, registerTrigger } = useTabs();
-
-  const localRef = React.useRef<HTMLButtonElement | null>(null);
-  React.useImperativeHandle(ref, () => localRef.current as HTMLButtonElement);
-
-  React.useEffect(() => {
-    registerTrigger(value, localRef.current);
-    return () => registerTrigger(value, null);
-  }, [value, registerTrigger]);
-
-  return (
-    <MotionHighlightItem value={value} className="size-full">
-      <motion.button
-        ref={localRef}
-        data-slot="tabs-trigger"
-        role="tab"
-        whileTap={{ scale: 0.95 }}
-        onClick={() => handleValueChange(value)}
-        data-state={activeValue === value ? "active" : "inactive"}
-        className={cn(
-          "inline-flex cursor-pointer items-center size-full justify-center whitespace-nowrap rounded-sm px-2 py-1 text-sm font-medium ring-offset-background transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground z-[1]",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </motion.button>
-    </MotionHighlightItem>
-  );
-}
-
-type TabsContentsProps = React.ComponentProps<"div"> & {
-  children: React.ReactNode;
-  transition?: Transition;
-};
-
-function TabsContents({
-  children,
-  className,
-  transition = {
-    type: "spring",
-    stiffness: 300,
-    damping: 30,
-    bounce: 0,
-    restDelta: 0.01,
-  },
-  ...props
-}: TabsContentsProps) {
-  const { activeValue } = useTabs();
-  const childrenArray = React.Children.toArray(children);
-  const activeIndex = childrenArray.findIndex(
-    (child): child is React.ReactElement<{ value: string }> =>
-      React.isValidElement(child) &&
-      typeof child.props === "object" &&
-      child.props !== null &&
-      "value" in child.props &&
-      child.props.value === activeValue
-  );
-
-  return (
-    <div
-      data-slot="tabs-contents"
-      className={cn("overflow-hidden", className)}
-      {...props}
-    >
-      <motion.div
-        className="flex -mx-2"
-        animate={{ x: activeIndex * -100 + "%" }}
-        transition={transition}
-      >
-        {childrenArray.map((child, index) => (
-          <div key={index} className="w-full shrink-0 px-2">
-            {child}
-          </div>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
-type TabsContentProps = HTMLMotionProps<"div"> & {
-  value: string;
-  children: React.ReactNode;
-};
-
-function TabsContent({
-  children,
-  value,
-  className,
-  ...props
-}: TabsContentProps) {
-  const { activeValue } = useTabs();
-  const isActive = activeValue === value;
-  return (
+const TabsContent = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <TabsPrimitive.Content
+    ref={ref}
+    className={cn(
+      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      className
+    )}
+    {...props}
+  >
     <motion.div
-      role="tabpanel"
-      data-slot="tabs-content"
-      className={cn("overflow-hidden", className)}
-      initial={{ filter: "blur(0px)" }}
-      animate={{ filter: isActive ? "blur(0px)" : "blur(4px)" }}
-      exit={{ filter: "blur(0px)" }}
-      transition={{ type: "spring", stiffness: 200, damping: 25 }}
-      {...props}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{
+        duration: 0.2,
+        ease: "easeInOut",
+      }}
     >
       {children}
     </motion.div>
+  </TabsPrimitive.Content>
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
+
+// Enhanced TabsList with background indicator animation
+const AnimatedTabsList = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+    value?: string;
+  }
+>(({ className, children, value, ...props }, ref) => {
+  const [activeTab, setActiveTab] = React.useState<string | null>(null);
+  const [tabPositions, setTabPositions] = React.useState<
+    Record<string, { left: number; width: number }>
+  >({});
+  const listRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (listRef.current) {
+      const tabs = listRef.current.querySelectorAll('[role="tab"]');
+      const positions: Record<string, { left: number; width: number }> = {};
+
+      tabs.forEach((tab) => {
+        const tabElement = tab as HTMLElement;
+        const tabValue =
+          tabElement.getAttribute("data-value") || tabElement.textContent || "";
+        const rect = tabElement.getBoundingClientRect();
+        const listRect = listRef.current!.getBoundingClientRect();
+
+        positions[tabValue] = {
+          left: rect.left - listRect.left,
+          width: rect.width,
+        };
+      });
+
+      setTabPositions(positions);
+    }
+  }, [children]);
+
+  React.useEffect(() => {
+    if (value) {
+      setActiveTab(value);
+    }
+  }, [value]);
+
+  return (
+    <TabsPrimitive.List
+      ref={(node) => {
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+        listRef.current = node;
+      }}
+      className={cn(
+        "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground relative overflow-hidden",
+        className
+      )}
+      {...props}
+    >
+      {/* Animated background indicator */}
+      <AnimatePresence>
+        {activeTab && tabPositions[activeTab] && (
+          <motion.div
+            className="absolute top-1 bottom-1 bg-background rounded-sm shadow-sm z-0"
+            initial={false}
+            animate={{
+              left: tabPositions[activeTab].left,
+              width: tabPositions[activeTab].width,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 30,
+            }}
+          />
+        )}
+      </AnimatePresence>
+      {children}
+    </TabsPrimitive.List>
   );
-}
+});
+AnimatedTabsList.displayName = "AnimatedTabsList";
+
+// Enhanced TabsTrigger with hover animations
+const AnimatedTabsTrigger = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <TabsPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative z-10 transition-colors duration-200",
+      "data-[state=active]:text-foreground data-[state=inactive]:text-muted-foreground",
+      "hover:text-foreground/80",
+      className
+    )}
+    {...props}
+  >
+    <motion.span
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.1 }}
+    >
+      {children}
+    </motion.span>
+  </TabsPrimitive.Trigger>
+));
+AnimatedTabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+
+// Enhanced TabsContent with stagger animation for multiple children
+const AnimatedTabsContent = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> & {
+    staggerChildren?: boolean;
+  }
+>(({ className, children, staggerChildren = false, ...props }, ref) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: staggerChildren ? 0.1 : 0,
+        delayChildren: 0.05,
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -20,
+      transition: {
+        duration: 0.2,
+        ease: "easeIn",
+      },
+    },
+  };
+
+  return (
+    <TabsPrimitive.Content
+      ref={ref}
+      className={cn(
+        "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        className
+      )}
+      {...props}
+    >
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        {staggerChildren ? (
+          React.Children.map(children, (child, index) => (
+            // @ts-ignore
+            <motion.div key={index} variants={itemVariants}>
+              {child}
+            </motion.div>
+          ))
+        ) : (
+          // @ts-ignore
+          <motion.div variants={itemVariants}>{children}</motion.div>
+        )}
+      </motion.div>
+    </TabsPrimitive.Content>
+  );
+});
+AnimatedTabsContent.displayName = TabsPrimitive.Content.displayName;
 
 export {
   Tabs,
   TabsList,
   TabsTrigger,
-  TabsContents,
   TabsContent,
-  useTabs,
-  type TabsContextType,
-  type TabsProps,
-  type TabsListProps,
-  type TabsTriggerProps,
-  type TabsContentsProps,
-  type TabsContentProps,
+  AnimatedTabsList,
+  AnimatedTabsTrigger,
+  AnimatedTabsContent,
 };
