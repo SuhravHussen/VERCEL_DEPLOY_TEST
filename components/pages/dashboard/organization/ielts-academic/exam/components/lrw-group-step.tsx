@@ -17,16 +17,22 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import {
+  IELTSExamModel,
+  AdminIELTSExamModel,
+} from "@/types/exam/ielts-academic/exam";
 import { useOrganizationInstructors } from "@/hooks/organization/use-organization-instructors";
 import { User } from "@/types/user";
 
 interface LRWGroupStepProps {
-  examData: Partial<IELTSExamModel>;
-  updateExamData: (updates: Partial<IELTSExamModel>) => void;
+  examData: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>;
+  updateExamData: (
+    updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
+  ) => void;
   organizationId: number;
   onNext: () => void;
   onPrevious: () => void;
+  isAdmin?: boolean;
 }
 
 export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
@@ -35,6 +41,8 @@ export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
   organizationId,
   onNext,
   onPrevious,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  isAdmin,
 }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -50,15 +58,16 @@ export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
       newErrors.exam_date = "Exam date is required";
     }
 
-    if (!examData.lrw_group?.listening_time_start) {
+    // Only validate time slots for tests that have been selected
+    if (examData.listening_test && !examData.lrw_group?.listening_time_start) {
       newErrors.listening_time_start = "Listening start time is required";
     }
 
-    if (!examData.lrw_group?.reading_time_start) {
+    if (examData.reading_test && !examData.lrw_group?.reading_time_start) {
       newErrors.reading_time_start = "Reading start time is required";
     }
 
-    if (!examData.lrw_group?.writing_time_start) {
+    if (examData.writing_test && !examData.lrw_group?.writing_time_start) {
       newErrors.writing_time_start = "Writing start time is required";
     }
 
@@ -67,28 +76,45 @@ export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
         "At least one instructor must be assigned";
     }
 
-    // Validate time sequence
-    if (
-      examData.lrw_group?.listening_time_start &&
-      examData.lrw_group?.reading_time_start &&
-      examData.lrw_group?.writing_time_start
-    ) {
-      const listening = new Date(
-        `2000-01-01T${examData.lrw_group.listening_time_start}`
-      );
-      const reading = new Date(
-        `2000-01-01T${examData.lrw_group.reading_time_start}`
-      );
-      const writing = new Date(
-        `2000-01-01T${examData.lrw_group.writing_time_start}`
-      );
+    // Validate time sequence only for selected tests
+    const selectedTests = [];
+    if (examData.listening_test && examData.lrw_group?.listening_time_start) {
+      selectedTests.push({
+        type: "listening",
+        time: new Date(`2000-01-01T${examData.lrw_group.listening_time_start}`),
+        timeField: "listening_time_start",
+      });
+    }
+    if (examData.reading_test && examData.lrw_group?.reading_time_start) {
+      selectedTests.push({
+        type: "reading",
+        time: new Date(`2000-01-01T${examData.lrw_group.reading_time_start}`),
+        timeField: "reading_time_start",
+      });
+    }
+    if (examData.writing_test && examData.lrw_group?.writing_time_start) {
+      selectedTests.push({
+        type: "writing",
+        time: new Date(`2000-01-01T${examData.lrw_group.writing_time_start}`),
+        timeField: "writing_time_start",
+      });
+    }
 
-      if (reading <= listening) {
-        newErrors.reading_time_start = "Reading must start after listening";
+    // Sort by time and validate sequence
+    selectedTests.sort((a, b) => a.time.getTime() - b.time.getTime());
+
+    // Check if the order matches expected sequence: listening -> reading -> writing
+    const expectedOrder = ["listening", "reading", "writing"];
+    let lastExpectedIndex = -1;
+
+    for (const test of selectedTests) {
+      const currentIndex = expectedOrder.indexOf(test.type);
+      if (currentIndex <= lastExpectedIndex) {
+        newErrors[test.timeField] = `${
+          test.type.charAt(0).toUpperCase() + test.type.slice(1)
+        } must be scheduled in the correct order`;
       }
-      if (writing <= reading) {
-        newErrors.writing_time_start = "Writing must start after reading";
-      }
+      lastExpectedIndex = currentIndex;
     }
 
     setErrors(newErrors);
@@ -249,95 +275,103 @@ export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                  {/* Listening Time */}
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-foreground flex items-center">
-                      <div className="w-6 h-6 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full flex items-center justify-center text-xs font-bold mr-2">
-                        1
-                      </div>
-                      Listening Start
-                      <span className="text-destructive ml-1">*</span>
-                    </Label>
-                    <TimePicker
-                      value={examData.lrw_group?.listening_time_start || ""}
-                      onChange={(time) =>
-                        handleLRWGroupChange("listening_time_start", time)
-                      }
-                      placeholder="Select time"
-                      format="12h"
-                      className={`w-full h-11 sm:h-12 ${
-                        errors.listening_time_start
-                          ? "border-destructive ring-destructive/20"
-                          : ""
-                      }`}
-                    />
-                    {errors.listening_time_start && (
-                      <div className="flex items-center space-x-2 text-destructive">
-                        <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                        <p className="text-xs">{errors.listening_time_start}</p>
-                      </div>
-                    )}
-                  </div>
+                  {/* Listening Time - Only show if listening test is selected */}
+                  {examData.listening_test && (
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium text-foreground flex items-center">
+                        <div className="w-6 h-6 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full flex items-center justify-center text-xs font-bold mr-2">
+                          1
+                        </div>
+                        Listening Start
+                        <span className="text-destructive ml-1">*</span>
+                      </Label>
+                      <TimePicker
+                        value={examData.lrw_group?.listening_time_start || ""}
+                        onChange={(time) =>
+                          handleLRWGroupChange("listening_time_start", time)
+                        }
+                        placeholder="Select time"
+                        format="12h"
+                        className={`w-full h-11 sm:h-12 ${
+                          errors.listening_time_start
+                            ? "border-destructive ring-destructive/20"
+                            : ""
+                        }`}
+                      />
+                      {errors.listening_time_start && (
+                        <div className="flex items-center space-x-2 text-destructive">
+                          <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                          <p className="text-xs">
+                            {errors.listening_time_start}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-                  {/* Reading Time */}
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-foreground flex items-center">
-                      <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full flex items-center justify-center text-xs font-bold mr-2">
-                        2
-                      </div>
-                      Reading Start
-                      <span className="text-destructive ml-1">*</span>
-                    </Label>
-                    <TimePicker
-                      value={examData.lrw_group?.reading_time_start || ""}
-                      onChange={(time) =>
-                        handleLRWGroupChange("reading_time_start", time)
-                      }
-                      placeholder="Select time"
-                      format="12h"
-                      className={`w-full h-11 sm:h-12 ${
-                        errors.reading_time_start
-                          ? "border-destructive ring-destructive/20"
-                          : ""
-                      }`}
-                    />
-                    {errors.reading_time_start && (
-                      <div className="flex items-center space-x-2 text-destructive">
-                        <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                        <p className="text-xs">{errors.reading_time_start}</p>
-                      </div>
-                    )}
-                  </div>
+                  {/* Reading Time - Only show if reading test is selected */}
+                  {examData.reading_test && (
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium text-foreground flex items-center">
+                        <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full flex items-center justify-center text-xs font-bold mr-2">
+                          2
+                        </div>
+                        Reading Start
+                        <span className="text-destructive ml-1">*</span>
+                      </Label>
+                      <TimePicker
+                        value={examData.lrw_group?.reading_time_start || ""}
+                        onChange={(time) =>
+                          handleLRWGroupChange("reading_time_start", time)
+                        }
+                        placeholder="Select time"
+                        format="12h"
+                        className={`w-full h-11 sm:h-12 ${
+                          errors.reading_time_start
+                            ? "border-destructive ring-destructive/20"
+                            : ""
+                        }`}
+                      />
+                      {errors.reading_time_start && (
+                        <div className="flex items-center space-x-2 text-destructive">
+                          <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                          <p className="text-xs">{errors.reading_time_start}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-                  {/* Writing Time */}
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-foreground flex items-center">
-                      <div className="w-6 h-6 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full flex items-center justify-center text-xs font-bold mr-2">
-                        3
-                      </div>
-                      Writing Start
-                      <span className="text-destructive ml-1">*</span>
-                    </Label>
-                    <TimePicker
-                      value={examData.lrw_group?.writing_time_start || ""}
-                      onChange={(time) =>
-                        handleLRWGroupChange("writing_time_start", time)
-                      }
-                      placeholder="Select time"
-                      format="12h"
-                      className={`w-full h-11 sm:h-12 ${
-                        errors.writing_time_start
-                          ? "border-destructive ring-destructive/20"
-                          : ""
-                      }`}
-                    />
-                    {errors.writing_time_start && (
-                      <div className="flex items-center space-x-2 text-destructive">
-                        <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                        <p className="text-xs">{errors.writing_time_start}</p>
-                      </div>
-                    )}
-                  </div>
+                  {/* Writing Time - Only show if writing test is selected */}
+                  {examData.writing_test && (
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium text-foreground flex items-center">
+                        <div className="w-6 h-6 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full flex items-center justify-center text-xs font-bold mr-2">
+                          3
+                        </div>
+                        Writing Start
+                        <span className="text-destructive ml-1">*</span>
+                      </Label>
+                      <TimePicker
+                        value={examData.lrw_group?.writing_time_start || ""}
+                        onChange={(time) =>
+                          handleLRWGroupChange("writing_time_start", time)
+                        }
+                        placeholder="Select time"
+                        format="12h"
+                        className={`w-full h-11 sm:h-12 ${
+                          errors.writing_time_start
+                            ? "border-destructive ring-destructive/20"
+                            : ""
+                        }`}
+                      />
+                      {errors.writing_time_start && (
+                        <div className="flex items-center space-x-2 text-destructive">
+                          <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                          <p className="text-xs">{errors.writing_time_start}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {hasTimeErrors && (

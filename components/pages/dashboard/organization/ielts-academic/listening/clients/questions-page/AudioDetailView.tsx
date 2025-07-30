@@ -3,7 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileAudio, FileText, Volume2 } from "lucide-react";
 import { IELTSListeningTestSection } from "@/types/exam/ielts-academic/listening/listening";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsContents,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { QuestionGroupRenderer } from "./question-group-renderers/QuestionGroupRenderer";
 
@@ -85,46 +91,51 @@ export function AudioDetailView({
             </TabsList>
           </div>
 
-          <TabsContent value="questions" className="h-[calc(100%-56px)] mt-0">
-            <ScrollArea className="h-full">
-              <div className="p-6">
-                {questions.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>No questions found for this audio.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-8">
-                    {questions.map((questionGroup, index) => (
-                      <QuestionGroupRenderer
-                        key={index}
-                        group={questionGroup}
-                        getQuestionTypeLabel={getQuestionTypeLabel}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </TabsContent>
+          <TabsContents>
+            <TabsContent value="questions" className="h-[calc(100%-56px)] mt-0">
+              <ScrollArea className="h-full">
+                <div className="p-6">
+                  {questions.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No questions found for this audio.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-8">
+                      {questions.map((questionGroup, index) => (
+                        <QuestionGroupRenderer
+                          key={index}
+                          group={questionGroup}
+                          getQuestionTypeLabel={getQuestionTypeLabel}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </TabsContent>
 
-          <TabsContent value="transcript" className="h-[calc(100%-56px)] mt-0">
-            <ScrollArea className="h-full">
-              <div className="p-6">
-                <h3 className="font-semibold text-lg mb-3">Transcript</h3>
+            <TabsContent
+              value="transcript"
+              className="h-[calc(100%-56px)] mt-0"
+            >
+              <ScrollArea className="h-full">
+                <div className="p-6">
+                  <h3 className="font-semibold text-lg mb-3">Transcript</h3>
 
-                {audio?.transcript ? (
-                  <div className="prose prose-sm dark:prose-invert max-w-none rounded-md border bg-muted/20 p-4">
-                    <p className="whitespace-pre-wrap">{audio.transcript}</p>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground border rounded-md bg-muted/20 p-4">
-                    <FileText className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                    <p>No transcript available for this audio.</p>
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </TabsContent>
+                  {audio?.transcript ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none rounded-md border bg-muted/20 p-4">
+                      <p className="whitespace-pre-wrap">{audio.transcript}</p>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground border rounded-md bg-muted/20 p-4">
+                      <FileText className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                      <p>No transcript available for this audio.</p>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+          </TabsContents>
         </Tabs>
       </CardContent>
     </Card>

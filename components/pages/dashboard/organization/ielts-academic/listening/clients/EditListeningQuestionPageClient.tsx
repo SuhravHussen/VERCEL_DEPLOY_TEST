@@ -2,6 +2,8 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import AudioStep from "./question-form/AudioStep";
 import QuestionStep from "./question-form/QuestionStep";
 import PreviewStep from "./question-form/PreviewStep";
@@ -148,6 +150,23 @@ export default function EditListeningQuestionPageClient({
       }}
     >
       <div className="container py-8 mx-auto px-2">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              router.push(
+                `/dashboard/organization/${organizationId}/ielts-academic/listening/questions`
+              )
+            }
+            className="gap-1.5"
+          >
+            <ChevronLeft className="size-4" />
+            Back to Questions
+          </Button>
+        </div>
+
         <h1 className="text-2xl font-bold mb-6">Edit Listening Question</h1>
         <p className="text-muted-foreground mb-8">
           Update the listening question details

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Volume2 } from "lucide-react";
 
 import { addListeningQuestionNumbering } from "@/lib/addListeningQuestionNumbering";
 import { IELTSListeningTestSection } from "@/types/exam/ielts-academic/listening/listening";
@@ -72,7 +73,6 @@ export default function QuestionsPageClient({
       };
 
   const formattedAudios = formattedData.numberedSections;
-
   const audios = formattedAudios;
   const totalPages = data?.totalPages || 0;
 
@@ -159,7 +159,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   return (
-    <div className="space-y-6 p-2 md:p-4">
+    <div className="space-y-6 p-2 md:p-6">
       <QuestionsPageHeader
         organizationId={organizationId}
         dashboardText={{
@@ -172,8 +172,8 @@ export default function QuestionsPageClient({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column: List of audios */}
         <div className="lg:col-span-5 xl:col-span-4">
-          <Card className="p-4 sm:p-6">
-            <div className="space-y-4">
+          <Card className="overflow-hidden border-none shadow-lg">
+            <div className="bg-muted/30 backdrop-blur-sm p-4">
               <QuestionFilters
                 search={search}
                 questionType={questionType}
@@ -185,76 +185,99 @@ export default function QuestionsPageClient({
                 handleSort={handleSort}
                 clearFilters={clearFilters}
               />
+            </div>
 
-              <div className="space-y-4 min-h-[400px]">
-                {isDataLoading ? (
-                  Array.from({ length: 3 }).map((_, i) => (
-                    <Card key={i} className="p-4">
-                      <Skeleton className="h-5 w-3/5 mb-3" />
-                      <Skeleton className="h-4 w-4/5 mb-4" />
-                    </Card>
-                  ))
-                ) : error ? (
-                  <div className="text-center py-8 text-red-500">
-                    <p>Error loading questions.</p>
-                    <Button onClick={() => window.location.reload()}>
-                      Retry
-                    </Button>
+            {/* Audios list */}
+            <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
+              {isDataLoading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="p-4 rounded-lg border border-border/50"
+                  >
+                    <Skeleton className="h-5 w-3/5 mb-3" />
+                    <Skeleton className="h-4 w-4/5 mb-4" />
+                    <div className="flex justify-between mt-3">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
                   </div>
-                ) : audios && audios.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>No questions found.</p>
+                ))
+              ) : error ? (
+                <div className="text-center py-8 text-destructive">
+                  <p>Error loading questions.</p>
+                  <Button
+                    onClick={() => window.location.reload()}
+                    variant="outline"
+                    className="mt-2"
+                  >
+                    Retry
+                  </Button>
+                </div>
+              ) : audios && audios.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="rounded-full bg-muted/50 p-4 mb-4">
+                    <Volume2 className="h-8 w-8 text-muted-foreground" />
                   </div>
-                ) : (
-                  audios &&
-                  audios.map((item, index) => (
-                    <AudioCard
-                      key={index}
-                      item={item}
-                      organizationId={organizationId}
-                      getQuestionTypeLabel={getQuestionTypeLabel}
-                      isSelected={
-                        selectedAudio?.audio?.title === item.audio?.title
-                      }
-                      onSelect={() => setSelectedAudio(item)}
-                      onDelete={handleDeleteQuestion}
-                    />
-                  ))
-                )}
-              </div>
-
-              {!isDataLoading &&
+                  <h3 className="text-lg font-medium">No questions found</h3>
+                  <p className="text-muted-foreground mt-1">
+                    Try adjusting your filters or create a new question
+                  </p>
+                </div>
+              ) : (
                 audios &&
-                audios.length > 0 &&
-                totalPages > 1 && (
+                audios.map((item, index) => (
+                  <AudioCard
+                    key={index}
+                    item={item}
+                    organizationId={organizationId}
+                    getQuestionTypeLabel={getQuestionTypeLabel}
+                    isSelected={
+                      selectedAudio?.audio?.title === item.audio?.title
+                    }
+                    onSelect={() => setSelectedAudio(item)}
+                    onDelete={handleDeleteQuestion}
+                  />
+                ))
+              )}
+            </div>
+
+            {/* Pagination */}
+            {!isDataLoading &&
+              audios &&
+              audios.length > 0 &&
+              totalPages > 1 && (
+                <div className="border-t p-4 bg-background">
                   <QuestionsPagination
                     totalPages={totalPages}
                     page={page}
                     setPage={setPage}
                   />
-                )}
-            </div>
+                </div>
+              )}
           </Card>
         </div>
 
         {/* Right column: Audio details */}
-        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-200px)] sticky top-20">
-          <Card className="h-full overflow-y-auto">
-            {isDataLoading && !selectedAudio ? (
-              <div className="p-6 space-y-4">
-                <Skeleton className="h-8 w-1/2" />
-                <Skeleton className="h-4 w-1/3" />
-                <div className="space-y-4 mt-8">
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
+        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-200px)] sticky top-24">
+          <Card className="h-full overflow-hidden border-none shadow-lg">
+            <div className="absolute inset-0 overflow-y-auto">
+              {isDataLoading && !selectedAudio ? (
+                <div className="p-6 space-y-4">
+                  <Skeleton className="h-8 w-1/2" />
+                  <Skeleton className="h-4 w-1/3" />
+                  <div className="space-y-4 mt-8">
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <AudioDetailView
-                selectedAudio={selectedAudio}
-                getQuestionTypeLabel={getQuestionTypeLabel}
-              />
-            )}
+              ) : (
+                <AudioDetailView
+                  selectedAudio={selectedAudio}
+                  getQuestionTypeLabel={getQuestionTypeLabel}
+                />
+              )}
+            </div>
           </Card>
         </div>
       </div>
@@ -264,14 +287,15 @@ export default function QuestionsPageClient({
         <Drawer>
           <DrawerTrigger asChild>
             <Button
-              variant="outline"
-              className="fixed bottom-4 right-4 z-10 lg:hidden bg-primary text-primary-foreground dark:bg-primary-foreground dark:text-primary"
+              variant="default"
+              className="fixed bottom-4 right-4 z-10 lg:hidden shadow-lg flex items-center gap-2"
             >
-              View Selected Audio
+              <Volume2 className="h-4 w-4" />
+              View Details
             </Button>
           </DrawerTrigger>
           <DrawerContent className="max-h-[90vh]">
-            <DrawerHeader>
+            <DrawerHeader className="border-b">
               <DrawerTitle>{selectedAudio.audio?.title}</DrawerTitle>
             </DrawerHeader>
             <div className="flex-grow overflow-y-auto p-4">

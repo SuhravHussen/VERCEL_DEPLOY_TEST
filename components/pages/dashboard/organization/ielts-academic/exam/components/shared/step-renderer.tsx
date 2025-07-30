@@ -16,6 +16,7 @@ import { PreviewStep } from "../preview-step";
 
 interface StepRendererProps extends BaseStepProps, StepNavigationProps {
   currentStep: number;
+  isAdmin?: boolean;
 }
 
 export const StepRenderer: React.FC<StepRendererProps> = ({
@@ -27,6 +28,7 @@ export const StepRenderer: React.FC<StepRendererProps> = ({
   onPrevious,
   isEditMode,
   examId,
+  isAdmin,
 }) => {
   const renderStepContent = () => {
     const baseProps: BaseStepProps = {
@@ -35,6 +37,7 @@ export const StepRenderer: React.FC<StepRendererProps> = ({
       organizationId,
       isEditMode,
       examId,
+      isAdmin,
     };
 
     const navigationProps: StepNavigationProps = {

@@ -1,14 +1,16 @@
 import React from "react";
 import { UserOrganizationCard } from "@/components/pages/dashboard/user/UserOrganizationCard";
-import { Organization } from "@/types/organization";
+import { UserOrganization } from "@/types/user-organization";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
 interface OrganizationsListProps {
-  organizations: Organization[];
+  userOrganizations: UserOrganization[];
 }
 
-export function OrganizationsList({ organizations }: OrganizationsListProps) {
+export function OrganizationsList({
+  userOrganizations,
+}: OrganizationsListProps) {
   const cardColors = [
     "bg-rose-50 dark:bg-rose-950/30",
     "bg-green-50 dark:bg-green-950/30",
@@ -40,7 +42,7 @@ export function OrganizationsList({ organizations }: OrganizationsListProps) {
             Here you can see all the organizations you are a member of.
           </p>
 
-          {organizations.length === 0 ? (
+          {userOrganizations.length === 0 ? (
             <div className="text-center py-12 bg-card rounded-lg border border-border">
               <h3 className="text-xl font-medium mb-2">
                 No organizations found
@@ -58,10 +60,10 @@ export function OrganizationsList({ organizations }: OrganizationsListProps) {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6">
-              {organizations.map((organization, index) => (
+              {userOrganizations.map((userOrganization, index) => (
                 <UserOrganizationCard
-                  key={organization.id}
-                  organization={organization}
+                  key={userOrganization.organization.id}
+                  userOrganization={userOrganization}
                   gradientClass={cardColors[index % cardColors.length]}
                 />
               ))}

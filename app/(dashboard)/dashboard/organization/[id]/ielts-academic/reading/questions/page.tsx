@@ -1,14 +1,22 @@
 import QuestionsPageClient from "@/components/pages/dashboard/organization/ielts-academic/reading/clients/QuestionsPageClient";
+import { Metadata } from "next";
 
-export default async function QuestionsPage({
+export const metadata: Metadata = {
+  title: "IELTS Reading Questions",
+  description: "Manage your IELTS Reading questions",
+};
+
+interface ReadingQuestionsPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function ReadingQuestionsPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  // Get the dictionary based on the language
+}: ReadingQuestionsPageProps) {
   const { id } = await params;
-
-  const organizationId = Number(id);
+  const organizationId = parseInt(id, 10);
 
   return <QuestionsPageClient organizationId={organizationId} />;
 }

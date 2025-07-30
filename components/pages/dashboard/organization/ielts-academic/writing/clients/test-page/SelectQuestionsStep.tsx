@@ -2,7 +2,13 @@ import { useContext, useState, useEffect } from "react";
 import { TestStepperContext } from "../TestStepperContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsContents,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -272,10 +278,9 @@ export default function SelectQuestionsStep({
     <Card className="border-0 shadow-none">
       <CardContent className="p-0">
         <Tabs
-          defaultValue="task1"
           className="w-full"
           value={activeTab}
-          onValueChange={(value) => setActiveTab(value as "task1" | "task2")}
+          onValueChange={(value: "task1" | "task2") => setActiveTab(value)}
         >
           <TabsList className="grid grid-cols-2 mb-6">
             <TabsTrigger value="task1" className="flex justify-between gap-2">
@@ -292,171 +297,173 @@ export default function SelectQuestionsStep({
             </TabsTrigger>
           </TabsList>
 
-          {/* Task 1 Content */}
-          <TabsContent value="task1" className="space-y-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h3 className="text-lg font-medium">Select Task 1</h3>
-              <div className="relative w-full sm:w-[300px]">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search Task 1 questions..."
-                  className="pl-8 pr-10"
-                  value={searchTask1}
-                  onChange={(e) => setSearchTask1(e.target.value)}
-                />
-                {searchTask1 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-9 px-3"
-                    onClick={() => setSearchTask1("")}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            {/* Task 1 Questions List */}
-            <div className="grid grid-cols-1 gap-4">
-              {isLoadingTask1
-                ? renderQuestionSkeletons()
-                : task1Questions.length === 0
-                ? renderEmptyState("Task 1")
-                : task1Questions.map((question) => (
-                    <Card
-                      key={question.id}
-                      className={cn(
-                        "p-4 cursor-pointer transition-all hover:border-primary",
-                        testData.task1?.id === question.id &&
-                          "border-primary bg-primary/5"
-                      )}
-                      onClick={() => selectTask1(question)}
+          <TabsContents>
+            {/* Task 1 Content */}
+            <TabsContent value="task1" className="space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h3 className="text-lg font-medium">Select Task 1</h3>
+                <div className="relative w-full sm:w-[300px]">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search Task 1 questions..."
+                    className="pl-8 pr-10"
+                    value={searchTask1}
+                    onChange={(e) => setSearchTask1(e.target.value)}
+                  />
+                  {searchTask1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-9 px-3"
+                      onClick={() => setSearchTask1("")}
                     >
-                      <div className="flex justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge
-                              variant={
-                                testData.task1?.id === question.id
-                                  ? "default"
-                                  : "outline"
-                              }
-                            >
-                              Task 1
-                            </Badge>
-                            <Badge variant="secondary">
-                              {formatDetailType(question.detailType)}
-                            </Badge>
-                          </div>
-                          <p className="font-medium line-clamp-2">
-                            {question.instruction}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                            {question.prompt}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                            <span>Time: {question.timeLimit} min</span>
-                            <span>•</span>
-                            <span>Words: {question.minimumWords}</span>
-                          </div>
-                        </div>
-                        {testData.task1?.id === question.id && (
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                        )}
-                      </div>
-                    </Card>
-                  ))}
-            </div>
-
-            {/* Task 1 Pagination */}
-            {!isLoadingTask1 &&
-              task1Questions.length > 0 &&
-              renderPagination(task1Page, task1TotalPages, setTask1Page)}
-          </TabsContent>
-
-          {/* Task 2 Content */}
-          <TabsContent value="task2" className="space-y-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h3 className="text-lg font-medium">Select Task 2</h3>
-              <div className="relative w-full sm:w-[300px]">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search Task 2 questions..."
-                  className="pl-8 pr-10"
-                  value={searchTask2}
-                  onChange={(e) => setSearchTask2(e.target.value)}
-                />
-                {searchTask2 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-9 px-3"
-                    onClick={() => setSearchTask2("")}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Task 2 Questions List */}
-            <div className="grid grid-cols-1 gap-4">
-              {isLoadingTask2
-                ? renderQuestionSkeletons()
-                : task2Questions.length === 0
-                ? renderEmptyState("Task 2")
-                : task2Questions.map((question) => (
-                    <Card
-                      key={question.id}
-                      className={cn(
-                        "p-4 cursor-pointer transition-all hover:border-primary",
-                        testData.task2?.id === question.id &&
-                          "border-primary bg-primary/5"
-                      )}
-                      onClick={() => selectTask2(question)}
-                    >
-                      <div className="flex justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge
-                              variant={
-                                testData.task2?.id === question.id
-                                  ? "default"
-                                  : "outline"
-                              }
-                            >
-                              Task 2
-                            </Badge>
-                            <Badge variant="secondary">
-                              {formatDetailType(question.detailType)}
-                            </Badge>
-                          </div>
-                          <p className="font-medium line-clamp-2">
-                            {question.instruction}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                            {question.prompt}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                            <span>Time: {question.timeLimit} min</span>
-                            <span>•</span>
-                            <span>Words: {question.minimumWords}</span>
-                          </div>
-                        </div>
-                        {testData.task2?.id === question.id && (
-                          <CheckCircle className="h-5 w-5 text-primary" />
+              {/* Task 1 Questions List */}
+              <div className="grid grid-cols-1 gap-4">
+                {isLoadingTask1
+                  ? renderQuestionSkeletons()
+                  : task1Questions.length === 0
+                  ? renderEmptyState("Task 1")
+                  : task1Questions.map((question) => (
+                      <Card
+                        key={question.id}
+                        className={cn(
+                          "p-4 cursor-pointer transition-all hover:border-primary",
+                          testData.task1?.id === question.id &&
+                            "border-primary bg-primary/5"
                         )}
-                      </div>
-                    </Card>
-                  ))}
-            </div>
+                        onClick={() => selectTask1(question)}
+                      >
+                        <div className="flex justify-between">
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge
+                                variant={
+                                  testData.task1?.id === question.id
+                                    ? "default"
+                                    : "outline"
+                                }
+                              >
+                                Task 1
+                              </Badge>
+                              <Badge variant="secondary">
+                                {formatDetailType(question.detailType)}
+                              </Badge>
+                            </div>
+                            <p className="font-medium line-clamp-2">
+                              {question.instruction}
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {question.prompt}
+                            </p>
+                            <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                              <span>Time: {question.timeLimit} min</span>
+                              <span>•</span>
+                              <span>Words: {question.minimumWords}</span>
+                            </div>
+                          </div>
+                          {testData.task1?.id === question.id && (
+                            <CheckCircle className="h-5 w-5 text-primary" />
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+              </div>
 
-            {/* Task 2 Pagination */}
-            {!isLoadingTask2 &&
-              task2Questions.length > 0 &&
-              renderPagination(task2Page, task2TotalPages, setTask2Page)}
-          </TabsContent>
+              {/* Task 1 Pagination */}
+              {!isLoadingTask1 &&
+                task1Questions.length > 0 &&
+                renderPagination(task1Page, task1TotalPages, setTask1Page)}
+            </TabsContent>
+
+            {/* Task 2 Content */}
+            <TabsContent value="task2" className="space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h3 className="text-lg font-medium">Select Task 2</h3>
+                <div className="relative w-full sm:w-[300px]">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search Task 2 questions..."
+                    className="pl-8 pr-10"
+                    value={searchTask2}
+                    onChange={(e) => setSearchTask2(e.target.value)}
+                  />
+                  {searchTask2 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-9 px-3"
+                      onClick={() => setSearchTask2("")}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Task 2 Questions List */}
+              <div className="grid grid-cols-1 gap-4">
+                {isLoadingTask2
+                  ? renderQuestionSkeletons()
+                  : task2Questions.length === 0
+                  ? renderEmptyState("Task 2")
+                  : task2Questions.map((question) => (
+                      <Card
+                        key={question.id}
+                        className={cn(
+                          "p-4 cursor-pointer transition-all hover:border-primary",
+                          testData.task2?.id === question.id &&
+                            "border-primary bg-primary/5"
+                        )}
+                        onClick={() => selectTask2(question)}
+                      >
+                        <div className="flex justify-between">
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge
+                                variant={
+                                  testData.task2?.id === question.id
+                                    ? "default"
+                                    : "outline"
+                                }
+                              >
+                                Task 2
+                              </Badge>
+                              <Badge variant="secondary">
+                                {formatDetailType(question.detailType)}
+                              </Badge>
+                            </div>
+                            <p className="font-medium line-clamp-2">
+                              {question.instruction}
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {question.prompt}
+                            </p>
+                            <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                              <span>Time: {question.timeLimit} min</span>
+                              <span>•</span>
+                              <span>Words: {question.minimumWords}</span>
+                            </div>
+                          </div>
+                          {testData.task2?.id === question.id && (
+                            <CheckCircle className="h-5 w-5 text-primary" />
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+              </div>
+
+              {/* Task 2 Pagination */}
+              {!isLoadingTask2 &&
+                task2Questions.length > 0 &&
+                renderPagination(task2Page, task2TotalPages, setTask2Page)}
+            </TabsContent>
+          </TabsContents>
         </Tabs>
 
         {/* Navigation buttons */}

@@ -3,7 +3,6 @@ import DashboardLayout from "@/components/shared/dashboard/DashboardLayout";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import getNavItems from "@/components/shared/dashboard/nav-items/user-nav";
-import { getCurrentUser } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "User Dashboard",
@@ -17,13 +16,10 @@ export default async function UserDashboardLayout({
   // Persisting the sidebar state in the cookie.
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const user = await getCurrentUser();
+
   return (
     <DashboardLayout
-      navItems={getNavItems([
-        ...(user?.organizations_admin || []),
-        ...(user?.organizations_instructor || []),
-      ])}
+      navItems={getNavItems()}
       defaultOpen={defaultOpen}
       type="user"
     >

@@ -35,6 +35,7 @@ interface SpeakingGroupStepProps {
   organizationId: number;
   onNext: () => void;
   onPrevious: () => void;
+  isAdmin?: boolean;
 }
 
 export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
@@ -43,6 +44,7 @@ export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
   organizationId,
   onNext,
   onPrevious,
+  isAdmin,
 }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,6 +55,12 @@ export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+
+    // If admin mode is enabled, skip validation entirely
+    if (isAdmin) {
+      setErrors({});
+      return true;
+    }
 
     if (!examData.speaking_group?.time_windows?.length) {
       newErrors.time_windows = "At least one time window is required";
@@ -297,11 +305,22 @@ export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-3">
             Speaking Group Setup
+            {isAdmin && (
+              <Badge variant="secondary" className="ml-3 text-xs">
+                Optional (Admin Mode)
+              </Badge>
+            )}
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Configure speaking test time windows and assign instructors for
             individual student sessions. Each student will have a one-on-one
             speaking assessment with an instructor.
+            {isAdmin && (
+              <span className="block mt-2 text-sm text-yellow-600 dark:text-yellow-400 font-medium">
+                ⚡ Admin mode: You can skip this step and complete the exam
+                without speaking setup.
+              </span>
+            )}
           </p>
         </div>
 

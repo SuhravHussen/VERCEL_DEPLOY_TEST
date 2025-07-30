@@ -27,7 +27,7 @@ import { IconChevronRight, IconLogout2, IconHome } from "@tabler/icons-react";
 
 import Link from "next/link";
 import Image from "next/image";
-import { notFound, usePathname, useSearchParams } from "next/navigation";
+import { notFound, useParams, usePathname } from "next/navigation";
 import * as React from "react";
 import { Icons } from "@/resources/icons";
 
@@ -48,20 +48,14 @@ export default function AppSidebar({
   type = "user",
 }: AppSidebarProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-
+  const params = useParams();
   const user = getCurrentUser();
 
-  // Get organization ID from search params if type is organization
-  const orgIdParam = type === "organization" ? searchParams.get("id") : null;
-
-  // Parse ID and validate it's a valid number
-  const parsedOrgId = orgIdParam ? parseInt(orgIdParam, 10) : undefined;
-  const orgId = parsedOrgId && !isNaN(parsedOrgId) ? parsedOrgId : undefined;
+  const orgId = params.id;
 
   // Fetch organization data if we have a valid ID
   const { data: organization, isLoading: isLoadingOrg } = useOrganization(
-    orgId as number
+    parseInt(orgId as string, 10)
   );
 
   // Handle case when organization is not found - ensure it's always a boolean
@@ -108,7 +102,7 @@ export default function AppSidebar({
           organization={organization}
           isLoadingOrg={isLoadingOrg}
           orgNotFound={orgNotFound}
-          orgId={orgId}
+          orgId={parseInt(orgId as string, 10)}
         />
       </SidebarHeader>
       <SidebarSeparator />
@@ -129,6 +123,11 @@ export default function AppSidebar({
           <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
+              // Skip disabled items
+              if (item.disabled) {
+                return null;
+              }
+
               return item?.items && item?.items?.length > 0 ? (
                 <Collapsible
                   key={item.title}
@@ -150,6 +149,11 @@ export default function AppSidebar({
                     <CollapsibleContent>
                       <SidebarMenuSub>
                         {item.items?.map((subItem) => {
+                          // Skip disabled sub-items
+                          if (subItem.disabled) {
+                            return null;
+                          }
+
                           // Check if this sub-item has its own nested items
                           return subItem?.items &&
                             subItem?.items?.length > 0 ? (
@@ -175,20 +179,29 @@ export default function AppSidebar({
                                 </CollapsibleTrigger>
                                 <CollapsibleContent>
                                   <div className="ml-4 border-l pl-2">
-                                    {subItem.items?.map((nestedItem) => (
-                                      <SidebarMenuSubItem
-                                        key={nestedItem.title}
-                                      >
-                                        <SidebarMenuSubButton
-                                          asChild
-                                          isActive={pathname === nestedItem.url}
+                                    {subItem.items?.map((nestedItem) => {
+                                      // Skip disabled nested items
+                                      if (nestedItem.disabled) {
+                                        return null;
+                                      }
+
+                                      return (
+                                        <SidebarMenuSubItem
+                                          key={nestedItem.title}
                                         >
-                                          <Link href={nestedItem.url}>
-                                            <span>{nestedItem.title}</span>
-                                          </Link>
-                                        </SidebarMenuSubButton>
-                                      </SidebarMenuSubItem>
-                                    ))}
+                                          <SidebarMenuSubButton
+                                            asChild
+                                            isActive={
+                                              pathname === nestedItem.url
+                                            }
+                                          >
+                                            <Link href={nestedItem.url}>
+                                              <span>{nestedItem.title}</span>
+                                            </Link>
+                                          </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                      );
+                                    })}
                                   </div>
                                 </CollapsibleContent>
                               </SidebarMenuSubItem>

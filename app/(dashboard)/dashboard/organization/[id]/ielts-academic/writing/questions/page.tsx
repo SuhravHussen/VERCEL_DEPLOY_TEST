@@ -1,28 +1,22 @@
 import QuestionsPageClient from "@/components/pages/dashboard/organization/ielts-academic/writing/clients/QuestionsPageClient";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "IELTS Academic Writing Questions",
   description: "Manage your IELTS Academic Writing Questions",
 };
 
-export default async function QuestionsPage({
+interface WritingQuestionsPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function WritingQuestionsPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+}: WritingQuestionsPageProps) {
   const { id } = await params;
-  // Check if id is valid
-  if (!id || isNaN(parseInt(id))) {
-    notFound();
-  }
+  const organizationId = parseInt(id, 10);
 
-  const organizationId = parseInt(id);
-
-  return (
-    <div>
-      <QuestionsPageClient organizationId={organizationId} />
-    </div>
-  );
+  return <QuestionsPageClient organizationId={organizationId} />;
 }

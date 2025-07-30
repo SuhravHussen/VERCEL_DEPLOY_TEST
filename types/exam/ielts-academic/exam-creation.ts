@@ -1,4 +1,4 @@
-import { IELTSExamModel } from "./exam";
+import { IELTSExamModel, AdminIELTSExamModel } from "./exam";
 
 // Step configuration for the exam creation stepper
 export interface ExamCreationStep {
@@ -9,11 +9,14 @@ export interface ExamCreationStep {
 
 // Base props for all step components
 export interface BaseStepProps {
-  examData: Partial<IELTSExamModel>;
-  updateExamData: (updates: Partial<IELTSExamModel>) => void;
+  examData: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>;
+  updateExamData: (
+    updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
+  ) => void;
   organizationId: number;
   isEditMode?: boolean;
   examId?: string;
+  isAdmin?: boolean; // New field to track if user is admin
 }
 
 // Navigation props for steps

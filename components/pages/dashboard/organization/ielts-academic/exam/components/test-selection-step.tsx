@@ -5,7 +5,13 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsContents,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
@@ -20,7 +26,10 @@ import {
   BarChart3,
   Target,
 } from "lucide-react";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import {
+  IELTSExamModel,
+  AdminIELTSExamModel,
+} from "@/types/exam/ielts-academic/exam";
 import { useGetIeltsListeningTests } from "@/hooks/organization/ielts-academic/listening/use-get-ielts-listening-test";
 import { useGetIeltsReadingTests } from "@/hooks/organization/ielts-academic/reading/use-get-ietls-reading-test";
 import { useGetIeltsWritingTests } from "@/hooks/organization/ielts-academic/writing/use-get-ielts-writing-tests";
@@ -40,11 +49,14 @@ import { IELTSReadingTest } from "@/types/exam/ielts-academic/reading/test/test"
 import { IELTSReadingTestSection } from "@/types/exam/ielts-academic/reading/question/question";
 
 interface TestSelectionStepProps {
-  examData: Partial<IELTSExamModel>;
-  updateExamData: (updates: Partial<IELTSExamModel>) => void;
+  examData: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>;
+  updateExamData: (
+    updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
+  ) => void;
   organizationId: number;
   onNext: () => void;
   onPrevious: () => void;
+  isAdmin?: boolean;
 }
 
 export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
@@ -53,6 +65,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
   organizationId,
   onNext,
   onPrevious,
+  isAdmin = false,
 }) => {
   const [activeTab, setActiveTab] = useState("listening");
   const [searchTerms, setSearchTerms] = useState({
@@ -121,9 +134,21 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
   };
 
   const canProceed = () => {
-    return (
-      examData.listening_test && examData.reading_test && examData.writing_test
-    );
+    if (isAdmin) {
+      // Admins can proceed with at least one test selected
+      return (
+        examData.listening_test ||
+        examData.reading_test ||
+        examData.writing_test
+      );
+    } else {
+      // Regular users must select all three tests
+      return (
+        examData.listening_test &&
+        examData.reading_test &&
+        examData.writing_test
+      );
+    }
   };
 
   const getTestStats = (
@@ -598,8 +623,9 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             Select Tests
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Choose one test for each component: Listening, Reading, and Writing.
-            Each selected test will be part of your complete IELTS exam.
+            {isAdmin
+              ? "Choose any combination of tests: Listening, Reading, and/or Writing. You can select just one test or all three - it's your choice."
+              : "Choose one test for each component: Listening, Reading, and Writing. Each selected test will be part of your complete IELTS exam."}
           </p>
         </div>
 
@@ -617,6 +643,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {selectedCount} of 3 tests selected
+                    {isAdmin ? " (optional)" : " (required)"}
                   </p>
                 </div>
               </div>
@@ -660,7 +687,14 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             >
               <div className="flex items-center justify-center space-x-1 sm:space-x-2 min-w-0">
                 <Headphones className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                <span className="truncate">Listening</span>
+                <span className="truncate">
+                  Listening
+                  {isAdmin && (
+                    <span className="text-xs text-muted-foreground ml-1">
+                      (opt)
+                    </span>
+                  )}
+                </span>
                 {examData.listening_test && (
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                 )}
@@ -672,7 +706,14 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             >
               <div className="flex items-center justify-center space-x-1 sm:space-x-2 min-w-0">
                 <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                <span className="truncate">Reading</span>
+                <span className="truncate">
+                  Reading
+                  {isAdmin && (
+                    <span className="text-xs text-muted-foreground ml-1">
+                      (opt)
+                    </span>
+                  )}
+                </span>
                 {examData.reading_test && (
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                 )}
@@ -684,7 +725,14 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             >
               <div className="flex items-center justify-center space-x-1 sm:space-x-2 min-w-0">
                 <PenTool className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                <span className="truncate">Writing</span>
+                <span className="truncate">
+                  Writing
+                  {isAdmin && (
+                    <span className="text-xs text-muted-foreground ml-1">
+                      (opt)
+                    </span>
+                  )}
+                </span>
                 {examData.writing_test && (
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                 )}
@@ -692,32 +740,34 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="listening" className="mt-8">
-            {renderTestSection(
-              "listening",
-              listeningData,
-              listeningLoading,
-              "Listening Tests"
-            )}
-          </TabsContent>
+          <TabsContents>
+            <TabsContent value="listening" className="mt-8">
+              {renderTestSection(
+                "listening",
+                listeningData,
+                listeningLoading,
+                "Listening Tests"
+              )}
+            </TabsContent>
 
-          <TabsContent value="reading" className="mt-8">
-            {renderTestSection(
-              "reading",
-              readingData,
-              readingLoading,
-              "Reading Tests"
-            )}
-          </TabsContent>
+            <TabsContent value="reading" className="mt-8">
+              {renderTestSection(
+                "reading",
+                readingData,
+                readingLoading,
+                "Reading Tests"
+              )}
+            </TabsContent>
 
-          <TabsContent value="writing" className="mt-8">
-            {renderTestSection(
-              "writing",
-              writingData,
-              writingLoading,
-              "Writing Tests"
-            )}
-          </TabsContent>
+            <TabsContent value="writing" className="mt-8">
+              {renderTestSection(
+                "writing",
+                writingData,
+                writingLoading,
+                "Writing Tests"
+              )}
+            </TabsContent>
+          </TabsContents>
         </Tabs>
 
         {/* Navigation */}
@@ -737,7 +787,11 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
             size="lg"
             className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            Next Step
+            {!canProceed() && !isAdmin
+              ? "Select All 3 Tests"
+              : !canProceed() && isAdmin
+              ? "Select At Least 1 Test"
+              : "Next Step"}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

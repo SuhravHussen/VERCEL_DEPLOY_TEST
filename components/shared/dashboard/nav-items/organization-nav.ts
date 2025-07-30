@@ -1,6 +1,7 @@
 import { NavItem } from "@/types/nav-item";
+import { Role } from "@/types/role";
 
-const getOrganizationNavItems = (id: string): NavItem[] => [
+const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
   {
     title: "Home",
     url: "/",
@@ -19,6 +20,7 @@ const getOrganizationNavItems = (id: string): NavItem[] => [
     url: `/dashboard/organization/${id}/instructors`,
     icon: "instructor",
     isActive: false,
+    disabled: role !== Role.ADMIN,
   },
   {
     title: "Ielts",
@@ -31,7 +33,6 @@ const getOrganizationNavItems = (id: string): NavItem[] => [
         url: `/dashboard/organization/${id}/ielts-academic/exam`,
         icon: "book",
         isActive: false,
-      
       },
       {
         title: "Reading",
@@ -93,72 +94,6 @@ const getOrganizationNavItems = (id: string): NavItem[] => [
           },
         ],
       },
-      // {
-      //   title: "Writing",
-      //   url: `#`,
-      //   icon: "writing",
-      //   isActive: false,
-      //   items: [
-      //     {
-      //       title: "Questions",
-      //       url: `/dashboard/organization/${id}/ielts-academic/writing/questions`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //     {
-      //       title: "Tests",
-      //       url: `/dashboard/organization/${id}/ielts-academic/writing/tests`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //     {
-      //       title: "Passages",
-      //       url: `/dashboard/organization/${id}/ielts-academic/writing/passage`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "Speaking",
-      //   url: `#`,
-      //   icon: "speaking",
-      //   isActive: false,
-      //   items: [
-      //     {
-      //       title: "Questions",
-      //       url: `/dashboard/organization/${id}/ielts-academic/speaking/questions`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //     {
-      //       title: "Tests",
-      //       url: `/dashboard/organization/${id}/ielts-academic/speaking/tests`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "Listening",
-      //   url: `#`,
-      //   icon: "listening",
-      //   isActive: false,
-      //   items: [
-      //     {
-      //       title: "Questions",
-      //       url: `/dashboard/organization/${id}/ielts-academic/listening/questions`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //     {
-      //       title: "Tests",
-      //       url: `/dashboard/organization/${id}/ielts-academic/listening/tests`,
-      //       icon: "list",
-      //       isActive: false,
-      //     },
-      //   ],
-      // },
     ],
   },
 ];

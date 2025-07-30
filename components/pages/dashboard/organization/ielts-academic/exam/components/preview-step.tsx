@@ -19,7 +19,7 @@ import {
   Timer,
   MapPin,
 } from "lucide-react";
-import { CurrencySymbols } from "@/types/currency";
+import { CurrencySymbols, Currency } from "@/types/currency";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
 import { IELTSReadingTest } from "@/types/exam/ielts-academic/reading/test/test";
 import { IELTSWritingTest } from "@/types/exam/ielts-academic/writing/writing";
@@ -33,6 +33,7 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
   onPrevious,
   isEditMode,
   examId,
+  isAdmin,
 }) => {
   const addExamMutation = useAddExam();
   const updateExamMutation = useUpdateExam();
@@ -41,28 +42,39 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
   const handleSubmitExam = async () => {
     console.log(examData);
     try {
-      // Validate required fields
-      if (
-        !examData.title ||
-        !examData.listening_test ||
-        !examData.reading_test ||
-        !examData.writing_test
-      ) {
+      // Validate required fields - different rules for admin vs regular users
+      if (!examData.title) {
         toast.error(
-          `Please complete all required fields before ${
+          `Please provide an exam title before ${
             isEditMode ? "updating" : "creating"
           } the exam.`
         );
         return;
       }
 
-      if (!examData.lrw_group?.exam_date) {
-        toast.error(
-          `Please set the exam date before ${
-            isEditMode ? "updating" : "creating"
-          } the exam.`
-        );
-        return;
+      // For non-admin users, require all tests
+      if (!isAdmin) {
+        if (
+          !examData.listening_test ||
+          !examData.reading_test ||
+          !examData.writing_test
+        ) {
+          toast.error(
+            `Please complete all required fields before ${
+              isEditMode ? "updating" : "creating"
+            } the exam.`
+          );
+          return;
+        }
+
+        if (!examData.lrw_group?.exam_date) {
+          toast.error(
+            `Please set the exam date before ${
+              isEditMode ? "updating" : "creating"
+            } the exam.`
+          );
+          return;
+        }
       }
 
       const examPayload = {
@@ -73,17 +85,32 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
         writing_test: examData.writing_test as IELTSWritingTest,
         price: examData.price || 0,
         is_free: examData.is_free || false,
-        currency: examData.currency!,
-        lrw_group: examData.lrw_group!,
-        speaking_group: {
-          ...examData.speaking_group!,
-          time_windows: examData.speaking_group!.time_windows.map((window) => ({
-            ...window,
-            id:
-              window.id ||
-              `window-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          })),
+        currency: examData.currency as Currency,
+        lrw_group: examData.lrw_group || {
+          exam_date: "",
+          listening_time_start: "",
+          reading_time_start: "",
+          writing_time_start: "",
+          assigned_instructors: [],
         },
+        speaking_group: examData.speaking_group
+          ? {
+              ...examData.speaking_group,
+              time_windows:
+                examData.speaking_group.time_windows?.map((window) => ({
+                  ...window,
+                  id:
+                    window.id ||
+                    `window-${Date.now()}-${Math.random()
+                      .toString(36)
+                      .substr(2, 9)}`,
+                })) || [],
+            }
+          : {
+              time_windows: [],
+              assigned_instructors: [],
+              session_per_student: 20,
+            },
         max_students: examData.max_students || 50,
         registration_deadline: examData.registration_deadline,
         is_active: true,
@@ -115,22 +142,27 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
     }
   };
 
-  // Validation helpers
+  // Validation helpers - different rules for admin vs regular users
   const missingItems: string[] = [];
 
+  // Title is always required
   if (!examData.title) missingItems.push("Exam title");
-  if (!examData.listening_test) missingItems.push("Listening test selection");
-  if (!examData.reading_test) missingItems.push("Reading test selection");
-  if (!examData.writing_test) missingItems.push("Writing test selection");
-  if (!examData.lrw_group?.exam_date) missingItems.push("LRW exam date");
-  if (!examData.lrw_group?.listening_time_start)
-    missingItems.push("Listening start time");
-  if (!examData.lrw_group?.reading_time_start)
-    missingItems.push("Reading start time");
-  if (!examData.lrw_group?.writing_time_start)
-    missingItems.push("Writing start time");
-  if (!examData.speaking_group?.time_windows?.length)
-    missingItems.push("Speaking time windows");
+
+  // For non-admin users, require all tests and time settings
+  if (!isAdmin) {
+    if (!examData.listening_test) missingItems.push("Listening test selection");
+    if (!examData.reading_test) missingItems.push("Reading test selection");
+    if (!examData.writing_test) missingItems.push("Writing test selection");
+    if (!examData.lrw_group?.exam_date) missingItems.push("LRW exam date");
+    if (!examData.lrw_group?.listening_time_start)
+      missingItems.push("Listening start time");
+    if (!examData.lrw_group?.reading_time_start)
+      missingItems.push("Reading start time");
+    if (!examData.lrw_group?.writing_time_start)
+      missingItems.push("Writing start time");
+    if (!examData.speaking_group?.time_windows?.length)
+      missingItems.push("Speaking time windows");
+  }
 
   const isComplete = missingItems.length === 0;
 
@@ -183,8 +215,8 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
                 <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-2">
-                    Please complete the following items before creating the
-                    exam:
+                    Please complete the following items before{" "}
+                    {isEditMode ? "updating" : "creating"} the exam:
                   </h4>
                   <ul className="text-xs sm:text-sm text-amber-800 dark:text-amber-200 space-y-1">
                     {missingItems.map((item, index) => (
@@ -483,6 +515,11 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
                   <Timer className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 Speaking Setup
+                {isAdmin && (
+                  <Badge variant="secondary" className="ml-3 text-xs">
+                    Optional (Admin Mode)
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6">
@@ -553,7 +590,9 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
                       <Timer className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
                       <p className="text-xs sm:text-sm text-destructive flex items-center justify-center">
                         <AlertCircle className="w-3 h-3 mr-1" />
-                        No time windows configured
+                        {isAdmin
+                          ? "Speaking setup skipped (Admin mode)"
+                          : "No time windows configured"}
                       </p>
                     </div>
                   )}

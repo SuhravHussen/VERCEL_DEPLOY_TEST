@@ -4,7 +4,13 @@ import { useContext, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { StepperContext } from "./StepperContext";
 import { TestSectionsStepProps, AudioStat } from "./types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsContents,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { IELTSListeningTestSection } from "@/types/exam/ielts-academic/listening/listening";
 import { AudioCard } from "./AudioCard";
 import { AudioCardSkeleton } from "./AudioCardSkeleton";
@@ -143,149 +149,155 @@ export function TestSectionsStep({
           <TabsTrigger value="section_four">Section 4</TabsTrigger>
         </TabsList>
 
-        {(
-          [
-            "section_one",
-            "section_two",
-            "section_three",
-            "section_four",
-          ] as SectionKey[]
-        ).map((section) => (
-          <TabsContent
-            key={section}
-            value={section}
-            className="space-y-6 border-none p-0"
-          >
-            <div className="flex flex-col space-y-6">
-              {formData[section] ? (
-                <SelectedAudioDisplay
-                  audio={formData[section]?.audio}
-                  onRemove={() => handleClearSection(section)}
-                />
-              ) : (
-                <div className="text-muted-foreground">
-                  No audio selected for this section
-                </div>
-              )}
-
-              {/* Search and filter controls */}
-              <div className="flex flex-col sm:flex-row gap-4 items-center">
-                <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search audio..."
-                    className="pl-8"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+        <TabsContents>
+          {(
+            [
+              "section_one",
+              "section_two",
+              "section_three",
+              "section_four",
+            ] as SectionKey[]
+          ).map((section) => (
+            <TabsContent
+              key={section}
+              value={section}
+              className="space-y-6 border-none p-0"
+            >
+              <div className="flex flex-col space-y-6">
+                {formData[section] ? (
+                  <SelectedAudioDisplay
+                    audio={formData[section]?.audio}
+                    onRemove={() => handleClearSection(section)}
                   />
-                </div>
-                <Select
-                  value={`${sortBy}-${sortOrder}`}
-                  onValueChange={handleSortChange}
-                >
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="audioTitle-asc">
-                      Audio Title (A-Z)
-                    </SelectItem>
-                    <SelectItem value="audioTitle-desc">
-                      Audio Title (Z-A)
-                    </SelectItem>
-                    <SelectItem value="questionType-asc">
-                      Question Type (A-Z)
-                    </SelectItem>
-                    <SelectItem value="questionType-desc">
-                      Question Type (Z-A)
-                    </SelectItem>
-                    <SelectItem value="createdAt-desc">Newest First</SelectItem>
-                    <SelectItem value="createdAt-asc">Oldest First</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {isPending || isFetching ? (
-                  // Show skeleton cards while loading
-                  skeletonPlaceholders.map((_, index) => (
-                    <AudioCardSkeleton key={`skeleton-${index}`} />
-                  ))
-                ) : questionsData?.questions &&
-                  questionsData.questions.length > 0 ? (
-                  questionsData.questions.map((item, index) => {
-                    const key = `${item.audio.title}-${index}`;
-                    return (
-                      <AudioCard
-                        key={key}
-                        audio={item.audio}
-                        questions={item.questions}
-                        isSelected={
-                          formData[section]?.audio?.title === item.audio.title
-                        }
-                        onClick={() => handleSelectAudio(section, item)}
-                        stats={audioStats[key]}
-                      />
-                    );
-                  })
                 ) : (
-                  <div className="col-span-full text-center py-8 text-muted-foreground">
-                    No audio recordings found
+                  <div className="text-muted-foreground">
+                    No audio selected for this section
+                  </div>
+                )}
+
+                {/* Search and filter controls */}
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search audio..."
+                      className="pl-8"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <Select
+                    value={`${sortBy}-${sortOrder}`}
+                    onValueChange={handleSortChange}
+                  >
+                    <SelectTrigger className="w-full sm:w-48">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="audioTitle-asc">
+                        Audio Title (A-Z)
+                      </SelectItem>
+                      <SelectItem value="audioTitle-desc">
+                        Audio Title (Z-A)
+                      </SelectItem>
+                      <SelectItem value="questionType-asc">
+                        Question Type (A-Z)
+                      </SelectItem>
+                      <SelectItem value="questionType-desc">
+                        Question Type (Z-A)
+                      </SelectItem>
+                      <SelectItem value="createdAt-desc">
+                        Newest First
+                      </SelectItem>
+                      <SelectItem value="createdAt-asc">
+                        Oldest First
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {isPending || isFetching ? (
+                    // Show skeleton cards while loading
+                    skeletonPlaceholders.map((_, index) => (
+                      <AudioCardSkeleton key={`skeleton-${index}`} />
+                    ))
+                  ) : questionsData?.questions &&
+                    questionsData.questions.length > 0 ? (
+                    questionsData.questions.map((item, index) => {
+                      const key = `${item.audio.title}-${index}`;
+                      return (
+                        <AudioCard
+                          key={key}
+                          audio={item.audio}
+                          questions={item.questions}
+                          isSelected={
+                            formData[section]?.audio?.title === item.audio.title
+                          }
+                          onClick={() => handleSelectAudio(section, item)}
+                          stats={audioStats[key]}
+                        />
+                      );
+                    })
+                  ) : (
+                    <div className="col-span-full text-center py-8 text-muted-foreground">
+                      No audio recordings found
+                    </div>
+                  )}
+                </div>
+
+                {/* Pagination controls */}
+                {questionsData && questionsData.totalPages > 0 && (
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="text-sm text-muted-foreground">
+                      Showing {(page - 1) * limit + 1} to{" "}
+                      {Math.min(page * limit, questionsData.totalItems)} of{" "}
+                      {questionsData.totalItems} items
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={limit.toString()}
+                        onValueChange={handleLimitChange}
+                      >
+                        <SelectTrigger className="w-[100px]">
+                          <SelectValue placeholder="Items" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="5">5 per page</SelectItem>
+                          <SelectItem value="10">10 per page</SelectItem>
+                          <SelectItem value="20">20 per page</SelectItem>
+                          <SelectItem value="50">50 per page</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <div className="flex">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handlePageChange(page - 1)}
+                          disabled={page <= 1}
+                          className="rounded-r-none"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          <span className="sr-only">Previous page</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handlePageChange(page + 1)}
+                          disabled={page >= questionsData.totalPages}
+                          className="rounded-l-none"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                          <span className="sr-only">Next page</span>
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
-
-              {/* Pagination controls */}
-              {questionsData && questionsData.totalPages > 0 && (
-                <div className="flex items-center justify-between mt-4">
-                  <div className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to{" "}
-                    {Math.min(page * limit, questionsData.totalItems)} of{" "}
-                    {questionsData.totalItems} items
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Select
-                      value={limit.toString()}
-                      onValueChange={handleLimitChange}
-                    >
-                      <SelectTrigger className="w-[100px]">
-                        <SelectValue placeholder="Items" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="5">5 per page</SelectItem>
-                        <SelectItem value="10">10 per page</SelectItem>
-                        <SelectItem value="20">20 per page</SelectItem>
-                        <SelectItem value="50">50 per page</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <div className="flex">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page <= 1}
-                        className="rounded-r-none"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        <span className="sr-only">Previous page</span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page >= questionsData.totalPages}
-                        className="rounded-l-none"
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                        <span className="sr-only">Next page</span>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-        ))}
+            </TabsContent>
+          ))}
+        </TabsContents>
       </Tabs>
 
       <div className="flex justify-between mt-8">

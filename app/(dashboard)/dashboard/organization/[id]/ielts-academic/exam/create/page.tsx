@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExamCreationStep } from "@/types/exam/ielts-academic/exam-creation";
+import { useState } from "react";
 
 // Import custom components and hooks
 import { ExamStepper } from "../../../../../../../../components/pages/dashboard/organization/ielts-academic/exam/components/shared/exam-stepper";
@@ -43,6 +44,9 @@ const CreateExamPage: React.FC = () => {
   const params = useParams();
   const organizationId = parseInt(params.id as string);
 
+  // Admin state - default to false, regular users must select all tests
+  const [isAdmin] = useState(true);
+
   // Custom hooks for state management
   const { examData, updateExamData } = useExamData();
   const { currentStep, completedSteps, steps, handleNext, handlePrevious } =
@@ -79,6 +83,7 @@ const CreateExamPage: React.FC = () => {
             organizationId={organizationId}
             onNext={handleNext}
             onPrevious={handlePrevious}
+            isAdmin={isAdmin}
           />
         </CardContent>
       </Card>

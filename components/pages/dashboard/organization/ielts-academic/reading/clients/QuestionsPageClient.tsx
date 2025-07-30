@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
 import { Skeleton } from "@/components/ui/skeleton";
+import { FileText } from "lucide-react";
 
 import { useGetIeltsReadingQuestions } from "@/hooks/organization/ielts-academic/reading/use-get-ielts-reading-questions";
 
@@ -26,6 +26,7 @@ import {
 export interface QuestionsPageClientProps {
   organizationId: number;
 }
+
 export default function QuestionsPageClient({
   organizationId,
 }: QuestionsPageClientProps) {
@@ -40,28 +41,25 @@ export default function QuestionsPageClient({
   const [selectedPassage, setSelectedPassage] =
     useState<IELTSReadingTestSection | null>(null);
 
-  const { data, isLoading, error, refetch } = useGetIeltsReadingQuestions(
-    organizationId,
-    page,
-    10,
-    search,
-    sortBy,
-    sortOrder
-  );
+  const { data, isLoading, isFetching, error, refetch } =
+    useGetIeltsReadingQuestions(
+      organizationId,
+      page,
+      10,
+      search,
+      sortBy,
+      sortOrder
+    );
 
   const formattedData = addQuestionNumbering(
     data?.questions as unknown as IELTSReadingTestSection[]
   );
 
   const formattedPassages = formattedData.numberedSections;
-
   const passages = formattedPassages;
   const totalPages = data?.totalPages || 0;
 
-  useEffect(() => {
-    refetch();
-  }, [page, search, questionType, sortBy, sortOrder, refetch]);
-
+  // Reset pagination when search/filters change
   useEffect(() => {
     setPage(1);
     setSelectedPassage(null);
@@ -121,16 +119,16 @@ export default function QuestionsPageClient({
     return found ? found.label : type;
   };
 
-  if (!data) return null;
+  const isDataLoading = isLoading || isFetching;
 
   const dashboardText = {
-    title: "Ielts reading questions",
+    title: "IELTS Reading Questions",
     subtitle:
-      "These questions are used to create tests , each question is a part of a passage and can be used in multiple tests",
+      "These questions are used to create tests. Each question is a part of a passage and can be used in multiple tests.",
   };
 
   return (
-    <div className="space-y-6 p-2 md:p-4">
+    <div className="space-y-6 p-2 md:p-6">
       <QuestionsPageHeader
         organizationId={organizationId}
         dashboardText={dashboardText}
@@ -139,8 +137,8 @@ export default function QuestionsPageClient({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column: List of passages */}
         <div className="lg:col-span-5 xl:col-span-4">
-          <Card className="p-4 sm:p-6">
-            <div className="space-y-4">
+          <Card className="overflow-hidden border-none shadow-lg">
+            <div className="bg-muted/30 backdrop-blur-sm p-4">
               <QuestionFilters
                 search={search}
                 questionType={questionType}
@@ -153,62 +151,98 @@ export default function QuestionsPageClient({
                 clearFilters={clearFilters}
                 getQuestionTypeLabel={getQuestionTypeLabel}
               />
+            </div>
 
-              <div className="space-y-4">
-                {isLoading ? (
-                  Array.from({ length: 3 }).map((_, i) => (
-                    <Card key={i} className="p-4">
-                      <Skeleton className="h-5 w-3/5 mb-3" />
-                      <Skeleton className="h-4 w-4/5 mb-4" />
-                    </Card>
-                  ))
-                ) : error ? (
-                  <div className="text-center py-8 text-red-500">
-                    <p>Error loading questions.</p>
-                    <Button onClick={() => refetch()}>Retry</Button>
+            {/* Passages list */}
+            <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
+              {isDataLoading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="p-4 rounded-lg border border-border/50"
+                  >
+                    <Skeleton className="h-5 w-3/5 mb-3" />
+                    <Skeleton className="h-4 w-4/5 mb-4" />
+                    <div className="flex justify-between mt-3">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
                   </div>
-                ) : passages && passages.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>No questions found.</p>
+                ))
+              ) : error ? (
+                <div className="text-center py-8 text-destructive">
+                  <p>Error loading questions.</p>
+                  <Button
+                    onClick={() => refetch()}
+                    variant="outline"
+                    className="mt-2"
+                  >
+                    Retry
+                  </Button>
+                </div>
+              ) : passages && passages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="rounded-full bg-muted/50 p-4 mb-4">
+                    <FileText className="h-8 w-8 text-muted-foreground" />
                   </div>
-                ) : (
-                  passages &&
-                  passages.map((item, index) => (
-                    <PassageCard
-                      key={index}
-                      item={item}
-                      organizationId={organizationId}
-                      getQuestionTypeLabel={getQuestionTypeLabel}
-                      isSelected={
-                        selectedPassage?.passage?.title === item.passage?.title
-                      }
-                      onSelect={() => setSelectedPassage(item)}
-                    />
-                  ))
-                )}
-              </div>
-
-              {!isLoading &&
+                  <h3 className="text-lg font-medium">No questions found</h3>
+                  <p className="text-muted-foreground mt-1">
+                    Try adjusting your filters or create a new question
+                  </p>
+                </div>
+              ) : (
                 passages &&
-                passages.length > 0 &&
-                totalPages > 1 && (
+                passages.map((item, index) => (
+                  <PassageCard
+                    key={index}
+                    item={item}
+                    organizationId={organizationId}
+                    getQuestionTypeLabel={getQuestionTypeLabel}
+                    isSelected={
+                      selectedPassage?.passage?.title === item.passage?.title
+                    }
+                    onSelect={() => setSelectedPassage(item)}
+                  />
+                ))
+              )}
+            </div>
+
+            {/* Pagination */}
+            {!isDataLoading &&
+              passages &&
+              passages.length > 0 &&
+              totalPages > 1 && (
+                <div className="border-t p-4 bg-background">
                   <QuestionsPagination
                     totalPages={totalPages}
                     page={page}
                     setPage={setPage}
                   />
-                )}
-            </div>
+                </div>
+              )}
           </Card>
         </div>
 
         {/* Right column: Passage details */}
-        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-200px)] sticky top-20">
-          <Card className="h-full overflow-y-auto">
-            <PassageDetailView
-              selectedPassage={selectedPassage}
-              getQuestionTypeLabel={getQuestionTypeLabel}
-            />
+        <div className="lg:col-span-7 xl:col-span-8 hidden lg:block h-[calc(100vh-200px)] sticky top-24">
+          <Card className="h-full overflow-hidden border-none shadow-lg">
+            <div className="absolute inset-0 overflow-y-auto">
+              {isDataLoading && !selectedPassage ? (
+                <div className="p-6 space-y-4">
+                  <Skeleton className="h-8 w-1/2" />
+                  <Skeleton className="h-4 w-1/3" />
+                  <div className="space-y-4 mt-8">
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
+                </div>
+              ) : (
+                <PassageDetailView
+                  selectedPassage={selectedPassage}
+                  getQuestionTypeLabel={getQuestionTypeLabel}
+                />
+              )}
+            </div>
           </Card>
         </div>
       </div>
@@ -218,14 +252,15 @@ export default function QuestionsPageClient({
         <Drawer>
           <DrawerTrigger asChild>
             <Button
-              variant="outline"
-              className="fixed bottom-4 right-4 z-10 lg:hidden bg-primary text-primary-foreground dark:bg-primary-foreground dark:text-primary"
+              variant="default"
+              className="fixed bottom-4 right-4 z-10 lg:hidden shadow-lg flex items-center gap-2"
             >
-              View Selected Passage
+              <FileText className="h-4 w-4" />
+              View Details
             </Button>
           </DrawerTrigger>
           <DrawerContent className="max-h-[90vh]">
-            <DrawerHeader>
+            <DrawerHeader className="border-b">
               <DrawerTitle>{selectedPassage.passage?.title}</DrawerTitle>
             </DrawerHeader>
             <div className="flex-grow overflow-y-auto p-4">

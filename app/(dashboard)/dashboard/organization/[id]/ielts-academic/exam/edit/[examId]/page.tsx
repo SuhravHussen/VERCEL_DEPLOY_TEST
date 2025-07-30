@@ -7,6 +7,7 @@ import { useExamDetails } from "@/hooks/organization/ielts-academic/exam/use-exa
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 // Import custom components and hooks
 import { ExamStepper } from "../../../../../../../../../components/pages/dashboard/organization/ielts-academic/exam/components/shared/exam-stepper";
@@ -47,6 +48,9 @@ const EditExamPage: React.FC = () => {
   const params = useParams();
   const organizationId = parseInt(params.id as string);
   const examId = params.examId as string;
+
+  // Admin state - default to false, regular users must select all tests
+  const [isAdmin] = useState(false);
 
   // Fetch existing exam data
   const { exam, isLoading, error } = useExamDetails(examId);
@@ -134,6 +138,7 @@ const EditExamPage: React.FC = () => {
               onPrevious={handlePrevious}
               isEditMode={true}
               examId={examId}
+              isAdmin={isAdmin}
             />
           )}
         </CardContent>

@@ -1,7 +1,6 @@
 import { NavItem } from "@/types/nav-item";
-import { Organization } from "@/types/organization";
 
-const getNavItems = (organizations: Organization[]) => {
+const getNavItems = () => {
   const userNavItems: NavItem[] = [
     {
       title: "Dashboard",
@@ -24,11 +23,7 @@ const getNavItems = (organizations: Organization[]) => {
       url: "/dashboard/user/organizations",
       icon: "organization",
       isActive: true,
-      items: organizations.map((organization) => ({
-        title: organization?.name,
-        url: `/dashboard/organization/${organization.id}`,
-        icon: "hash",
-      })),
+      items: [],
     },
   ];
   return userNavItems;

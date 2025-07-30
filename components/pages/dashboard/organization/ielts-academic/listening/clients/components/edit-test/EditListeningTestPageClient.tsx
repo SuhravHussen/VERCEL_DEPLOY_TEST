@@ -2,6 +2,8 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useToasts } from "@/components/ui/toast";
 import {
   InteractiveStepper,
@@ -170,6 +172,23 @@ export default function EditListeningTestPageClient({
       }}
     >
       <div className="container py-8 mx-auto px-2">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              router.push(
+                `/dashboard/organization/${organizationId}/ielts-academic/listening/tests`
+              )
+            }
+            className="gap-1.5"
+          >
+            <ChevronLeft className="size-4" />
+            Back to Tests
+          </Button>
+        </div>
+
         <h1 className="text-2xl font-bold mb-6">Edit IELTS Listening Test</h1>
         <p className="text-muted-foreground mb-8">
           Update the IELTS Listening test details

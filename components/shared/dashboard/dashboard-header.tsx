@@ -31,6 +31,8 @@ export function DashboardTypeShowing({
   orgNotFound = false,
   orgId,
 }: Props) {
+  console.log("organization", organization);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
