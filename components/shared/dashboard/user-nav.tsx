@@ -21,8 +21,9 @@ interface UserNavProps {
 export function UserNav({ user }: UserNavProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const isSuperAdminPath = pathname.includes("/dashboard/super-admin/");
-  const isUserPath = pathname.includes("/dashboard/user/");
+  const isSuperAdminPath = pathname.includes("/dashboard/super-admin");
+  const isUserPath = pathname.includes("/dashboard/user");
+  const isOrganizationPath = pathname.includes("/dashboard/organization");
 
   if (user) {
     return (
@@ -54,20 +55,24 @@ export function UserNav({ user }: UserNavProps) {
               Profile
             </DropdownMenuItem>
 
-            {user.role === Role.SUPER_ADMIN &&
-              (isSuperAdminPath ? (
-                <DropdownMenuItem
-                  onClick={() => router.push(`/dashboard/user/`)}
-                >
-                  User Dashboard
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  onClick={() => router.push(`/dashboard/super-admin/`)}
-                >
-                  Super Admin Dashboard
-                </DropdownMenuItem>
-              ))}
+            {(user.role === Role.ADMIN || user.role === Role.SUPER_ADMIN) && (
+              <>
+                {isUserPath && (
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/dashboard/super-admin/`)}
+                  >
+                    Admin Dashboard
+                  </DropdownMenuItem>
+                )}
+                {(isSuperAdminPath || isOrganizationPath) && (
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/dashboard/user/`)}
+                  >
+                    User Dashboard
+                  </DropdownMenuItem>
+                )}
+              </>
+            )}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
