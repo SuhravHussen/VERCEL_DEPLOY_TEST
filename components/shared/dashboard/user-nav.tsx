@@ -22,6 +22,7 @@ export function UserNav({ user }: UserNavProps) {
   const router = useRouter();
   const pathname = usePathname();
   const isSuperAdminPath = pathname.includes("/dashboard/super-admin/");
+  const isUserPath = pathname.includes("/dashboard/user/");
 
   if (user) {
     return (
@@ -52,6 +53,7 @@ export function UserNav({ user }: UserNavProps) {
             >
               Profile
             </DropdownMenuItem>
+
             {user.role === Role.SUPER_ADMIN &&
               (isSuperAdminPath ? (
                 <DropdownMenuItem

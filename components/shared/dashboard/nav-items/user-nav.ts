@@ -19,6 +19,13 @@ const getNavItems = () => {
       items: [],
     },
     {
+      title: "Calendar",
+      url: "/dashboard/user/calendar",
+      icon: "calendar",
+      isActive: false,
+      items: [],
+    },
+    {
       title: "Organizations",
       url: "/dashboard/user/organizations",
       icon: "organization",

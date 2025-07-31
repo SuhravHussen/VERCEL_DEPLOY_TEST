@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageLayout } from "@/components/ui/page-layout";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Drawer,
   DrawerContent,
@@ -11,11 +13,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { FileText } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 
 import { useGetIeltsWritingQuestions } from "@/hooks/organization/ielts-academic/writing/use-get-ielts-writing-questions";
 import { IELTSWritingTask } from "@/types/exam/ielts-academic/writing/writing";
-import { QuestionsPageHeader } from "./questions-page/QuestionsPageHeader";
 import { QuestionFilters } from "./questions-page/QuestionFilters";
 import { QuestionsPagination } from "./questions-page/QuestionsPagination";
 import { QuestionCard } from "./questions-page/QuestionCard";
@@ -127,20 +128,20 @@ export default function QuestionsPageClient({
 
   const isDataLoading = isLoading || isFetching;
 
-  const dashboardText = {
-    title: "IELTS Writing Questions",
-    subtitle:
-      "Manage writing tasks for IELTS Academic and General Training tests.",
+  const handleCreateQuestion = () => {
+    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/writing/questions/create`;
   };
 
   return (
-    <div className="space-y-6 p-2 md:p-6">
-      {/* Header */}
-      <QuestionsPageHeader
-        organizationId={organizationId}
-        dashboardText={dashboardText}
-      />
-
+    <PageLayout
+      title="IELTS Writing Questions"
+      description="Manage writing tasks for IELTS Academic and General Training tests."
+      actionButton={{
+        label: "Create Question",
+        onClick: handleCreateQuestion,
+        icon: <Plus className="h-4 w-4" />,
+      }}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column: List of questions */}
         <div className="lg:col-span-5 xl:col-span-4">
@@ -161,7 +162,7 @@ export default function QuestionsPageClient({
             </div>
 
             {/* Questions list */}
-            <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
+            <div className="p-4 space-y-3 ">
               {isDataLoading ? (
                 Array.from({ length: 3 }).map((_, i) => (
                   <div
@@ -192,14 +193,21 @@ export default function QuestionsPageClient({
                   </Button>
                 </div>
               ) : questions.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="rounded-full bg-muted/50 p-4 mb-4">
-                    <FileText className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium">No questions found</h3>
-                  <p className="text-muted-foreground mt-1">
-                    Try adjusting your filters or create a new question
-                  </p>
+                <div className="p-4">
+                  <EmptyState
+                    icon={
+                      <FileText className="h-8 w-8 text-muted-foreground" />
+                    }
+                    title="No questions found"
+                    description="Try adjusting your filters or create a new question"
+                    searchQuery={search}
+                    onClearSearch={() => clearFilters()}
+                    primaryAction={{
+                      label: "Create Question",
+                      onClick: handleCreateQuestion,
+                      icon: <Plus className="h-4 w-4" />,
+                    }}
+                  />
                 </div>
               ) : (
                 questions.map((question, index) => (
@@ -217,7 +225,7 @@ export default function QuestionsPageClient({
 
             {/* Pagination */}
             {!isDataLoading && questions.length > 0 && totalPages > 1 && (
-              <div className="border-t p-4 bg-background">
+              <div className="border-t p-2">
                 <QuestionsPagination
                   totalPages={totalPages}
                   page={page}
@@ -286,6 +294,6 @@ export default function QuestionsPageClient({
           </DrawerContent>
         </Drawer>
       )}
-    </div>
+    </PageLayout>
   );
 }

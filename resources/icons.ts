@@ -44,6 +44,7 @@ import {
   IconFileDescription,
   IconEar,
   IconMicrophone2,
+  IconCalendar,
 } from "@tabler/icons-react";
 
 export type Icon = React.ComponentType<IconProps>;
@@ -93,4 +94,5 @@ export const Icons = {
   writing: IconFileDescription,
   listening: IconEar,
   speaking: IconMicrophone2,
+  calendar: IconCalendar,
 };

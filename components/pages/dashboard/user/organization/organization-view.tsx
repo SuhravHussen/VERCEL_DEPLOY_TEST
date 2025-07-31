@@ -3,14 +3,13 @@
 import { useUserOrganization } from "@/hooks/user/use-user-organization";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, FileText, Bell, CalendarDays } from "lucide-react";
+import { Building2, FileText, Bell } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 // import { ExamsTab } from "./exams-tab";
 import { AnnouncementsTab } from "./announcements-tab";
-import { CalendarTab } from "./calendar-tab";
 import { ExamsTab } from "./exams-tab";
 
 interface OrganizationViewProps {
@@ -217,14 +216,6 @@ export function OrganizationView({ organizationId }: OrganizationViewProps) {
                     <span className="hidden sm:inline">Announcements</span>
                     <span className="sm:hidden">News</span>
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="calendar"
-                    className="px-2 sm:px-3 py-1 text-xs sm:text-sm gap-1 sm:gap-1.5 flex-shrink-0 whitespace-nowrap"
-                  >
-                    <CalendarDays className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                    <span className="hidden sm:inline">Calendar</span>
-                    <span className="sm:hidden">Cal</span>
-                  </TabsTrigger>
                 </TabsList>
               </div>
 
@@ -237,12 +228,6 @@ export function OrganizationView({ organizationId }: OrganizationViewProps) {
               <TabsContent value="announcements" className="mt-0">
                 <div className="p-6">
                   <AnnouncementsTab organizationId={organizationId} />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="calendar" className="mt-0">
-                <div className="p-6">
-                  <CalendarTab organizationId={organizationId} />
                 </div>
               </TabsContent>
             </Tabs>

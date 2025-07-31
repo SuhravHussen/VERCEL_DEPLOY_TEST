@@ -230,7 +230,7 @@ export function ExamsTab({ organizationId }: ExamsTabProps) {
           {exams.map((exam) => (
             <Card
               key={exam.id}
-              className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col"
+              className="border-0 shadow-sm hover:shadow-md transition-shadow flex flex-col"
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">

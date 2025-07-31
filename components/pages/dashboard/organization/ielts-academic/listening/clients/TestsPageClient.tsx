@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { PageLayout } from "@/components/ui/page-layout";
 
 import { useGetIeltsListeningTests } from "@/hooks/organization/ielts-academic/listening/use-get-ielts-listening-test";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
@@ -88,29 +87,20 @@ export default function TestsPageClient({
   // Determine if there are active filters
   const hasActiveFilters = search !== "" || difficulty !== "all";
 
-  return (
-    <div className="container mx-auto py-6 md:py-10 animate-in fade-in duration-300 p-2 md:p-6">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 pb-6 border-b">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">
-            IELTS Listening Tests
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Create and manage your IELTS Academic Listening assessments
-          </p>
-        </div>
-        <Link
-          href={`/dashboard/organization/${organizationId}/ielts-academic/listening/tests/create`}
-          className="shrink-0"
-        >
-          <Button className="w-full md:w-auto shadow-sm" size="lg">
-            <PlusCircle className="mr-2 h-5 w-5" />
-            Create New Test
-          </Button>
-        </Link>
-      </div>
+  const handleCreateTest = () => {
+    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/listening/tests/create`;
+  };
 
+  return (
+    <PageLayout
+      title="IELTS Listening Tests"
+      description="Create and manage your IELTS Academic Listening assessments"
+      actionButton={{
+        label: "Create New Test",
+        onClick: handleCreateTest,
+        icon: <PlusCircle className="h-4 w-4" />,
+      }}
+    >
       {/* Search and Filters */}
       <SearchFilters
         search={search}
@@ -172,6 +162,6 @@ export default function TestsPageClient({
         organizationId={organizationId}
         onClose={handleCloseTestDetail}
       />
-    </div>
+    </PageLayout>
   );
 }

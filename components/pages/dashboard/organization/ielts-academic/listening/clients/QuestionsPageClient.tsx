@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Volume2 } from "lucide-react";
+import { PageLayout } from "@/components/ui/page-layout";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Volume2, Plus } from "lucide-react";
 
 import { addListeningQuestionNumbering } from "@/lib/addListeningQuestionNumbering";
 import { IELTSListeningTestSection } from "@/types/exam/ielts-academic/listening/listening";
@@ -15,7 +17,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { QuestionsPageHeader } from "./questions-page/QuestionsPageHeader";
 import { QuestionFilters } from "./questions-page/QuestionFilters";
 import { AudioCard } from "./questions-page/AudioCard";
 import { QuestionsPagination } from "./questions-page/QuestionsPagination";
@@ -158,18 +159,21 @@ export default function QuestionsPageClient({
 
   const isDataLoading = isLoading || isFetching;
 
-  return (
-    <div className="space-y-4 sm:space-y-6 p-2 sm:p-4 md:p-6">
-      <QuestionsPageHeader
-        organizationId={organizationId}
-        dashboardText={{
-          title: "IELTS Listening Questions",
-          subtitle:
-            "These questions are used to create tests. Each question is part of an audio section and can be used in multiple tests.",
-        }}
-      />
+  const handleCreateQuestion = () => {
+    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/listening/questions/create`;
+  };
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+  return (
+    <PageLayout
+      title="IELTS Listening Questions"
+      description="These questions are used to create tests. Each question is part of an audio section and can be used in multiple tests."
+      actionButton={{
+        label: "Create Question",
+        onClick: handleCreateQuestion,
+        icon: <Plus className="h-4 w-4" />,
+      }}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column: List of audios */}
         <div className="lg:col-span-5 xl:col-span-4">
           <Card className="overflow-hidden border-none shadow-lg">
@@ -215,14 +219,19 @@ export default function QuestionsPageClient({
                   </Button>
                 </div>
               ) : audios && audios.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="rounded-full bg-muted/50 p-4 mb-4">
-                    <Volume2 className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium">No questions found</h3>
-                  <p className="text-muted-foreground mt-1">
-                    Try adjusting your filters or create a new question
-                  </p>
+                <div className="p-4">
+                  <EmptyState
+                    icon={<Volume2 className="h-8 w-8 text-muted-foreground" />}
+                    title="No questions found"
+                    description="Try adjusting your filters or create a new question"
+                    searchQuery={search}
+                    onClearSearch={() => clearFilters()}
+                    primaryAction={{
+                      label: "Create Question",
+                      onClick: handleCreateQuestion,
+                      icon: <Plus className="h-4 w-4" />,
+                    }}
+                  />
                 </div>
               ) : (
                 audios &&
@@ -247,7 +256,7 @@ export default function QuestionsPageClient({
               audios &&
               audios.length > 0 &&
               totalPages > 1 && (
-                <div className="border-t p-3 sm:p-4 bg-background">
+                <div className="border-t p-2 ">
                   <QuestionsPagination
                     totalPages={totalPages}
                     page={page}
@@ -313,6 +322,6 @@ export default function QuestionsPageClient({
       )}
 
       <ConfirmationDialog />
-    </div>
+    </PageLayout>
   );
 }

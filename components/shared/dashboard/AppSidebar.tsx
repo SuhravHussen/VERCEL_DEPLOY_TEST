@@ -19,6 +19,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { NavItem } from "@/types/nav-item";
@@ -50,6 +51,7 @@ export default function AppSidebar({
   const pathname = usePathname();
   const params = useParams();
   const user = getCurrentUser();
+  const { setOpenMobile, isMobile } = useSidebar();
 
   const orgId = params.id;
 
@@ -72,6 +74,13 @@ export default function AppSidebar({
       notFound();
     }
   }, [orgId, orgNotFound]);
+
+  // Close mobile sidebar when route changes
+  React.useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [pathname, isMobile, setOpenMobile]);
 
   // Helper function to render either an icon or an image
   const renderIcon = (item: NavItem) => {

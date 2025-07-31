@@ -3,9 +3,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, BookOpen, Filter } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Plus, BookOpen } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -18,8 +16,10 @@ import {
 import { usePaginatedExams } from "@/hooks/organization/ielts-academic/exam/use-paginated-exams";
 import { useDeleteExam } from "@/hooks/organization/ielts-academic/exam/use-delete-exam";
 import { useToasts } from "@/components/ui/toast";
+import { PageLayout } from "@/components/ui/page-layout";
+import { SearchFiltersBar } from "@/components/ui/search-filters-bar";
+import { EmptyState } from "@/components/ui/empty-state";
 import { ExamCard } from "@/components/pages/dashboard/organization/ielts-academic/exam/components/exam-card";
-import { ExamSearch } from "@/components/pages/dashboard/organization/ielts-academic/exam/components/exam-search";
 import { ExamCardSkeletonGrid } from "@/components/pages/dashboard/organization/ielts-academic/exam/components/exam-card-skeleton";
 
 interface ExamPageProps {
@@ -200,132 +200,97 @@ function ExamPageClient({ organizationId }: { organizationId: string }) {
   };
 
   return (
-    <div className="min-h-screen bg-dashboard-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              IELTS Academic Exams
-            </h1>
-            <p className="text-muted-foreground">
-              Manage and organize IELTS Academic examinations
-            </p>
+    <PageLayout
+      title="IELTS Academic Exams"
+      description="Manage and organize IELTS Academic examinations"
+      actionButton={{
+        label: "Create New Exam",
+        onClick: handleCreateExam,
+        icon: <Plus className="h-4 w-4" />,
+      }}
+    >
+      {/* Search and Filters */}
+      <SearchFiltersBar
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Search exams by title, description, or ID..."
+        totalItems={totalExams}
+        itemName="exam"
+      />
+
+      {/* Results */}
+      {isLoading ? (
+        <ExamCardSkeletonGrid count={pageSize} />
+      ) : exams.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {exams.map((exam) => (
+              <ExamCard
+                key={exam.id}
+                exam={exam}
+                onViewDetails={handleViewDetails}
+                onRegister={handleRegister}
+                onDelete={handleDeleteExam}
+                isDeleting={deleteExamMutation.isPending}
+              />
+            ))}
           </div>
 
-          <Button onClick={handleCreateExam} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Create New Exam
-          </Button>
-        </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (hasPreviousPage) {
+                          handlePageChange(actualCurrentPage - 1);
+                        }
+                      }}
+                      className={
+                        !hasPreviousPage ? "pointer-events-none opacity-50" : ""
+                      }
+                    />
+                  </PaginationItem>
 
-        {/* Search and Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1">
-            <ExamSearch
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-              placeholder="Search exams by title, description, or ID..."
-            />
-          </div>
+                  {renderPaginationItems()}
 
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              {totalExams} exam{totalExams !== 1 ? "s" : ""} found
-            </span>
-          </div>
-        </div>
-
-        {/* Results */}
-        {isLoading ? (
-          <ExamCardSkeletonGrid count={pageSize} />
-        ) : exams.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {exams.map((exam) => (
-                <ExamCard
-                  key={exam.id}
-                  exam={exam}
-                  onViewDetails={handleViewDetails}
-                  onRegister={handleRegister}
-                  onDelete={handleDeleteExam}
-                  isDeleting={deleteExamMutation.isPending}
-                />
-              ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (hasNextPage) {
+                          handlePageChange(actualCurrentPage + 1);
+                        }
+                      }}
+                      className={
+                        !hasNextPage ? "pointer-events-none opacity-50" : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (hasPreviousPage) {
-                            handlePageChange(actualCurrentPage - 1);
-                          }
-                        }}
-                        className={
-                          !hasPreviousPage
-                            ? "pointer-events-none opacity-50"
-                            : ""
-                        }
-                      />
-                    </PaginationItem>
-
-                    {renderPaginationItems()}
-
-                    <PaginationItem>
-                      <PaginationNext
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (hasNextPage) {
-                            handlePageChange(actualCurrentPage + 1);
-                          }
-                        }}
-                        className={
-                          !hasNextPage ? "pointer-events-none opacity-50" : ""
-                        }
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
-          </>
-        ) : (
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="rounded-full bg-muted p-4 mb-4">
-                <BookOpen className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">
-                {searchQuery ? "No matching exams found" : "No exams available"}
-              </h3>
-              <p className="text-muted-foreground mb-6 max-w-md">
-                {searchQuery
-                  ? `No exams match your search for "${searchQuery}". Try adjusting your search terms.`
-                  : "There are no IELTS Academic exams available at the moment."}
-              </p>
-              {searchQuery ? (
-                <Button variant="outline" onClick={() => setSearchQuery("")}>
-                  Clear Search
-                </Button>
-              ) : (
-                <Button onClick={handleCreateExam} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Create First Exam
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </div>
+          )}
+        </>
+      ) : (
+        <EmptyState
+          icon={<BookOpen className="h-8 w-8 text-muted-foreground" />}
+          title="No exams available"
+          description="There are no IELTS Academic exams available at the moment."
+          searchQuery={searchQuery}
+          onClearSearch={() => setSearchQuery("")}
+          primaryAction={{
+            label: "Create First Exam",
+            onClick: handleCreateExam,
+            icon: <Plus className="h-4 w-4" />,
+          }}
+        />
+      )}
+    </PageLayout>
   );
 }

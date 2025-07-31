@@ -65,7 +65,7 @@ export function QuestionsPagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex items-center justify-center space-x-2 py-4">
+    <div className="flex items-center justify-center space-x-2 py-2">
       <Button
         variant="outline"
         size="icon"
