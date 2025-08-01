@@ -125,7 +125,7 @@ export default function EditTestPageClient({
       await updateTest.mutateAsync(testData);
       success("Test updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/reading/tests`
+        `/dashboard/organization/${organizationId}/ielts/reading/tests`
       );
     } catch (e) {
       console.error(e);
@@ -188,7 +188,7 @@ export default function EditTestPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts-academic/reading/tests`
+                `/dashboard/organization/${organizationId}/ielts/reading/tests`
               )
             }
             className="gap-1.5"

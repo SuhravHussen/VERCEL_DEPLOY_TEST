@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -21,17 +20,9 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import {
-  Calendar,
-  FileText,
-  Filter,
-  SortAsc,
-  SortDesc,
-  Users,
-} from "lucide-react";
+import { FileText, Filter, SortAsc, SortDesc } from "lucide-react";
 import { useUserOrganizationExams } from "@/hooks/user/organization/use-user-organization-exams";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
-import { CurrencySymbols } from "@/types/currency";
+import { ExamBookingCard } from "@/components/shared/ExamBookingCard";
 
 interface ExamsTabProps {
   organizationId: string;
@@ -59,26 +50,9 @@ export function ExamsTab({ organizationId }: ExamsTabProps) {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const formatTime = (timeString: string) => {
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const formatPrice = (exam: IELTSExamModel) => {
-    if (exam.is_free) return "Free";
-    const symbol = CurrencySymbols[exam.currency] || exam.currency;
-    return `${symbol}${exam.price}`;
+  const handleBookExam = (examId: string) => {
+    // TODO: Implement exam booking logic
+    console.log("Booking exam:", examId);
   };
 
   if (error) {
@@ -228,129 +202,12 @@ export function ExamsTab({ organizationId }: ExamsTabProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {exams.map((exam) => (
-            <Card
+            <ExamBookingCard
               key={exam.id}
-              className="border-0 shadow-sm hover:shadow-md transition-shadow flex flex-col"
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg leading-tight line-clamp-2">
-                    {exam.title}
-                  </CardTitle>
-                  <Badge
-                    variant={exam.is_free ? "secondary" : "default"}
-                    className="ml-2 flex-shrink-0"
-                  >
-                    {formatPrice(exam)}
-                  </Badge>
-                </div>
-                {exam.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {exam.description}
-                  </p>
-                )}
-              </CardHeader>
-              <CardContent className="flex flex-col flex-grow">
-                <div className="space-y-3 flex-grow">
-                  {/* Exam Date */}
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">
-                      {formatDate(exam.lrw_group.exam_date)}
-                    </span>
-                  </div>
-
-                  {/* LRW Test Times */}
-                  <div className="space-y-2">
-                    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      Test Schedule
-                    </div>
-
-                    <div className="space-y-1 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Listening:
-                        </span>
-                        <span className="font-medium">
-                          {formatTime(exam.lrw_group.listening_time_start)}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Reading:</span>
-                        <span className="font-medium">
-                          {formatTime(exam.lrw_group.reading_time_start)}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Writing:</span>
-                        <span className="font-medium">
-                          {formatTime(exam.lrw_group.writing_time_start)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Speaking Time Windows */}
-                  {exam.speaking_group.time_windows &&
-                    exam.speaking_group.time_windows.length > 0 && (
-                      <div className="space-y-2">
-                        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                          Speaking Sessions
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          {exam.speaking_group.time_windows
-                            .slice(0, 2)
-                            .map((window, index) => (
-                              <div
-                                key={window.id || index}
-                                className="flex items-center justify-between"
-                              >
-                                <span className="text-muted-foreground">
-                                  {formatDate(window.date)}:
-                                </span>
-                                <span className="font-medium">
-                                  {formatTime(window.start_time)} -{" "}
-                                  {formatTime(window.end_time)}
-                                </span>
-                              </div>
-                            ))}
-                          {exam.speaking_group.time_windows.length > 2 && (
-                            <div className="text-xs text-muted-foreground">
-                              +{exam.speaking_group.time_windows.length - 2}{" "}
-                              more slots
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Registration Deadline */}
-                  {exam.registration_deadline && (
-                    <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
-                      <Calendar className="h-4 w-4" />
-                      <span>
-                        Register by {formatDate(exam.registration_deadline)}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Max Students */}
-                  {exam.max_students && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span>Max {exam.max_students} students</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Register Button - Always at bottom */}
-                <div className="pt-4 mt-auto">
-                  <Button size="sm" className="w-full">
-                    Register
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+              exam={exam}
+              onBookExam={handleBookExam}
+              isLoading={false}
+            />
           ))}
         </div>
       )}

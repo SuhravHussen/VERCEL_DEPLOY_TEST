@@ -116,7 +116,7 @@ export default function CreateWritingPageClient({
 
       success("Writing task created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/writing/questions`
+        `/dashboard/organization/${organizationId}/ielts/writing/questions`
       );
     } catch (e) {
       console.error(e);

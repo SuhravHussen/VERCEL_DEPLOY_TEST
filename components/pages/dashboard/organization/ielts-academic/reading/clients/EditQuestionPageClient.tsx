@@ -161,7 +161,7 @@ export default function EditQuestionPageClient({
       await updateQuestion.mutateAsync(questionData);
       success("Question updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/reading/questions`
+        `/dashboard/organization/${organizationId}/ielts/reading/questions`
       );
     } catch (e) {
       console.log(e);
@@ -226,7 +226,7 @@ export default function EditQuestionPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts-academic/reading/questions`
+                `/dashboard/organization/${organizationId}/ielts/reading/questions`
               )
             }
             className="gap-1.5"

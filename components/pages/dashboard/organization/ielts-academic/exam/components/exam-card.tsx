@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import {
   formatCurrency,
   formatDate,
@@ -32,7 +32,7 @@ import {
 } from "../utils/format-helpers";
 
 interface ExamCardProps {
-  exam: IELTSExamModel;
+  exam: ExamModel;
   onViewDetails?: (examId: string) => void;
   onRegister?: (examId: string) => void;
   onDelete?: (examId: string) => void;
@@ -98,14 +98,8 @@ export function ExamCard({
                   {formatCurrency(exam.price, exam.currency)}
                 </Badge>
               )}
-              {exam.is_active && (
-                <Badge
-                  variant="default"
-                  className=" text-blue-700 border-blue-200"
-                >
-                  Active
-                </Badge>
-              )}
+              {exam.is_published && <Badge variant="default">Published</Badge>}
+              {!exam.is_published && <Badge variant="outline">Archived</Badge>}
             </div>
           </div>
 
@@ -123,7 +117,7 @@ export function ExamCard({
               <CalendarDays className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <span className="font-medium">Exam Date:</span>
               <span className="text-muted-foreground">
-                {formatDate(exam.lrw_group.exam_date)}
+                {formatDate(exam?.lrw_group?.exam_date || "")}
               </span>
             </div>
 
@@ -131,21 +125,22 @@ export function ExamCard({
               <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <span className="font-medium">Start Time:</span>
               <span className="text-muted-foreground">
-                {formatTime(exam.lrw_group.listening_time_start)}
+                {formatTime(exam?.lrw_group?.listening_time_start || "")}
               </span>
             </div>
           </div>
 
           {/* Speaking Sessions */}
-          {exam.speaking_group.time_windows.length > 0 && (
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <span className="font-medium">Speaking Sessions:</span>
-              <span className="text-muted-foreground">
-                {exam.speaking_group.time_windows.length} available
-              </span>
-            </div>
-          )}
+          {Array.isArray(exam?.speaking_group?.time_windows) &&
+            exam.speaking_group.time_windows.length > 0 && (
+              <div className="flex items-center gap-2 text-sm">
+                <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="font-medium">Speaking Sessions:</span>
+                <span className="text-muted-foreground">
+                  {exam?.speaking_group?.time_windows?.length || 0} available
+                </span>
+              </div>
+            )}
 
           {/* Student Capacity */}
           <div className="flex items-center gap-2 text-sm">

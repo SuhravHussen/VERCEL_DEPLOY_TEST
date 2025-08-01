@@ -26,7 +26,7 @@ export function QuestionsPageHeader({
       </div>
       <Button asChild className="gap-2">
         <Link
-          href={`/dashboard/organization/${organizationId}/ielts-academic/listening/questions/create`}
+          href={`/dashboard/organization/${organizationId}/ielts/listening/questions/create`}
         >
           <Plus className="h-4 w-4" />
           <span>Create new question</span>

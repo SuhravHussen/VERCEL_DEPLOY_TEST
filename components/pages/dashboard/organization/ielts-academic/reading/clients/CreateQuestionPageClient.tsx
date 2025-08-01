@@ -131,7 +131,7 @@ export default function CreateQuestionPageClient({
       const question = await createQuestion.mutateAsync(questionData);
       console.log(question);
       success("Question created successfully");
-      // router.push(`/dashboard/organization/${organizationId}/ielts-academic/reading/questions`);
+      // router.push(`/dashboard/organization/${organizationId}/ielts/reading/questions`);
     } catch (e) {
       console.log(e);
       error("Failed to create question");

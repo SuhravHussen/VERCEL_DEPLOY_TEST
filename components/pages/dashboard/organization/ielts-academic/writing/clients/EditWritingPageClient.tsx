@@ -136,7 +136,7 @@ export default function EditWritingPageClient({
 
       success("Writing task updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/writing/questions`
+        `/dashboard/organization/${organizationId}/ielts/writing/questions`
       );
     } catch (e) {
       console.error(e);
@@ -177,7 +177,7 @@ export default function EditWritingPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts-academic/writing/questions`
+                `/dashboard/organization/${organizationId}/ielts/writing/questions`
               )
             }
             className="flex items-center gap-2"

@@ -27,7 +27,7 @@ export function QuestionsPageHeader({
         </div>
         <Button
           onClick={() =>
-            (window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/writing/questions/create`)
+            (window.location.href = `/dashboard/organization/${organizationId}/ielts/writing/questions/create`)
           }
         >
           Create Question

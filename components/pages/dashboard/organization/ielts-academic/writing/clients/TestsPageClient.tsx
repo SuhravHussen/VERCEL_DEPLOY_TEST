@@ -76,7 +76,7 @@ export default function TestsPageClient({
 
   const handleCreateTest = () => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/writing/tests/create`
+      `/dashboard/organization/${organizationId}/ielts/writing/tests/create`
     );
   };
 

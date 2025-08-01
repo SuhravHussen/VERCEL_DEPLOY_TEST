@@ -20,10 +20,7 @@ import {
   BarChart3,
   Target,
 } from "lucide-react";
-import {
-  IELTSExamModel,
-  AdminIELTSExamModel,
-} from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { useGetIeltsListeningTests } from "@/hooks/organization/ielts-academic/listening/use-get-ielts-listening-test";
 import { useGetIeltsReadingTests } from "@/hooks/organization/ielts-academic/reading/use-get-ietls-reading-test";
 import { useGetIeltsWritingTests } from "@/hooks/organization/ielts-academic/writing/use-get-ielts-writing-tests";
@@ -43,10 +40,8 @@ import { IELTSReadingTest } from "@/types/exam/ielts-academic/reading/test/test"
 import { IELTSReadingTestSection } from "@/types/exam/ielts-academic/reading/question/question";
 
 interface TestSelectionStepProps {
-  examData: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>;
-  updateExamData: (
-    updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
-  ) => void;
+  examData: Partial<ExamModel>;
+  updateExamData: (updates: Partial<ExamModel>) => void;
   organizationId: number;
   onNext: () => void;
   onPrevious: () => void;
@@ -119,7 +114,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
   };
 
   const isTestSelected = (testType: string, testId: string) => {
-    const selectedTest = examData[`${testType}_test` as keyof IELTSExamModel];
+    const selectedTest = examData[`${testType}_test` as keyof ExamModel];
     return (
       selectedTest &&
       (selectedTest as IELTSListeningTest | IELTSReadingTest | IELTSWritingTest)
@@ -475,7 +470,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
     isLoading: boolean,
     title: string
   ) => {
-    const isSelected = !!examData[`${testType}_test` as keyof IELTSExamModel];
+    const isSelected = !!examData[`${testType}_test` as keyof ExamModel];
 
     return (
       <div className="space-y-6">

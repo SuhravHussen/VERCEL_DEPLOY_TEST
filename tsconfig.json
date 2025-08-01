@@ -22,7 +22,13 @@
     },
     "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/(dashboard)/dashboard/user/calendar"
+  ],
   "exclude": [
     "node_modules",
     "components/tiptap-extension/**/*",

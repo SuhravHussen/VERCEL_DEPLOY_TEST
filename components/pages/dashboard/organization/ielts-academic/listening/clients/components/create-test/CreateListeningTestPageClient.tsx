@@ -84,7 +84,7 @@ export default function CreateListeningTestPageClient({
       await createTest.mutateAsync(testData);
       success("Test created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/listening/tests`
+        `/dashboard/organization/${organizationId}/ielts/listening/tests`
       );
     } catch (e) {
       console.error(e);

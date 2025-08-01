@@ -23,7 +23,7 @@ export function QuestionsPageHeader({
         <p className="text-muted-foreground">{dashboardText.subtitle}</p>
       </div>
       <Link
-        href={`/dashboard/organization/${organizationId}/ielts-academic/reading/questions/create`}
+        href={`/dashboard/organization/${organizationId}/ielts/reading/questions/create`}
       >
         <Button>
           <FilePlus className="mr-2 h-4 w-4" />

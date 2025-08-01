@@ -1,7 +1,9 @@
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { ValidationErrors } from "@/types/exam/ielts-academic/exam-creation";
 
-export const validateBasicInfo = (examData: Partial<IELTSExamModel>): ValidationErrors => {
+export const validateBasicInfo = (
+  examData: Partial<ExamModel>
+): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   if (!examData.title?.trim()) {
@@ -12,10 +14,23 @@ export const validateBasicInfo = (examData: Partial<IELTSExamModel>): Validation
     errors.price = "Price must be greater than 0 for paid exams";
   }
 
+  // Validate registration deadline if provided
+  if (examData.registration_deadline) {
+    const deadline = new Date(examData.registration_deadline);
+    const now = new Date();
+
+    if (deadline <= now) {
+      errors.registration_deadline =
+        "Registration deadline must be in the future";
+    }
+  }
+
   return errors;
 };
 
-export const validateTestSelection = (examData: Partial<IELTSExamModel>): ValidationErrors => {
+export const validateTestSelection = (
+  examData: Partial<ExamModel>
+): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   if (!examData.listening_test) {
@@ -33,7 +48,9 @@ export const validateTestSelection = (examData: Partial<IELTSExamModel>): Valida
   return errors;
 };
 
-export const validateLRWSchedule = (examData: Partial<IELTSExamModel>): ValidationErrors => {
+export const validateLRWSchedule = (
+  examData: Partial<ExamModel>
+): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   if (!examData.lrw_group?.exam_date) {
@@ -59,7 +76,9 @@ export const validateLRWSchedule = (examData: Partial<IELTSExamModel>): Validati
   return errors;
 };
 
-export const validateSpeakingSchedule = (examData: Partial<IELTSExamModel>): ValidationErrors => {
+export const validateSpeakingSchedule = (
+  examData: Partial<ExamModel>
+): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   if (!examData.speaking_group?.time_windows?.length) {

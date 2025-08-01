@@ -4,15 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ExamModel } from "@/types/exam/exam";
 import { Currency, CurrencySymbols, CurrencyLabels } from "@/types/currency";
 import { ValidationErrors } from "@/types/exam/ielts-academic/exam-creation";
 
 interface PricingFormProps {
-  examData: Partial<IELTSExamModel>;
+  examData: Partial<ExamModel>;
   errors: ValidationErrors;
-  onInputChange: (field: keyof IELTSExamModel, value: string | number | boolean | Currency) => void;
+  onInputChange: (
+    field: keyof ExamModel,
+    value: string | number | boolean | Currency
+  ) => void;
 }
 
 export const PricingForm: React.FC<PricingFormProps> = ({
@@ -52,7 +61,9 @@ export const PricingForm: React.FC<PricingFormProps> = ({
               </Label>
               <Select
                 value={examData.currency || Currency.USD}
-                onValueChange={(value) => onInputChange("currency", value as Currency)}
+                onValueChange={(value) =>
+                  onInputChange("currency", value as Currency)
+                }
               >
                 <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue placeholder="Select currency" />
@@ -79,7 +90,9 @@ export const PricingForm: React.FC<PricingFormProps> = ({
                   id="price"
                   type="number"
                   value={examData.price || ""}
-                  onChange={(e) => onInputChange("price", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    onInputChange("price", parseFloat(e.target.value) || 0)
+                  }
                   placeholder="0.00"
                   min="0"
                   step="0.01"

@@ -171,7 +171,7 @@ export function TestCard({
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Link
-                              href={`/dashboard/organization/${organizationId}/ielts-academic/reading/tests/${test.id}/edit`}
+                              href={`/dashboard/organization/${organizationId}/ielts/reading/tests/${test.id}/edit`}
                             >
                               <Edit className="h-3 w-3" />
                             </Link>
@@ -272,7 +272,7 @@ export function TestCard({
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Link
-                            href={`/dashboard/organization/${organizationId}/ielts-academic/reading/tests/${test.id}/edit`}
+                            href={`/dashboard/organization/${organizationId}/ielts/reading/tests/${test.id}/edit`}
                           >
                             <Edit className="h-3 w-3" />
                           </Link>

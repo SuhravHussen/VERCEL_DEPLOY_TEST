@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { IELTSReadingTestSection } from "@/types/exam/ielts-academic/reading/question/question";
 import { IELTSListeningTestSection } from "@/types/exam/ielts-academic/listening/listening";
 import { QUERY_KEYS } from "@/hooks/query-keys";
@@ -10,7 +10,7 @@ import { addListeningQuestionNumbering } from "@/lib/addListeningQuestionNumberi
 import { addWritingTaskStats } from "@/lib/addWritingQuestionNumbering";
 
 interface ExamDetailsResult {
-  exam: IELTSExamModel | null;
+  exam: ExamModel | null;
   isLoading: boolean;
   error: string | null;
   numberedReadingSections: IELTSReadingTestSection[];
@@ -27,7 +27,7 @@ export function useExamDetails(examId: string): ExamDetailsResult {
     error,
   } = useQuery({
     queryKey: QUERY_KEYS.IELTS_EXAM.DETAILS(examId),
-    queryFn: async (): Promise<IELTSExamModel | null> => {
+    queryFn: async (): Promise<ExamModel | null> => {
       if (!examId) {
         throw new Error("Exam ID is required");
       }

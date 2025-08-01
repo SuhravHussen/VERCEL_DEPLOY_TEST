@@ -160,7 +160,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   const handleCreateQuestion = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/listening/questions/create`;
+    window.location.href = `/dashboard/organization/${organizationId}/ielts/listening/questions/create`;
   };
 
   return (

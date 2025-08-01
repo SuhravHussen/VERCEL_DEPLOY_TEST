@@ -1,19 +1,14 @@
 import { useState, useCallback, useEffect } from "react";
-import {
-  IELTSExamModel,
-  AdminIELTSExamModel,
-} from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { Currency } from "@/types/currency";
 
 interface UseExamDataReturn {
-  examData: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>;
-  updateExamData: (
-    updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
-  ) => void;
+  examData: Partial<ExamModel>;
+  updateExamData: (updates: Partial<ExamModel>) => void;
   resetExamData: () => void;
 }
 
-const getInitialExamData = (): Partial<AdminIELTSExamModel> => ({
+const getInitialExamData = (): Partial<ExamModel> => ({
   title: "",
   description: "",
   price: 0,
@@ -31,16 +26,15 @@ const getInitialExamData = (): Partial<AdminIELTSExamModel> => ({
     assigned_instructors: [],
     session_per_student: 30,
   },
-  is_active: true,
+  is_published: false,
+  is_practice_exam: false,
   max_students: 50,
 });
 
 export const useExamData = (
-  initialData?: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
+  initialData?: Partial<ExamModel>
 ): UseExamDataReturn => {
-  const [examData, setExamData] = useState<
-    Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
-  >(() => {
+  const [examData, setExamData] = useState<Partial<ExamModel>>(() => {
     if (initialData) {
       return { ...getInitialExamData(), ...initialData };
     }
@@ -54,12 +48,9 @@ export const useExamData = (
     }
   }, [initialData]);
 
-  const updateExamData = useCallback(
-    (updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>) => {
-      setExamData((prev) => ({ ...prev, ...updates }));
-    },
-    []
-  );
+  const updateExamData = useCallback((updates: Partial<ExamModel>) => {
+    setExamData((prev) => ({ ...prev, ...updates }));
+  }, []);
 
   const resetExamData = useCallback(() => {
     const resetData = initialData

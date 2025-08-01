@@ -41,7 +41,7 @@ export default function ExamDetailsPage() {
 
   const handleEditExam = () => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/exam/edit/${examId}`
+      `/dashboard/organization/${organizationId}/ielts/exam/edit/${examId}`
     );
   };
 
@@ -163,7 +163,7 @@ export default function ExamDetailsPage() {
         <Tabs defaultValue="overview" className="w-full">
           {/* Tab Navigation */}
           <div className="mb-6">
-            <TabsList className="grid w-full grid-cols-5 h-10">
+            <TabsList className="">
               <TabsTrigger value="overview" className="text-xs sm:text-sm">
                 <BookOpen className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Overview</span>
@@ -340,7 +340,9 @@ export default function ExamDetailsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {exam.speaking_group.time_windows.length > 0 ? (
+                  {exam.speaking_group &&
+                  exam.speaking_group.time_windows &&
+                  exam.speaking_group.time_windows.length > 0 ? (
                     <div className="space-y-6">
                       {/* Speaking Stats */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

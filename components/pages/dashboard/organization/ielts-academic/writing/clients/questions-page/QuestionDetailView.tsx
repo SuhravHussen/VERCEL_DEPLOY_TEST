@@ -191,7 +191,7 @@ export function QuestionDetailView({
 
           <div className="flex gap-2">
             <Link
-              href={`/dashboard/organization/${organizationId}/ielts-academic/writing/questions/${selectedQuestion.id}/edit`}
+              href={`/dashboard/organization/${organizationId}/ielts/writing/questions/${selectedQuestion.id}/edit`}
             >
               <Button variant="outline" size="sm" className="flex gap-1">
                 <Edit className="h-3 w-3" />

@@ -73,7 +73,7 @@ function ExamPageClient({ organizationId }: { organizationId: string }) {
 
   const handleViewDetails = (examId: string) => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/exam/${examId}`
+      `/dashboard/organization/${organizationId}/ielts/exam/${examId}`
     );
   };
 
@@ -93,9 +93,7 @@ function ExamPageClient({ organizationId }: { organizationId: string }) {
   };
 
   const handleCreateExam = () => {
-    router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/exam/create`
-    );
+    router.push(`/dashboard/organization/${organizationId}/ielts/exam/create`);
   };
 
   // Generate pagination items

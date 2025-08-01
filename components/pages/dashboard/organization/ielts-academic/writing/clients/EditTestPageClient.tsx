@@ -67,7 +67,7 @@ export default function EditTestPageClient({
     onSuccess: () => {
       success("Test updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/writing/tests`
+        `/dashboard/organization/${organizationId}/ielts/writing/tests`
       );
     },
     onError: (err) => {
@@ -118,7 +118,7 @@ export default function EditTestPageClient({
           size="icon"
           onClick={() =>
             router.push(
-              `/dashboard/organization/${organizationId}/ielts-academic/writing/tests`
+              `/dashboard/organization/${organizationId}/ielts/writing/tests`
             )
           }
         >

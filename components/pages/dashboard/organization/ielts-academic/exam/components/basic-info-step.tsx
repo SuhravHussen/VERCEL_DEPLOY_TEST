@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, FileText, CheckCircle2 } from "lucide-react";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { Currency } from "@/types/currency";
 import {
   BasicInfoStepProps,
@@ -18,6 +18,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   examData,
   updateExamData,
   onNext,
+  isAdmin,
 }) => {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -34,10 +35,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   }, [validateForm, onNext]);
 
   const handleInputChange = useCallback(
-    (
-      field: keyof IELTSExamModel,
-      value: string | number | boolean | Currency
-    ) => {
+    (field: keyof ExamModel, value: string | number | boolean | Currency) => {
       updateExamData({ [field]: value });
       // Clear error when user starts typing
       if (errors[field]) {
@@ -126,6 +124,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
               examData={examData}
               errors={errors}
               onInputChange={handleInputChange}
+              isAdmin={isAdmin}
             />
           </div>
 

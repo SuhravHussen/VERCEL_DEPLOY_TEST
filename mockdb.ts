@@ -33,8 +33,10 @@ import { mockIeltsWritingTasks } from "./mockdata/mockIeltsWritingQuestion";
 import { mockIeltsWritingTests } from "./mockdata/mockIeltsWritingTests";
 import { mockOrganizations } from "./mockdata/mockOrganizations";
 import { mockUsers } from "./mockdata/mockUsers";
-import { IELTSExamModel } from "./types/exam/ielts-academic/exam";
-import { mockIELTSExams } from "./mockdata/mockIeltsExam";
+import { ExamModel, ExamFilters } from "./types/exam/exam";
+import { mockIELTSExams, mockAllExams } from "./mockdata/mockIeltsExam";
+import { RegisteredExam } from "./types/registered-exam";
+import { registeredExams } from "./mockdata/mockRegisteredExam";
 
 // Mock database to simulate server-side storage
 interface MockDB {
@@ -128,10 +130,28 @@ interface MockDB {
   deleteIeltsWritingTest: (testId: string) => boolean;
 
   // ielts exams
-  ieltsExams: IELTSExamModel[];
-  createIeltsExam: (exam: Partial<IELTSExamModel>) => IELTSExamModel;
-  getIeltsExams: () => IELTSExamModel[];
-  getIeltsExamById: (id: string) => IELTSExamModel | undefined;
+  ieltsExams: ExamModel[];
+  createIeltsExam: (exam: Partial<ExamModel>) => ExamModel;
+  getIeltsExams: () => ExamModel[];
+  getIeltsExamById: (id: string) => ExamModel | undefined;
+
+  // all exams (multi-type)
+  allExams: ExamModel[];
+  getAllExams: () => ExamModel[];
+  getAllExamsByOrganization: (
+    organizationId: string,
+    filters?: ExamFilters
+  ) => ExamModel[];
+  getAllExamById: (id: string) => ExamModel | undefined;
+  createAllExam: (exam: Partial<ExamModel>) => ExamModel;
+  updateAllExam: (id: string, examData: Partial<ExamModel>) => ExamModel | null;
+  deleteAllExam: (id: string) => boolean;
+
+  // registered exams
+  registeredExams: RegisteredExam[];
+  getRegisteredExamsByUser: (userId: string) => RegisteredExam[];
+  getRegisteredExamById: (id: string) => RegisteredExam | undefined;
+  createRegisteredExam: (exam: Partial<RegisteredExam>) => RegisteredExam;
 }
 
 const mockdb: MockDB = {
@@ -585,13 +605,13 @@ const mockdb: MockDB = {
 
   // ielts exams
   ieltsExams: [...mockIELTSExams],
-  createIeltsExam(exam: Partial<IELTSExamModel>) {
-    const newExam: IELTSExamModel = {
+  createIeltsExam(exam: Partial<ExamModel>) {
+    const newExam: ExamModel = {
       ...exam,
       id: uuidv4(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    } as IELTSExamModel;
+    } as ExamModel;
     this.ieltsExams.push(newExam);
     return newExam;
   },
@@ -600,6 +620,141 @@ const mockdb: MockDB = {
   },
   getIeltsExamById(id: string) {
     return this.ieltsExams.find((exam) => exam.id === id);
+  },
+
+  // all exams (multi-type)
+  allExams: [...mockAllExams],
+  getAllExams() {
+    return this.allExams;
+  },
+  getAllExamsByOrganization(organizationId: string, filters?: ExamFilters) {
+    let exams = [...this.allExams];
+
+    // Filter by organization (for now, return all since we don't have org-specific exams in mock)
+    // In real implementation, you would filter by organizationId
+
+    // Apply filters
+    if (filters) {
+      // Filter by exam type
+      if (filters.examType && filters.examType !== "all") {
+        exams = exams.filter((exam) => exam.type_of_exam === filters.examType);
+      }
+
+      // Filter by price
+      if (filters.priceFilter && filters.priceFilter !== "all") {
+        if (filters.priceFilter === "free") {
+          exams = exams.filter((exam) => exam.is_free);
+        } else if (filters.priceFilter === "paid") {
+          exams = exams.filter((exam) => !exam.is_free);
+        }
+      }
+
+      // Filter by search query
+      if (filters.searchQuery && filters.searchQuery.trim()) {
+        const query = filters.searchQuery.toLowerCase().trim();
+        exams = exams.filter(
+          (exam) =>
+            exam.title.toLowerCase().includes(query) ||
+            exam.description?.toLowerCase().includes(query) ||
+            exam.type_of_exam.toLowerCase().includes(query)
+        );
+      }
+
+      // Sort exams
+      const sortBy = filters.sortBy || "created_at";
+      const sortOrder = filters.sortOrder || "desc";
+
+      exams.sort((a, b) => {
+        let comparison = 0;
+
+        switch (sortBy) {
+          case "date":
+            const dateA = new Date(
+              a?.lrw_group?.exam_date || a.created_at || ""
+            );
+            const dateB = new Date(
+              b?.lrw_group?.exam_date || b.created_at || ""
+            );
+            comparison = dateA.getTime() - dateB.getTime();
+            break;
+          case "price":
+            comparison = a.price - b.price;
+            break;
+          case "title":
+            comparison = a.title.localeCompare(b.title);
+            break;
+          case "created_at":
+            const createdA = new Date(a.created_at || "");
+            const createdB = new Date(b.created_at || "");
+            comparison = createdA.getTime() - createdB.getTime();
+            break;
+          default:
+            comparison = 0;
+        }
+
+        return sortOrder === "desc" ? -comparison : comparison;
+      });
+    }
+
+    return exams;
+  },
+  getAllExamById(id: string) {
+    return this.allExams.find((exam) => exam.id === id);
+  },
+  createAllExam(exam: Partial<ExamModel>) {
+    const newExam: ExamModel = {
+      ...exam,
+      id: uuidv4(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as ExamModel;
+    this.allExams.push(newExam);
+    return newExam;
+  },
+  updateAllExam(id: string, examData: Partial<ExamModel>) {
+    const examIndex = this.allExams.findIndex((exam) => exam.id === id);
+
+    if (examIndex === -1) {
+      return null;
+    }
+
+    const updatedExam = {
+      ...this.allExams[examIndex],
+      ...examData,
+      id, // Ensure ID remains the same
+      updated_at: new Date().toISOString(),
+    };
+
+    this.allExams[examIndex] = updatedExam;
+    return updatedExam;
+  },
+  deleteAllExam(id: string) {
+    const examIndex = this.allExams.findIndex((exam) => exam.id === id);
+
+    if (examIndex === -1) {
+      return false;
+    }
+
+    this.allExams.splice(examIndex, 1);
+    return true;
+  },
+
+  // registered exams
+  registeredExams: [...registeredExams],
+  getRegisteredExamsByUser(userId: string) {
+    return this.registeredExams.filter((exam) => exam.user.id === userId);
+  },
+  getRegisteredExamById(id: string) {
+    return this.registeredExams.find((exam) => exam.id === id);
+  },
+  createRegisteredExam(exam: Partial<RegisteredExam>) {
+    const newExam: RegisteredExam = {
+      ...exam,
+      id: uuidv4(),
+      registered_at: new Date().toISOString(),
+    } as RegisteredExam;
+    this.registeredExams.push(newExam);
+    return newExam;
   },
 };
 

@@ -97,7 +97,7 @@ export default function EditListeningQuestionPageClient({
 
       toast.success("Question updated successfully!");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/listening/questions`
+        `/dashboard/organization/${organizationId}/ielts/listening/questions`
       );
     } catch (error) {
       console.error("Error updating question:", error);
@@ -157,7 +157,7 @@ export default function EditListeningQuestionPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts-academic/listening/questions`
+                `/dashboard/organization/${organizationId}/ielts/listening/questions`
               )
             }
             className="gap-1.5"

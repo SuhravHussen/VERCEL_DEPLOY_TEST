@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel, ExamType } from "@/types/exam/exam";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
 import { IELTSReadingTest } from "@/types/exam/ielts-academic/reading/test/test";
 import { IELTSWritingTest } from "@/types/exam/ielts-academic/writing/writing";
@@ -17,6 +17,7 @@ export interface CreateExamData {
   price: number;
   is_free: boolean;
   currency: Currency;
+  type_of_exam: ExamType;
   lrw_group: {
     exam_date: string;
     listening_time_start: string;
@@ -34,36 +35,55 @@ export interface CreateExamData {
     assigned_instructors: User[];
     session_per_student: number;
   };
-  max_students: number;
+  max_students?: number;
   registration_deadline?: string;
-  is_active?: boolean;
+  is_published?: boolean;
+  is_practice_exam?: boolean;
 }
 
 export const useAddExam = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (examData: CreateExamData): Promise<IELTSExamModel> => {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    mutationFn: async (data: CreateExamData): Promise<ExamModel> => {
+      // Simulate API call
+      const newExam: ExamModel = {
+        id: `exam-${Date.now()}`,
+        title: data.title,
+        description: data.description,
+        type_of_exam: data.type_of_exam,
+        price: data.price,
+        is_free: data.is_free,
+        currency: data.currency,
+        listening_test: data.listening_test,
+        reading_test: data.reading_test,
+        writing_test: data.writing_test,
+        lrw_group: data.lrw_group,
+        speaking_group: data.speaking_group,
+        max_students: data.max_students,
+        registration_deadline: data.registration_deadline,
+        is_published: data.is_published || true,
+        is_practice_exam: data.is_practice_exam || false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
 
-      // Create the exam using mockdb
-      const newExam = mockdb.createIeltsExam({
-        ...examData,
-        is_active: examData.is_active ?? true,
-        registration_deadline:
-          examData.registration_deadline ||
-          new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
-      });
+      // Add to mock database
+      mockdb.ieltsExams.push(newExam);
 
       return newExam;
     },
     onSuccess: () => {
-      // Invalidate all exam-related queries
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.IELTS_EXAM.LIST });
-      queryClient.invalidateQueries({ queryKey: ["ielts-exams", "paginated"] });
-      // Invalidate organization-specific queries if needed
-      // queryClient.invalidateQueries({ queryKey: QUERY_KEYS.IELTS_EXAM.BY_ORGANIZATION(organizationId) });
+      // Invalidate exam queries to refetch data
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.IELTS_EXAM.LIST,
+      });
+
+      // Invalidate organization all exams queries
+      queryClient.invalidateQueries({
+        queryKey: ["all-exams"],
+        exact: false,
+      });
     },
   });
 };

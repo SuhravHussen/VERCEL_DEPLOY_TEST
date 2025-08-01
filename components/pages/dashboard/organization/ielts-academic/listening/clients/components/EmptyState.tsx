@@ -46,7 +46,7 @@ export function EmptyState({
             four listening sections.
           </p>
           <Link
-            href={`/dashboard/organization/${organizationId}/ielts-academic/listening/tests/create`}
+            href={`/dashboard/organization/${organizationId}/ielts/listening/tests/create`}
           >
             <Button size="lg">
               <PlusCircle className="mr-2 h-5 w-5" />

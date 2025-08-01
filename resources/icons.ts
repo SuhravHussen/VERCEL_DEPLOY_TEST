@@ -95,4 +95,5 @@ export const Icons = {
   listening: IconEar,
   speaking: IconMicrophone2,
   calendar: IconCalendar,
+  exam: IconFileDescription,
 };

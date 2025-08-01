@@ -129,7 +129,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   const handleCreateQuestion = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/writing/questions/create`;
+    window.location.href = `/dashboard/organization/${organizationId}/ielts/writing/questions/create`;
   };
 
   return (

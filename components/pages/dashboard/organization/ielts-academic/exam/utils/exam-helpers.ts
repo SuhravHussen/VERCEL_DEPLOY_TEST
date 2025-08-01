@@ -1,36 +1,36 @@
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 
 /**
  * Check if exam registration is open
  */
-export function isRegistrationOpen(exam: IELTSExamModel): boolean {
-  if (!exam.registration_deadline) return exam.is_active || false;
+export function isRegistrationOpen(exam: ExamModel): boolean {
+  if (!exam.registration_deadline) return exam.is_published || false;
   return (
     new Date() < new Date(exam.registration_deadline) &&
-    (exam.is_active || false)
+    (exam.is_published || false)
   );
 }
 
 /**
  * Check if exam is upcoming
  */
-export function isExamUpcoming(exam: IELTSExamModel): boolean {
-  const examDate = new Date(exam.lrw_group.exam_date);
+export function isExamUpcoming(exam: ExamModel): boolean {
+  const examDate = new Date(exam?.lrw_group?.exam_date || "");
   return examDate > new Date();
 }
 
 /**
  * Check if exam is in the past
  */
-export function isExamPast(exam: IELTSExamModel): boolean {
-  const examDate = new Date(exam.lrw_group.exam_date);
+export function isExamPast(exam: ExamModel): boolean {
+  const examDate = new Date(exam?.lrw_group?.exam_date || "");
   return examDate < new Date();
 }
 
 /**
  * Get exam status as a readable string
  */
-export function getExamStatus(exam: IELTSExamModel): {
+export function getExamStatus(exam: ExamModel): {
   status:
     | "upcoming"
     | "registration-open"
@@ -40,7 +40,7 @@ export function getExamStatus(exam: IELTSExamModel): {
   label: string;
   variant: "default" | "secondary" | "destructive" | "outline";
 } {
-  if (!exam.is_active) {
+  if (!exam.is_published) {
     return {
       status: "inactive",
       label: "Inactive",
@@ -82,8 +82,8 @@ export function getExamStatus(exam: IELTSExamModel): {
 /**
  * Get days until exam
  */
-export function getDaysUntilExam(exam: IELTSExamModel): number {
-  const examDate = new Date(exam.lrw_group.exam_date);
+export function getDaysUntilExam(exam: ExamModel): number {
+  const examDate = new Date(exam?.lrw_group?.exam_date || "");
   const today = new Date();
   const diffTime = examDate.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -94,7 +94,7 @@ export function getDaysUntilExam(exam: IELTSExamModel): number {
  * Get days until registration deadline
  */
 export function getDaysUntilRegistrationDeadline(
-  exam: IELTSExamModel
+  exam: ExamModel
 ): number | null {
   if (!exam.registration_deadline) return null;
 
@@ -108,8 +108,11 @@ export function getDaysUntilRegistrationDeadline(
 /**
  * Check if exam has speaking component
  */
-export function hasSpeakingComponent(exam: IELTSExamModel): boolean {
-  return exam.speaking_group.time_windows.length > 0;
+export function hasSpeakingComponent(exam: ExamModel): boolean {
+  return (
+    Array.isArray(exam?.speaking_group?.time_windows) &&
+    exam.speaking_group.time_windows.length > 0
+  );
 }
 
 /**
@@ -125,12 +128,12 @@ export function getTotalExamDuration(): number {
  * Sort exams by exam date
  */
 export function sortExamsByDate(
-  exams: IELTSExamModel[],
+  exams: ExamModel[],
   ascending: boolean = true
-): IELTSExamModel[] {
+): ExamModel[] {
   return [...exams].sort((a, b) => {
-    const dateA = new Date(a.lrw_group.exam_date).getTime();
-    const dateB = new Date(b.lrw_group.exam_date).getTime();
+    const dateA = new Date(a?.lrw_group?.exam_date || "").getTime();
+    const dateB = new Date(b?.lrw_group?.exam_date || "").getTime();
     return ascending ? dateA - dateB : dateB - dateA;
   });
 }
@@ -139,13 +142,13 @@ export function sortExamsByDate(
  * Filter exams by status
  */
 export function filterExamsByStatus(
-  exams: IELTSExamModel[],
+  exams: ExamModel[],
   status: "active" | "upcoming" | "past" | "registration-open"
-): IELTSExamModel[] {
+): ExamModel[] {
   return exams.filter((exam) => {
     switch (status) {
       case "active":
-        return exam.is_active;
+        return exam.is_published;
       case "upcoming":
         return isExamUpcoming(exam);
       case "past":

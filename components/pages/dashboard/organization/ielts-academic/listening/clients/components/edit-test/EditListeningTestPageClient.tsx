@@ -119,7 +119,7 @@ export default function EditListeningTestPageClient({
 
       toast.success("Test updated successfully!");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/listening/tests`
+        `/dashboard/organization/${organizationId}/ielts/listening/tests`
       );
     } catch (error) {
       console.error("Error updating test:", error);
@@ -179,7 +179,7 @@ export default function EditListeningTestPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts-academic/listening/tests`
+                `/dashboard/organization/${organizationId}/ielts/listening/tests`
               )
             }
             className="gap-1.5"

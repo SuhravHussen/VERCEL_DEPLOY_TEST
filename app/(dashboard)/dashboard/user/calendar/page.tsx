@@ -5,7 +5,7 @@ import mockStudentEvents from "@/mockdata/mockStudentEvents";
 
 export default function StudentCalendarPage() {
   return (
-    <div className="container mx-auto p-4 lg:p-6 space-y-6">
+    <div className="container mx-auto p-0 lg:p-6 space-y-6">
       {/* Page Header */}
       <div className="space-y-2">
         <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
@@ -30,46 +30,12 @@ export default function StudentCalendarPage() {
             console.log("Date clicked:", date);
             // TODO: Implement date selection or add event functionality
           }}
+          onMonthChange={(date) => {
+            console.log("Month changed:", date);
+            // TODO: Implement month change functionality
+          }}
           className="shadow-sm border-0 bg-card"
         />
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="bg-card p-4 rounded-lg border">
-          <h3 className="font-semibold text-sm text-muted-foreground mb-2">
-            Practice Tests
-          </h3>
-          <p className="text-2xl font-bold text-blue-600">
-            {
-              mockStudentEvents.filter(
-                (event) => event.category === "Practice Test"
-              ).length
-            }
-          </p>
-        </div>
-        <div className="bg-card p-4 rounded-lg border">
-          <h3 className="font-semibold text-sm text-muted-foreground mb-2">
-            Speaking Sessions
-          </h3>
-          <p className="text-2xl font-bold text-orange-600">
-            {
-              mockStudentEvents.filter((event) => event.category === "Speaking")
-                .length
-            }
-          </p>
-        </div>
-        <div className="bg-card p-4 rounded-lg border">
-          <h3 className="font-semibold text-sm text-muted-foreground mb-2">
-            Writing Workshops
-          </h3>
-          <p className="text-2xl font-bold text-purple-600">
-            {
-              mockStudentEvents.filter((event) => event.category === "Writing")
-                .length
-            }
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -123,7 +123,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   const handleCreateQuestion = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/reading/questions/create`;
+    window.location.href = `/dashboard/organization/${organizationId}/ielts/reading/questions/create`;
   };
 
   return (

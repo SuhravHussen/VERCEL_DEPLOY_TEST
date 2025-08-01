@@ -266,7 +266,7 @@ export function TestDetailDrawer({
             {/* Actions */}
             <div className="space-y-4">
               <Link
-                href={`/dashboard/organization/${organizationId}/ielts-academic/listening/tests/edit/${test.id}`}
+                href={`/dashboard/organization/${organizationId}/ielts/listening/tests/edit/${test.id}`}
                 className="w-full"
               >
                 <Button variant="outline" className="w-full" size="sm">

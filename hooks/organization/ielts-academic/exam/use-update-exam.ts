@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { QUERY_KEYS } from "@/hooks/query-keys";
 import { CreateExamData } from "./use-add-exam";
 import mockdb from "@/mockdb";
@@ -12,7 +12,7 @@ export const useUpdateExam = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (examData: UpdateExamData): Promise<IELTSExamModel> => {
+    mutationFn: async (examData: UpdateExamData): Promise<ExamModel> => {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -26,9 +26,15 @@ export const useUpdateExam = () => {
       }
 
       // Update the exam
-      const updatedExam: IELTSExamModel = {
+      const updatedExam: ExamModel = {
         ...mockdb.ieltsExams[existingExamIndex],
         ...examData,
+        is_published:
+          examData.is_published ??
+          mockdb.ieltsExams[existingExamIndex].is_published,
+        registration_deadline:
+          examData.registration_deadline ??
+          mockdb.ieltsExams[existingExamIndex].registration_deadline,
         updated_at: new Date().toISOString(),
       };
 
@@ -47,6 +53,12 @@ export const useUpdateExam = () => {
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.IELTS_EXAM.DETAILS(updatedExam.id),
+      });
+
+      // Invalidate organization all exams queries
+      queryClient.invalidateQueries({
+        queryKey: ["all-exams"],
+        exact: false,
       });
 
       // Invalidate organization-specific queries if needed

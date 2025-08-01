@@ -65,6 +65,7 @@ interface EventViewerProps {
   className?: string;
   onEventClick?: (event: CalendarEvent) => void;
   onDateClick?: (date: Date) => void;
+  onMonthChange?: (date: Date) => void;
   showEventCount?: boolean;
   compact?: boolean;
   loading?: boolean;
@@ -440,6 +441,7 @@ export function EventViewer({
   className,
   onEventClick,
   onDateClick,
+  onMonthChange,
   showEventCount = true,
   compact = false,
   loading = false,
@@ -524,13 +526,16 @@ export function EventViewer({
   };
 
   const navigateMonth = (direction: "prev" | "next") => {
-    setCurrentDate(
+    const newDate =
       direction === "prev"
         ? subMonths(currentDate, 1)
-        : addMonths(currentDate, 1)
-    );
+        : addMonths(currentDate, 1);
+
+    setCurrentDate(newDate);
     // Clear expanded days when navigating months
     setExpandedDays(new Set());
+    // Call the onMonthChange callback with the new date
+    onMonthChange?.(newDate);
   };
 
   const handleDateClick = (date: Date) => {
@@ -556,7 +561,7 @@ export function EventViewer({
           <CalendarSkeleton compact={compact} />
         ) : (
           <>
-            <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
+            <CardHeader className="pb-2 sm:pb-4 px-2 sm:px-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                   <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -604,7 +609,11 @@ export function EventViewer({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setCurrentDate(new Date())}
+                      onClick={() => {
+                        const today = new Date();
+                        setCurrentDate(today);
+                        onMonthChange?.(today);
+                      }}
                       className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm whitespace-nowrap"
                     >
                       Today

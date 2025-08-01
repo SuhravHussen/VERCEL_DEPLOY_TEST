@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import {
   formatDate,
   formatTime,
@@ -23,7 +23,7 @@ import {
 } from "../utils/exam-helpers";
 
 interface ExamOverviewProps {
-  exam: IELTSExamModel;
+  exam: ExamModel;
 }
 
 export function ExamOverview({ exam }: ExamOverviewProps) {
@@ -77,12 +77,13 @@ export function ExamOverview({ exam }: ExamOverviewProps) {
             </div>
             <div className="space-y-2">
               <p className="text-lg font-medium">
-                {formatDate(exam.lrw_group.exam_date)}
+                {formatDate(exam?.lrw_group?.exam_date || "")}
               </p>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 <span>
-                  Starts at {formatTime(exam.lrw_group.listening_time_start)}
+                  Starts at{" "}
+                  {formatTime(exam?.lrw_group?.listening_time_start || "")}
                 </span>
               </div>
               {daysUntilExam > 0 && (
@@ -158,85 +159,90 @@ export function ExamOverview({ exam }: ExamOverviewProps) {
                 <span className="font-medium text-muted-foreground">
                   Listening:
                 </span>
-                <p>{formatTime(exam.lrw_group.listening_time_start)}</p>
+                <p>{formatTime(exam?.lrw_group?.listening_time_start || "")}</p>
               </div>
               <div>
                 <span className="font-medium text-muted-foreground">
                   Reading:
                 </span>
-                <p>{formatTime(exam.lrw_group.reading_time_start)}</p>
+                <p>{formatTime(exam?.lrw_group?.reading_time_start || "")}</p>
               </div>
               <div>
                 <span className="font-medium text-muted-foreground">
                   Writing:
                 </span>
-                <p>{formatTime(exam.lrw_group.writing_time_start)}</p>
+                <p>{formatTime(exam?.lrw_group?.writing_time_start || "")}</p>
               </div>
             </div>
-            {exam.lrw_group.assigned_instructors.length > 0 && (
-              <div className="mt-3 pt-3 border-t">
-                <span className="font-medium text-muted-foreground text-sm">
-                  Instructors:{" "}
-                </span>
-                <span className="text-sm">
-                  {exam.lrw_group.assigned_instructors
-                    .map((inst) => inst.name)
-                    .join(", ")}
-                </span>
-              </div>
-            )}
+            {Array.isArray(exam?.lrw_group?.assigned_instructors) &&
+              exam.lrw_group.assigned_instructors.length > 0 && (
+                <div className="mt-3 pt-3 border-t">
+                  <span className="font-medium text-muted-foreground text-sm">
+                    Instructors:{" "}
+                  </span>
+                  <span className="text-sm">
+                    {exam.lrw_group.assigned_instructors
+                      .map((inst) => inst.name)
+                      .join(", ")}
+                  </span>
+                </div>
+              )}
           </div>
 
           {/* Speaking Schedule */}
-          {exam.speaking_group.time_windows.length > 0 && (
-            <div className="border rounded-lg p-4 bg-muted/20">
-              <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Speaking Sessions
-              </h4>
-              <div className="space-y-2">
-                {exam.speaking_group.time_windows.map((window, index) => (
-                  <div
-                    key={window.id || index}
-                    className="flex justify-between items-center text-sm"
-                  >
-                    <span>{formatDate(window.date)}</span>
-                    <span className="text-muted-foreground">
-                      {formatTime(window.start_time)} -{" "}
-                      {formatTime(window.end_time)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3 pt-3 border-t text-sm">
-                <p>
-                  <span className="font-medium text-muted-foreground">
-                    Duration per student:{" "}
-                  </span>
-                  {exam.speaking_group.session_per_student} minutes
-                </p>
-                {exam.speaking_group.assigned_instructors.length > 0 && (
-                  <p className="mt-1">
+          {exam.speaking_group &&
+            exam.speaking_group.time_windows &&
+            exam.speaking_group.time_windows.length > 0 && (
+              <div className="border rounded-lg p-4 bg-muted/20">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Speaking Sessions
+                </h4>
+                <div className="space-y-2">
+                  {exam.speaking_group.time_windows.map((window, index) => (
+                    <div
+                      key={window.id || index}
+                      className="flex justify-between items-center text-sm"
+                    >
+                      <span>{formatDate(window.date)}</span>
+                      <span className="text-muted-foreground">
+                        {formatTime(window.start_time)} -{" "}
+                        {formatTime(window.end_time)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 pt-3 border-t text-sm">
+                  <p>
                     <span className="font-medium text-muted-foreground">
-                      Instructors:{" "}
+                      Duration per student:{" "}
                     </span>
-                    {exam.speaking_group.assigned_instructors
-                      .map((inst) => inst.name)
-                      .join(", ")}
+                    {exam.speaking_group.session_per_student} minutes
                   </p>
-                )}
+                  {exam.speaking_group.assigned_instructors.length > 0 && (
+                    <p className="mt-1">
+                      <span className="font-medium text-muted-foreground">
+                        Instructors:{" "}
+                      </span>
+                      {exam.speaking_group.assigned_instructors
+                        .map((inst) => inst.name)
+                        .join(", ")}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {exam.speaking_group.time_windows.length === 0 && (
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                No speaking sessions scheduled for this exam.
-              </AlertDescription>
-            </Alert>
-          )}
+          {exam.speaking_group &&
+            exam.speaking_group.time_windows &&
+            exam.speaking_group.time_windows.length === 0 && (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  No speaking sessions scheduled for this exam.
+                </AlertDescription>
+              </Alert>
+            )}
         </CardContent>
       </Card>
     </div>

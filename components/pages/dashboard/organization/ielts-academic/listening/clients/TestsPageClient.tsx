@@ -88,7 +88,7 @@ export default function TestsPageClient({
   const hasActiveFilters = search !== "" || difficulty !== "all";
 
   const handleCreateTest = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts-academic/listening/tests/create`;
+    window.location.href = `/dashboard/organization/${organizationId}/ielts/listening/tests/create`;
   };
 
   return (

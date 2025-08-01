@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { QUERY_KEYS } from "@/hooks/query-keys";
 import mockdb from "@/mockdb";
 
@@ -11,7 +11,7 @@ interface UsePaginatedExamsProps {
 }
 
 interface PaginatedExamsResult {
-  exams: IELTSExamModel[];
+  exams: ExamModel[];
   totalExams: number;
   totalPages: number;
   currentPage: number;
@@ -33,7 +33,7 @@ export function usePaginatedExams({
     error,
   } = useQuery({
     queryKey: QUERY_KEYS.IELTS_EXAM.PAGINATED(page, pageSize, searchQuery),
-    queryFn: async (): Promise<IELTSExamModel[]> => {
+    queryFn: async (): Promise<ExamModel[]> => {
       console.log("fetching exams");
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 300));

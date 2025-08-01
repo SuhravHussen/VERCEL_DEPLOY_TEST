@@ -46,4 +46,44 @@ export const QUERY_KEYS = {
       organizationId,
     ],
   },
+  ALL_EXAMS: {
+    LIST: ["all-exams"],
+    BY_ORGANIZATION: (organizationId: string) => [
+      "all-exams",
+      "organization",
+      organizationId,
+    ],
+    BY_ORGANIZATION_FILTERED: (
+      organizationId: string,
+      filters: {
+        examType?: string;
+        priceFilter?: string;
+        sortBy?: string;
+        sortOrder?: string;
+        searchQuery?: string;
+      }
+    ) => ["all-exams", "organization", organizationId, "filtered", filters],
+    BY_ORGANIZATION_PAGINATED: (
+      organizationId: string,
+      page: number,
+      pageSize: number,
+      filters?: {
+        examType?: string;
+        priceFilter?: string;
+        sortBy?: string;
+        sortOrder?: string;
+        searchQuery?: string;
+      }
+    ) => [
+      "all-exams",
+      "organization",
+      organizationId,
+      "paginated",
+      { page, pageSize, ...filters },
+    ],
+  },
+  REGISTERED_EXAMS: {
+    BY_USER: (userId: string) => ["registered-exams", "user", userId],
+    BY_ID: (id: string) => ["registered-exam", id],
+  },
 };

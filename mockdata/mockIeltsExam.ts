@@ -3,10 +3,10 @@ import { ieltsListeningTest } from "./mockIeltsListeningTest";
 import { ieltsReadingTest } from "./mockieltsReadingTest";
 import { mockIeltsWritingTests } from "./mockIeltsWritingTests";
 import { mockUsers } from "./mockUsers";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel, ExamType } from "@/types/exam/exam";
 
 // Array of Mock IELTS Exams
-export const mockIELTSExams: IELTSExamModel[] = [
+export const mockIELTSExams: ExamModel[] = [
   {
     id: "ielts_exam_2026_08_academic",
     title: "IELTS Academic Test - August 2026 Session",
@@ -21,6 +21,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
     price: 215.0,
     is_free: false,
     currency: Currency.BDT,
+    type_of_exam: ExamType.IELTS,
 
     lrw_group: {
       exam_date: "2026-08-15",
@@ -51,7 +52,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
 
     created_at: "2026-07-01T10:00:00Z",
     updated_at: "2026-07-20T14:30:00Z",
-    is_active: true,
+    is_published: true,
     max_students: 50,
     registration_deadline: "2026-08-10T23:59:59Z",
   },
@@ -71,7 +72,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
     price: 200.0,
     is_free: false,
     currency: Currency.BDT,
-
+    type_of_exam: ExamType.IELTS,
     lrw_group: {
       exam_date: "2026-09-12",
       listening_time_start: "14:00",
@@ -101,7 +102,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
 
     created_at: "2026-07-15T09:00:00Z",
     updated_at: "2026-07-25T16:45:00Z",
-    is_active: true,
+    is_published: true,
     max_students: 40,
     registration_deadline: "2026-09-07T23:59:59Z",
   },
@@ -121,7 +122,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
     price: 0.0,
     is_free: true,
     currency: Currency.BDT,
-
+    type_of_exam: ExamType.IELTS,
     lrw_group: {
       exam_date: "2026-08-01",
       listening_time_start: "10:00",
@@ -138,7 +139,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
 
     created_at: "2026-06-01T08:00:00Z",
     updated_at: "2026-06-15T12:00:00Z",
-    is_active: true,
+    is_published: true,
     max_students: 200,
     registration_deadline: "2026-07-30T23:59:59Z",
   },
@@ -158,7 +159,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
     price: 220.0,
     is_free: false,
     currency: Currency.BDT,
-
+    type_of_exam: ExamType.IELTS,
     lrw_group: {
       exam_date: "2026-10-19",
       listening_time_start: "09:30",
@@ -194,7 +195,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
 
     created_at: "2026-08-01T09:00:00Z",
     updated_at: "2026-08-10T11:20:00Z",
-    is_active: true,
+    is_published: true,
     max_students: 60,
     registration_deadline: "2026-10-14T23:59:59Z",
   },
@@ -214,7 +215,7 @@ export const mockIELTSExams: IELTSExamModel[] = [
     price: 205.0,
     is_free: false,
     currency: Currency.BDT,
-
+    type_of_exam: ExamType.IELTS,
     lrw_group: {
       exam_date: "2026-11-16",
       listening_time_start: "13:30",
@@ -244,8 +245,147 @@ export const mockIELTSExams: IELTSExamModel[] = [
 
     created_at: "2026-08-15T14:00:00Z",
     updated_at: "2026-08-25T10:15:00Z",
-    is_active: true,
+    is_published: true,
     max_students: 35,
     registration_deadline: "2026-11-11T23:59:59Z",
   },
+];
+
+// Additional exam types mock data
+export const mockAdditionalExams: ExamModel[] = [
+  // GRE Exams
+  {
+    id: "gre_general_2026_08",
+    title: "GRE General Test - August 2026",
+    description:
+      "Graduate Record Examination for graduate school admissions. Tests verbal reasoning, quantitative reasoning, and analytical writing skills.",
+    price: 220.0,
+    is_free: false,
+    currency: Currency.USD,
+    type_of_exam: ExamType.GRE,
+    lrw_group: {
+      exam_date: "2026-08-20",
+      listening_time_start: "09:00",
+      reading_time_start: "10:30",
+      writing_time_start: "12:00",
+      assigned_instructors: [mockUsers[1], mockUsers[2]],
+    },
+    created_at: "2026-07-01T08:00:00Z",
+    updated_at: "2026-07-15T10:00:00Z",
+    is_published: true,
+    max_students: 30,
+    registration_deadline: "2026-08-15T23:59:59Z",
+  },
+  {
+    id: "gre_practice_free_001",
+    title: "Free GRE Practice Test",
+    description:
+      "Comprehensive GRE practice test to help you prepare for the actual exam. Includes all sections with detailed explanations.",
+    price: 0.0,
+    is_free: true,
+    currency: Currency.USD,
+    type_of_exam: ExamType.GRE,
+    lrw_group: {
+      exam_date: "2026-08-05",
+      listening_time_start: "14:00",
+      reading_time_start: "15:00",
+      writing_time_start: "16:30",
+      assigned_instructors: [mockUsers[3]],
+    },
+    created_at: "2026-06-15T12:00:00Z",
+    updated_at: "2026-06-20T14:00:00Z",
+    is_published: true,
+    max_students: 100,
+    registration_deadline: "2026-08-03T23:59:59Z",
+  },
+
+  // TOEFL Exams
+  {
+    id: "toefl_ibt_2026_09",
+    title: "TOEFL iBT - September 2026",
+    description:
+      "Test of English as a Foreign Language Internet-based Test. Measures English language proficiency for academic purposes.",
+    price: 195.0,
+    is_free: false,
+    currency: Currency.USD,
+    type_of_exam: ExamType.TOEFL,
+    lrw_group: {
+      exam_date: "2026-09-15",
+      listening_time_start: "09:00",
+      reading_time_start: "10:00",
+      writing_time_start: "11:30",
+      assigned_instructors: [mockUsers[0], mockUsers[2]],
+    },
+    speaking_group: {
+      time_windows: [
+        {
+          id: "tw_toefl_001",
+          date: "2026-09-15",
+          start_time: "13:00",
+          end_time: "16:00",
+        },
+      ],
+      assigned_instructors: [mockUsers[1]],
+      session_per_student: 20,
+    },
+    created_at: "2026-08-01T09:00:00Z",
+    updated_at: "2026-08-10T11:00:00Z",
+    is_published: true,
+    max_students: 25,
+    registration_deadline: "2026-09-10T23:59:59Z",
+  },
+
+  // SAT Exams
+  {
+    id: "sat_general_2026_10",
+    title: "SAT Reasoning Test - October 2026",
+    description:
+      "Standardized test for college admissions in the United States. Tests evidence-based reading, writing, and mathematics.",
+    price: 60.0,
+    is_free: false,
+    currency: Currency.USD,
+    type_of_exam: ExamType.SAT,
+    lrw_group: {
+      exam_date: "2026-10-10",
+      listening_time_start: "08:00",
+      reading_time_start: "08:30",
+      writing_time_start: "10:30",
+      assigned_instructors: [mockUsers[2], mockUsers[3]],
+    },
+    created_at: "2026-09-01T10:00:00Z",
+    updated_at: "2026-09-15T12:00:00Z",
+    is_published: true,
+    max_students: 50,
+    registration_deadline: "2026-10-05T23:59:59Z",
+  },
+
+  // GMAT Exams
+  {
+    id: "gmat_focus_2026_11",
+    title: "GMAT Focus Edition - November 2026",
+    description:
+      "Graduate Management Admission Test for business school applications. Tests quantitative, verbal, and data insights skills.",
+    price: 275.0,
+    is_free: false,
+    currency: Currency.USD,
+    type_of_exam: ExamType.GMAT,
+    lrw_group: {
+      exam_date: "2026-11-20",
+      listening_time_start: "09:00",
+      reading_time_start: "10:15",
+      writing_time_start: "11:45",
+      assigned_instructors: [mockUsers[0], mockUsers[1]],
+    },
+    created_at: "2026-10-01T08:00:00Z",
+    updated_at: "2026-10-10T10:00:00Z",
+    is_published: true,
+    max_students: 20,
+    registration_deadline: "2026-11-15T23:59:59Z",
+  },
+];
+
+// Combined export of all exam types
+export const mockAllExams: ExamModel[] = [
+  ...mockIELTSExams,
+  ...mockAdditionalExams,
 ];

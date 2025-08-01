@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { QUERY_KEYS } from "@/hooks/query-keys";
 import mockdb from "@/mockdb";
 
@@ -14,7 +14,7 @@ interface UseUserOrganizationExamsParams {
 }
 
 interface UseUserOrganizationExamsResult {
-  exams: IELTSExamModel[];
+  exams: ExamModel[];
   totalCount: number;
   totalPages: number;
   currentPage: number;
@@ -55,8 +55,8 @@ const fetchOrganizationExams = async (
 
     switch (sortBy) {
       case "date":
-        const dateA = new Date(a.lrw_group.exam_date);
-        const dateB = new Date(b.lrw_group.exam_date);
+        const dateA = new Date(a?.lrw_group?.exam_date || "");
+        const dateB = new Date(b?.lrw_group?.exam_date || "");
         comparison = dateA.getTime() - dateB.getTime();
         break;
       case "price":

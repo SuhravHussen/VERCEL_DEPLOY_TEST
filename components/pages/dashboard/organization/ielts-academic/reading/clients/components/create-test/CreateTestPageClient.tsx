@@ -82,7 +82,7 @@ export default function CreateTestPageClient({
       await createTest.mutateAsync(testData);
       success("Test created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/reading/tests`
+        `/dashboard/organization/${organizationId}/ielts/reading/tests`
       );
     } catch (e) {
       console.error(e);

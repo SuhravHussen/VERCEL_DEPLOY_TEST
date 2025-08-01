@@ -54,8 +54,6 @@ export const useOrganizationInstructors = (
         };
       }
 
-      
-
       return {
         instructors: mockUsers,
         meta: {

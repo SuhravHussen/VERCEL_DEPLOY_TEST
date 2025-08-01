@@ -61,7 +61,7 @@ export default function CreateListeningQuestionPageClient({
       // await createQuestionMutation.mutateAsync(formData);
       success("Question created successfully");
       // router.push(
-      //   `/dashboard/organization/${organizationId}/ielts-academic/listening/questions`
+      //   `/dashboard/organization/${organizationId}/ielts/listening/questions`
       // );
     } catch (e) {
       console.error(e);

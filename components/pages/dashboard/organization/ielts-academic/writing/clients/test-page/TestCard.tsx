@@ -76,7 +76,7 @@ export function TestCard({ test, organizationId }: TestCardProps) {
 
   const editTest = () => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts-academic/writing/tests/${test.id}/edit`
+      `/dashboard/organization/${organizationId}/ielts/writing/tests/${test.id}/edit`
     );
   };
 

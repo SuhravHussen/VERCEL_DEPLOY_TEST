@@ -24,14 +24,14 @@ import {
   TrendingUp,
   Info,
 } from "lucide-react";
-import { IELTSExamModel } from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { useOrganizationInstructors } from "@/hooks/organization/use-organization-instructors";
 import { User } from "@/types/user";
-import { TimeWindow } from "@/types/exam/ielts-academic/exam";
+import { TimeWindow } from "@/types/exam/exam";
 
 interface SpeakingGroupStepProps {
-  examData: Partial<IELTSExamModel>;
-  updateExamData: (updates: Partial<IELTSExamModel>) => void;
+  examData: Partial<ExamModel>;
+  updateExamData: (updates: Partial<ExamModel>) => void;
   organizationId: number;
   onNext: () => void;
   onPrevious: () => void;

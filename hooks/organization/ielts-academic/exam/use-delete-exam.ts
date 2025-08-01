@@ -68,6 +68,12 @@ export const useDeleteExam = () => {
         exact: false,
       });
 
+      // Invalidate organization all exams queries
+      queryClient.invalidateQueries({
+        queryKey: ["all-exams"],
+        exact: false,
+      });
+
       console.log("Successfully invalidated exam queries after deletion");
     },
     onError: (error) => {

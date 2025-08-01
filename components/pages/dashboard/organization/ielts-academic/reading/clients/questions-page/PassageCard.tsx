@@ -209,7 +209,7 @@ export function PassageCard({
                   <Link
                     href={
                       firstGroupId
-                        ? `/dashboard/organization/${organizationId}/ielts-academic/reading/questions/${firstGroupId}/edit`
+                        ? `/dashboard/organization/${organizationId}/ielts/reading/questions/${firstGroupId}/edit`
                         : "#"
                     }
                     aria-disabled={!firstGroupId}

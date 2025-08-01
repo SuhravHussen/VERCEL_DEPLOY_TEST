@@ -17,18 +17,13 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import {
-  IELTSExamModel,
-  AdminIELTSExamModel,
-} from "@/types/exam/ielts-academic/exam";
+import { ExamModel } from "@/types/exam/exam";
 import { useOrganizationInstructors } from "@/hooks/organization/use-organization-instructors";
 import { User } from "@/types/user";
 
 interface LRWGroupStepProps {
-  examData: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>;
-  updateExamData: (
-    updates: Partial<IELTSExamModel> | Partial<AdminIELTSExamModel>
-  ) => void;
+  examData: Partial<ExamModel>;
+  updateExamData: (updates: Partial<ExamModel>) => void;
   organizationId: number;
   onNext: () => void;
   onPrevious: () => void;

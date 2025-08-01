@@ -96,7 +96,7 @@ export function TestList({
             <div className="self-end md:self-center flex items-center gap-2">
               {organizationId && (
                 <Link
-                  href={`/dashboard/organization/${organizationId}/ielts-academic/listening/tests/edit/${test.id}`}
+                  href={`/dashboard/organization/${organizationId}/ielts/listening/tests/edit/${test.id}`}
                 >
                   <Button
                     variant="outline"

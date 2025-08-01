@@ -50,7 +50,7 @@ export default function CreateTestPageClient({
     onSuccess: () => {
       success("Test created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts-academic/writing/tests`
+        `/dashboard/organization/${organizationId}/ielts/writing/tests`
       );
     },
     onError: (err) => {
@@ -79,7 +79,7 @@ export default function CreateTestPageClient({
           size="icon"
           onClick={() =>
             router.push(
-              `/dashboard/organization/${organizationId}/ielts-academic/writing/tests`
+              `/dashboard/organization/${organizationId}/ielts/writing/tests`
             )
           }
         >

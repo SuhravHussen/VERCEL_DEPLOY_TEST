@@ -5,7 +5,6 @@ import { QUERY_KEYS } from "../query-keys";
 import { Organization } from "@/types/organization";
 import { mockOrganizations } from "@/mockdata/mockOrganizations";
 
-
 // Define types for sort and pagination
 export type SortField = "name" | "description";
 export type SortOrder = "asc" | "desc";

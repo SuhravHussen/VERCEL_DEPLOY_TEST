@@ -23,6 +23,18 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
     disabled: role !== Role.ADMIN,
   },
   {
+    title: "Calendar",
+    url: `/dashboard/organization/${id}/calendar`,
+    icon: "calendar",
+    isActive: false,
+  },
+  {
+    title: "All Exams",
+    url: `/dashboard/organization/${id}/all-exams`,
+    icon: "exam",
+    isActive: false,
+  },
+  {
     title: "Ielts",
     url: "#",
     iconImage: "/icons/ielts.png", // Using PNG image instead of icon
@@ -30,7 +42,7 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
     items: [
       {
         title: "Exams",
-        url: `/dashboard/organization/${id}/ielts-academic/exam`,
+        url: `/dashboard/organization/${id}/ielts/exam`,
         icon: "book",
         isActive: false,
       },
@@ -42,13 +54,13 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
         items: [
           {
             title: "Questions",
-            url: `/dashboard/organization/${id}/ielts-academic/reading/questions`,
+            url: `/dashboard/organization/${id}/ielts/reading/questions`,
             icon: "list",
             isActive: false,
           },
           {
             title: "Tests",
-            url: `/dashboard/organization/${id}/ielts-academic/reading/tests`,
+            url: `/dashboard/organization/${id}/ielts/reading/tests`,
             icon: "list",
             isActive: false,
           },
@@ -62,13 +74,13 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
         items: [
           {
             title: "Questions",
-            url: `/dashboard/organization/${id}/ielts-academic/listening/questions`,
+            url: `/dashboard/organization/${id}/ielts/listening/questions`,
             icon: "list",
             isActive: false,
           },
           {
             title: "Tests",
-            url: `/dashboard/organization/${id}/ielts-academic/listening/tests`,
+            url: `/dashboard/organization/${id}/ielts/listening/tests`,
             icon: "list",
             isActive: false,
           },
@@ -82,13 +94,13 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
         items: [
           {
             title: "Questions",
-            url: `/dashboard/organization/${id}/ielts-academic/writing/questions`,
+            url: `/dashboard/organization/${id}/ielts/writing/questions`,
             icon: "list",
             isActive: false,
           },
           {
             title: "Tests",
-            url: `/dashboard/organization/${id}/ielts-academic/writing/tests`,
+            url: `/dashboard/organization/${id}/ielts/writing/tests`,
             icon: "list",
             isActive: false,
           },

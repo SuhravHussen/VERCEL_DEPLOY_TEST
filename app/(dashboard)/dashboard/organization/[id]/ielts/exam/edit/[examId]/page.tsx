@@ -50,7 +50,7 @@ const EditExamPage: React.FC = () => {
   const examId = params.examId as string;
 
   // Admin state - default to false, regular users must select all tests
-  const [isAdmin] = useState(false);
+  const [isAdmin] = useState(true);
 
   // Fetch existing exam data
   const { exam, isLoading, error } = useExamDetails(examId);

@@ -137,7 +137,7 @@ export function AudioCard({
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
               <Link
-                href={`/dashboard/organization/${organizationId}/ielts-academic/listening/questions/edit/${
+                href={`/dashboard/organization/${organizationId}/ielts/listening/questions/edit/${
                   item.questions[0]?.id || ""
                 }`}
               >

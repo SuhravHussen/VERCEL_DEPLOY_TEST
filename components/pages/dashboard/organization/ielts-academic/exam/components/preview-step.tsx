@@ -27,6 +27,7 @@ import { useAddExam } from "@/hooks/organization/ielts-academic/exam/use-add-exa
 import { useUpdateExam } from "@/hooks/organization/ielts-academic/exam/use-update-exam";
 import { useToasts } from "@/components/ui/toast";
 import { PreviewStepProps } from "@/types/exam/ielts-academic/exam-creation";
+import { ExamType } from "@/types/exam/exam";
 
 export const PreviewStep: React.FC<PreviewStepProps> = ({
   examData,
@@ -86,6 +87,7 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
         price: examData.price || 0,
         is_free: examData.is_free || false,
         currency: examData.currency as Currency,
+        type_of_exam: (examData.type_of_exam as ExamType) || ExamType.IELTS,
         lrw_group: examData.lrw_group || {
           exam_date: "",
           listening_time_start: "",
@@ -113,7 +115,8 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
             },
         max_students: examData.max_students || 50,
         registration_deadline: examData.registration_deadline,
-        is_active: true,
+        is_published: true,
+        is_practice_exam: examData.is_practice_exam || false,
       };
 
       if (isEditMode && examId) {
@@ -130,7 +133,7 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
       }
 
       // You could redirect to the exam list or exam details page here
-      // router.push(`/dashboard/organization/${organizationId}/ielts-academic/exam`);
+      // router.push(`/dashboard/organization/${organizationId}/ielts/exam`);
     } catch (error) {
       console.error(
         `Error ${isEditMode ? "updating" : "creating"} exam:`,
@@ -281,9 +284,16 @@ export const PreviewStep: React.FC<PreviewStepProps> = ({
                   <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                     Status
                   </p>
-                  <Badge variant="secondary" className="text-xs">
-                    Active
-                  </Badge>
+                  <div className="space-y-1">
+                    <Badge variant="secondary" className="text-xs">
+                      Active
+                    </Badge>
+                    {examData.is_practice_exam && (
+                      <Badge variant="outline" className="text-xs block">
+                        Practice Exam
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>

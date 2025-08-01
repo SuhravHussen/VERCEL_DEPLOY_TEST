@@ -9,12 +9,10 @@ const getNavItems = () => {
       isActive: false,
       items: [],
     },
-
     {
-      title: "Profile",
-      url: "/dashboard/user/profile",
-      icon: "user",
-
+      title: "Exams",
+      url: "/dashboard/user/exams",
+      icon: "exam",
       isActive: false,
       items: [],
     },
@@ -29,6 +27,14 @@ const getNavItems = () => {
       title: "Organizations",
       url: "/dashboard/user/organizations",
       icon: "organization",
+      isActive: false,
+      items: [],
+    },
+    {
+      title: "Profile",
+      url: "/dashboard/user/profile",
+      icon: "user",
+
       isActive: false,
       items: [],
     },
