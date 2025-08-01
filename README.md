@@ -52,4 +52,4 @@ A multilingual fluency assessment tool for language learners.
 - Zod for validation
 - @react-oauth/google for Google authentication
 
-<!-- Practice & Exam managment added  -->
+<!-- Exam managment added  -->
