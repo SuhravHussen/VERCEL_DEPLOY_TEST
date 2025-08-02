@@ -8,6 +8,7 @@ import { ExamModel, ExamType } from "@/types/exam/exam";
 // Array of Mock IELTS Exams
 export const mockIELTSExams: ExamModel[] = [
   {
+    is_practice_exam: true,
     id: "ielts_exam_2026_08_academic",
     title: "IELTS Academic Test - August 2026 Session",
     description:

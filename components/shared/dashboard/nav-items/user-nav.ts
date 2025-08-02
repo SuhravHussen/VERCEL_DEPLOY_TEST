@@ -10,6 +10,13 @@ const getNavItems = () => {
       items: [],
     },
     {
+      title: "Practice Exams",
+      url: "/dashboard/user/practice",
+      icon: "book",
+      isActive: false,
+      items: [],
+    },
+    {
       title: "Exams",
       url: "/dashboard/user/exams",
       icon: "exam",

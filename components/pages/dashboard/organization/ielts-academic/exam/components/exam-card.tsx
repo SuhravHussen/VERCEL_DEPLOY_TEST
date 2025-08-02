@@ -98,8 +98,21 @@ export function ExamCard({
                   {formatCurrency(exam.price, exam.currency)}
                 </Badge>
               )}
-              {exam.is_published && <Badge variant="default">Published</Badge>}
-              {!exam.is_published && <Badge variant="outline">Archived</Badge>}
+              {exam.is_published && (
+                <Badge variant="default" className="flex items-center gap-1">
+                  Published
+                </Badge>
+              )}
+              {!exam.is_published && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  Archived
+                </Badge>
+              )}
+              {exam.is_practice_exam && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  Practice Exam
+                </Badge>
+              )}
             </div>
           </div>
 

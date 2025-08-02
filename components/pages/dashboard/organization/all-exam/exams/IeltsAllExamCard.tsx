@@ -134,6 +134,12 @@ export function IeltsAllExamCard({
                   {formatCurrency(exam.price, exam.currency)}
                 </Badge>
               )}
+
+              {exam.is_practice_exam && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  Practice Exam
+                </Badge>
+              )}
             </div>
           </div>
 
