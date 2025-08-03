@@ -21,6 +21,21 @@ import {
   ListeningShortAnswerGroup,
 } from "@/types/exam/ielts-academic/listening/listening";
 
+// Type definitions for flowchart components
+interface InputPosition {
+  stepId: string;
+  x: number;
+  y: number;
+}
+
+interface TextStep {
+  stepId: string;
+  stepNumber: number;
+  textBefore?: string;
+  textAfter?: string;
+  isGap: boolean;
+}
+
 interface PreviewStepProps {
   formData: FormData;
   onSave?: () => void;
@@ -489,36 +504,128 @@ function renderQuestionGroupPreview(
       const typedGroup = group as ListeningFlowChartCompletionGroup;
       return (
         <div>
-          {typedGroup.chartImage ? (
-            <div className="mb-4 border rounded overflow-hidden">
-              <img
-                src={typedGroup.chartImage}
-                alt="Flow Chart"
-                className="max-w-full h-auto object-contain mx-auto"
-                style={compact ? { maxHeight: "200px" } : {}}
-              />
+          {/* Chart Type Badge */}
+          {typedGroup.chartType && (
+            <div className="mb-3">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {typedGroup.chartType === "image"
+                  ? "📷 Image-based"
+                  : "📝 Text-based"}
+              </span>
             </div>
-          ) : (
-            <div className="mb-4 border rounded-md p-3 ">
-              <div className="text-center mb-2 font-medium">Flow Chart</div>
-              <div className="flex flex-col items-center">
-                {typedGroup.questions?.map((q, i) => (
-                  <div key={i} className="flex flex-col items-center mb-2">
-                    <div className="border rounded p-2 w-full sm:w-48 text-center">
-                      {q.stepId?.includes("gap") ? (
-                        <div className="border-b border-dotted border-gray-400 h-6 w-32 mx-auto"></div>
-                      ) : (
-                        q.stepId
+          )}
+
+          {/* Image-based Chart */}
+          {typedGroup.chartType === "image" && typedGroup.chartImage && (
+            <div className="mb-4 border rounded overflow-hidden">
+              <div className="relative inline-block min-w-[400px] max-w-full">
+                <img
+                  src={typedGroup.chartImage}
+                  alt="Flow Chart"
+                  className="w-full h-auto object-contain"
+                  style={{
+                    minHeight: "300px",
+                    minWidth: "500px",
+                  }}
+                />
+                {/* Show input positions as numbered markers */}
+                {Array.isArray(typedGroup.inputPositions) &&
+                  typedGroup.inputPositions.length > 0 && (
+                    <div className="absolute inset-0 pointer-events-none">
+                      {typedGroup.inputPositions.map(
+                        (position: InputPosition, index: number) => (
+                          <div
+                            key={index}
+                            className="absolute w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg border-2 border-white"
+                            style={{
+                              left: `${position.x}%`,
+                              top: `${position.y}%`,
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          >
+                            {index + 1}
+                          </div>
+                        )
                       )}
                     </div>
-                    {i < (typedGroup.questions?.length || 0) - 1 && (
-                      <div className="h-6 border-l-2 border-gray-400"></div>
-                    )}
+                  )}
+              </div>
+            </div>
+          )}
+
+          {/* Text-based Chart */}
+          {typedGroup.chartType === "text" &&
+            Array.isArray(typedGroup.textSteps) &&
+            typedGroup.textSteps.length > 0 && (
+              <div className="mb-4 border rounded-md p-3">
+                <div className="text-center mb-2 font-medium">
+                  Flow Chart Steps
+                </div>
+                <div className="space-y-2">
+                  {typedGroup.textSteps.map((step: TextStep, i: number) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 p-2 border rounded"
+                    >
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-xs font-medium">
+                        {step.stepNumber}
+                      </div>
+                      <div className="flex-grow text-sm">
+                        {step.textBefore && <span>{step.textBefore} </span>}
+                        {step.isGap && (
+                          <span className="inline-flex items-center justify-center bg-yellow-100 border border-yellow-300 px-2 py-1 rounded text-xs font-medium text-yellow-800">
+                            GAP
+                          </span>
+                        )}
+                        {step.textAfter && <span> {step.textAfter}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* Fallback for old/simple structure */}
+          {!typedGroup.chartType &&
+            !typedGroup.chartImage &&
+            typedGroup.questions && (
+              <div className="mb-4 border rounded-md p-3">
+                <div className="text-center mb-2 font-medium">Flow Chart</div>
+                <div className="flex flex-col items-center">
+                  {typedGroup.questions.map((q, i) => (
+                    <div key={i} className="flex flex-col items-center mb-2">
+                      <div className="border rounded p-2 w-full sm:w-48 text-center">
+                        {q.stepId?.includes("gap") ? (
+                          <div className="border-b border-dotted border-gray-400 h-6 w-32 mx-auto"></div>
+                        ) : (
+                          q.stepId
+                        )}
+                      </div>
+                      {i < (typedGroup.questions?.length || 0) - 1 && (
+                        <div className="h-6 border-l-2 border-gray-400"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {typedGroup.questions && typedGroup.questions.length > 0 && (
+            <div className="mb-4 p-3 bg-muted/20 rounded-md">
+              <p className="font-medium text-sm mb-2">Answer Keys:</p>
+              <div className="space-y-1">
+                {typedGroup.questions.map((q, i) => (
+                  <div key={i} className="text-sm">
+                    <span className="font-medium">{i + 1}.</span>{" "}
+                    <span className="text-muted-foreground">({q.stepId})</span>{" "}
+                    → {q.correctAnswer}
                   </div>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Word Bank */}
           {typedGroup.options && typedGroup.options.length > 0 && (
             <div className="bg-muted/30 p-2 rounded-md">
               <p className="font-medium text-sm mb-1">Word Bank:</p>
@@ -531,6 +638,8 @@ function renderQuestionGroupPreview(
               </div>
             </div>
           )}
+
+          {/* Word Limit */}
           {typedGroup.wordLimit !== undefined && (
             <p className="text-xs text-muted-foreground mt-1">
               {typedGroup.wordLimitText ||
@@ -547,26 +656,66 @@ function renderQuestionGroupPreview(
       const typedGroup = group as ListeningDiagramLabelCompletionGroup;
       return (
         <div>
+          {/* Diagram Image */}
           {typedGroup.diagramImage && (
             <div className="mb-4 border rounded overflow-hidden">
-              <img
-                src={typedGroup.diagramImage}
-                alt="Diagram"
-                className="max-w-full h-auto object-contain mx-auto"
-                style={compact ? { maxHeight: "200px" } : {}}
-              />
+              <div className="relative inline-block min-w-[400px] max-w-full">
+                <img
+                  src={typedGroup.diagramImage}
+                  alt="Diagram"
+                  className="w-full h-auto object-contain"
+                  style={{
+                    minHeight: "300px",
+                    minWidth: "500px",
+                  }}
+                />
+                {/* Show input positions as numbered markers */}
+                {Array.isArray(typedGroup.inputPositions) &&
+                  typedGroup.inputPositions.length > 0 && (
+                    <div className="absolute inset-0 pointer-events-none">
+                      {typedGroup.inputPositions.map(
+                        (
+                          position: { labelId: string; x: number; y: number },
+                          index: number
+                        ) => (
+                          <div
+                            key={index}
+                            className="absolute w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg border-2 border-white"
+                            style={{
+                              left: `${position.x}%`,
+                              top: `${position.y}%`,
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          >
+                            {index + 1}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+              </div>
             </div>
           )}
-          <div className="space-y-2">
-            {typedGroup.questions?.map((q, i) => (
-              <div key={i} className="flex items-center">
-                <span className="font-medium mr-2">{q.labelId}</span>
-                <div className="border-b border-dotted border-gray-400 h-6 w-32"></div>
+
+          {/* Questions/Answers Preview */}
+          {typedGroup.questions && typedGroup.questions.length > 0 && (
+            <div className="mb-4 p-3 bg-muted/20 rounded-md">
+              <p className="font-medium text-sm mb-2">Label Answers:</p>
+              <div className="space-y-1">
+                {typedGroup.questions.map((q, i) => (
+                  <div key={i} className="text-sm">
+                    <span className="font-medium">{i + 1}.</span>{" "}
+                    <span className="text-muted-foreground">({q.labelId})</span>{" "}
+                    → {q.correctAnswer}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Word Bank */}
           {typedGroup.options && typedGroup.options.length > 0 && (
-            <div className="mt-3 bg-muted/30 p-2 rounded-md">
+            <div className="bg-muted/30 p-2 rounded-md">
               <p className="font-medium text-sm mb-1">Word Bank:</p>
               <div className="flex flex-wrap gap-2">
                 {typedGroup.options.map((option: string, i: number) => (
@@ -577,6 +726,8 @@ function renderQuestionGroupPreview(
               </div>
             </div>
           )}
+
+          {/* Word Limit */}
           {typedGroup.wordLimit !== undefined && (
             <p className="text-xs text-muted-foreground mt-1">
               {typedGroup.wordLimitText ||

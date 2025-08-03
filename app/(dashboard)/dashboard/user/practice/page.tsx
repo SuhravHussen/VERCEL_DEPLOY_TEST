@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { PracticeSections } from "@/components/practice/practice-sections";
+import { PracticeSections } from "@/components/pages/dashboard/user/practice/practice-sections";
 import {
   Card,
   CardContent,

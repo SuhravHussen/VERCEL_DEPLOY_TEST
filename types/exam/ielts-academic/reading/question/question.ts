@@ -172,29 +172,62 @@ export interface TableCompletionGroup extends IELTSReadingQuestionGroup {
 
 export interface FlowChartCompletionGroup extends IELTSReadingQuestionGroup {
   questionType: "flow_chart_completion";
-  chartStructure?: string;
+
+  // Chart creation method
+  chartType: "image" | "text";
+
+  // For image-based flowcharts
   chartImage?: string;
+  inputPositions?: {
+    stepId: string;
+    x: number; // X coordinate relative to image
+    y: number; // Y coordinate relative to image
+  }[];
+
+  // For text-based flowcharts
+  textSteps?: {
+    stepId: string;
+    stepNumber: number;
+    textBefore?: string; // Text before the gap
+    textAfter?: string; // Text after the gap
+    isGap: boolean; // Whether this step contains a gap
+  }[];
+
+  // Common properties
   questions: {
     stepId: string;
     correctAnswer: string;
   }[];
+
   wordLimit?: number;
   wordLimitText?: string;
-  options?: string[];
-  startingQuestionNumber?: number;
+  options?: string[]; // Optional word bank
+
+  // Additional metadata
+  instructions?: string;
+  totalGaps?: number;
 }
 
 export interface DiagramLabelCompletionGroup extends IELTSReadingQuestionGroup {
   questionType: "diagram_label_completion";
-  diagramDescription?: string;
+
+  // Image-based diagram only
   diagramImage?: string;
-  questions: {
-    stepId: string;
-    correctAnswer?: string;
+  inputPositions?: {
+    labelId: string;
+    x: number; // X coordinate relative to image
+    y: number; // Y coordinate relative to image
   }[];
+
+  // Questions and answers
+  questions: {
+    labelId: string;
+    correctAnswer: string;
+  }[];
+
   wordLimit?: number;
   wordLimitText?: string;
-  options?: string[];
+  options?: string[]; // Optional word bank
 }
 
 export interface ShortAnswerGroup extends IELTSReadingQuestionGroup {

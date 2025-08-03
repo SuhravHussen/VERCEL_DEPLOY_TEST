@@ -122,13 +122,14 @@ export function addQuestionNumbering(
         (questionGroup as FlowChartCompletionGroup).questions
       ) {
         // For flow chart completion
-        (questionGroup as FlowChartCompletionGroup).startingQuestionNumber =
-          currentQuestionNumber;
         (questionGroup as FlowChartCompletionGroup).questions.forEach(
           (question) => {
             // Add number property safely
             Object.assign(question, { number: currentQuestionNumber });
-            question.stepId = currentQuestionNumber.toString();
+            // Only update stepId if it's not already set for positioning
+            if (!question.stepId) {
+              question.stepId = currentQuestionNumber.toString();
+            }
             currentQuestionNumber++;
             questionsInGroup++;
             sectionQuestionCount++;
@@ -143,7 +144,10 @@ export function addQuestionNumbering(
           (question) => {
             // Add number property safely
             Object.assign(question, { number: currentQuestionNumber });
-            question.stepId = currentQuestionNumber.toString();
+            // Only update labelId if it's not already set for positioning
+            if (!question.labelId) {
+              question.labelId = currentQuestionNumber.toString();
+            }
             currentQuestionNumber++;
             questionsInGroup++;
             sectionQuestionCount++;

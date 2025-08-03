@@ -135,30 +135,63 @@ export interface ListeningTableCompletionGroup
 export interface ListeningFlowChartCompletionGroup
   extends IELTSListeningQuestionGroup {
   questionType: "flow_chart_completion";
-  chartStructure?: string;
+
+  // Chart creation method
+  chartType: "image" | "text";
+
+  // For image-based flowcharts
   chartImage?: string;
+  inputPositions?: {
+    stepId: string;
+    x: number; // X coordinate relative to image
+    y: number; // Y coordinate relative to image
+  }[];
+
+  // For text-based flowcharts
+  textSteps?: {
+    stepId: string;
+    stepNumber: number;
+    textBefore?: string; // Text before the gap
+    textAfter?: string; // Text after the gap
+    isGap: boolean; // Whether this step contains a gap
+  }[];
+
+  // Common properties
   questions: {
     stepId: string;
     correctAnswer: string;
   }[];
+
   wordLimit?: number;
   wordLimitText?: string;
-  options?: string[];
-  startingQuestionNumber?: number;
+  options?: string[]; // Optional word bank
 }
 
 export interface ListeningDiagramLabelCompletionGroup
   extends IELTSListeningQuestionGroup {
   questionType: "diagram_label_completion";
+
+  // Image-based diagram only
   diagramImage?: string;
-  diagramDescription?: string;
+  inputPositions?: {
+    labelId: string;
+    x: number; // X coordinate relative to image
+    y: number; // Y coordinate relative to image
+  }[];
+
+  // Questions and answers
   questions: {
     labelId: string;
     correctAnswer: string;
   }[];
+
   wordLimit?: number;
   wordLimitText?: string;
-  options?: string[];
+  options?: string[]; // Optional word bank
+
+  // Additional metadata
+  instructions?: string;
+  totalLabels?: number;
 }
 
 export interface ListeningMatchingGroup extends IELTSListeningQuestionGroup {

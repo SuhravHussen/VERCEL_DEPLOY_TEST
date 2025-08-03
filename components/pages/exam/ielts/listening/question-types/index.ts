@@ -1,0 +1,10 @@
+export { default as MultipleChoiceRenderer } from "./multiple-choice-renderer";
+export { default as MultipleChoiceMultipleAnswersRenderer } from "./multiple-choice-multiple-answers-renderer";
+export { default as SentenceCompletionRenderer } from "./sentence-completion-renderer";
+export { default as FormCompletionRenderer } from "./form-completion-renderer";
+export { default as NoteCompletionRenderer } from "./note-completion-renderer";
+export { default as TableCompletionRenderer } from "./table-completion-renderer";
+export { default as FlowChartCompletionRenderer } from "./flow-chart-completion-renderer";
+export { default as DiagramLabelCompletionRenderer } from "./diagram-label-completion-renderer";
+export { default as MatchingRenderer } from "./matching-renderer";
+export { default as ShortAnswerRenderer } from "./short-answer-renderer";

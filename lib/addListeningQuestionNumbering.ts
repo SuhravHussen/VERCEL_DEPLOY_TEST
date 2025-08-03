@@ -121,14 +121,14 @@ export function addListeningQuestionNumbering(
         (questionGroup as ListeningFlowChartCompletionGroup).questions
       ) {
         // For flow chart completion
-        (
-          questionGroup as ListeningFlowChartCompletionGroup
-        ).startingQuestionNumber = currentQuestionNumber;
         (questionGroup as ListeningFlowChartCompletionGroup).questions.forEach(
           (question) => {
             // Add number property safely
             Object.assign(question, { number: currentQuestionNumber });
-            question.stepId = currentQuestionNumber.toString();
+            // Only update stepId if it's not already set for positioning
+            if (!question.stepId) {
+              question.stepId = currentQuestionNumber.toString();
+            }
             currentQuestionNumber++;
             questionsInGroup++;
             sectionQuestionCount++;
@@ -144,7 +144,10 @@ export function addListeningQuestionNumbering(
         ).questions.forEach((question) => {
           // Add number property safely
           Object.assign(question, { number: currentQuestionNumber });
-          question.labelId = currentQuestionNumber.toString();
+          // Only update labelId if it's not already set for positioning
+          if (!question.labelId) {
+            question.labelId = currentQuestionNumber.toString();
+          }
           currentQuestionNumber++;
           questionsInGroup++;
           sectionQuestionCount++;

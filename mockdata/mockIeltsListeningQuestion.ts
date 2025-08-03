@@ -3,7 +3,8 @@ export const ieltsListeningTestSections = [
   {
     audio: {
       title: "Booking a Hotel Room",
-      audioUrl: "https://example.com/audio/section1.mp3",
+      audioUrl:
+        "https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3",
       transcript:
         "A conversation between a customer and hotel receptionist about booking a room...",
       difficulty: "easy",
@@ -102,7 +103,8 @@ export const ieltsListeningTestSections = [
   {
     audio: {
       title: "Community Center Activities",
-      audioUrl: "https://example.com/audio/section2.mp3",
+      audioUrl:
+        "https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3",
       transcript:
         "A talk by the community center manager about facilities and activities...",
       difficulty: "easy",
@@ -170,7 +172,8 @@ export const ieltsListeningTestSections = [
   {
     audio: {
       title: "University Tutorial Discussion",
-      audioUrl: "https://example.com/audio/section3.mp3",
+      audioUrl:
+        "https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3",
       transcript:
         "A conversation between two students and their tutor about a research project...",
       difficulty: "medium",
@@ -201,16 +204,59 @@ export const ieltsListeningTestSections = [
       {
         id: "group9",
         questionType: "flow_chart_completion",
+        chartType: "text",
         instruction:
           "Complete the flow chart below. Write NO MORE THAN TWO WORDS for each answer.",
         wordLimit: 2,
         wordLimitText: "NO MORE THAN TWO WORDS",
-        chartStructure:
-          "Research Process: 1. Literature review → 2. _______ (22) → 3. Data collection → 4. _______ (23) → 5. Write report",
-        startingQuestionNumber: 22,
+        textSteps: [
+          {
+            stepId: "step1",
+            stepNumber: 1,
+            textBefore: "Literature review",
+            textAfter: "",
+            isGap: false,
+          },
+          {
+            stepId: "22",
+            stepNumber: 2,
+            textBefore: "",
+            textAfter: "(22)",
+            isGap: true,
+          },
+          {
+            stepId: "step3",
+            stepNumber: 3,
+            textBefore: "Data collection",
+            textAfter: "",
+            isGap: false,
+          },
+          {
+            stepId: "23",
+            stepNumber: 4,
+            textBefore: "",
+            textAfter: "(23)",
+            isGap: true,
+          },
+          {
+            stepId: "step5",
+            stepNumber: 5,
+            textBefore: "Write report",
+            textAfter: "",
+            isGap: false,
+          },
+        ],
         questions: [
           { stepId: "22", correctAnswer: "design survey" },
           { stepId: "23", correctAnswer: "analyze data" },
+        ],
+        totalGaps: 2,
+        options: [
+          "design survey",
+          "analyze data",
+          "peer review",
+          "final report",
+          "literature search",
         ],
       },
       {
@@ -220,8 +266,13 @@ export const ieltsListeningTestSections = [
           "Label the diagram below. Write NO MORE THAN TWO WORDS for each answer.",
         wordLimit: 2,
         wordLimitText: "NO MORE THAN TWO WORDS",
-        diagramDescription: "Solar Panel System Diagram",
-        diagramImage: "solar_panel_diagram.jpg",
+        diagramImage:
+          "https://static.wixstatic.com/media/be34f4_f2781b0922464542a9bce1edd332df49~mv2.jpeg/v1/fill/w_980,h_490,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/be34f4_f2781b0922464542a9bce1edd332df49~mv2.jpeg",
+        inputPositions: [
+          { labelId: "24", x: 25.0, y: 15.0 }, // Solar panels position
+          { labelId: "25", x: 75.0, y: 60.0 }, // Battery storage position
+          { labelId: "26", x: 50.0, y: 85.0 }, // Power inverter position
+        ],
         questions: [
           { labelId: "24", correctAnswer: "solar panels" },
           { labelId: "25", correctAnswer: "battery storage" },
@@ -230,43 +281,39 @@ export const ieltsListeningTestSections = [
       },
       {
         id: "group11",
-        questionType: "multiple_choice",
-        instruction: "Choose the correct letter, A, B or C.",
-        questions: [
-          {
-            number: 27,
-            question: "The students' research topic is:",
-            options: [
-              "A climate change effects",
-              "B renewable energy",
-              "C sustainable agriculture",
-            ],
-            answer: "B",
-          },
-          {
-            question: "The main problem with their initial approach was:",
-            options: [
-              "A lack of data",
-              "B too broad scope",
-              "C insufficient time",
-            ],
-            answer: "B",
-          },
-          {
-            question: "The tutor suggests they focus on:",
-            options: [
-              "A solar power only",
-              "B wind power only",
-              "C both solar and wind power",
-            ],
-            answer: "A",
-          },
-          {
-            question: "When is the final presentation due?",
-            options: ["A next week", "B next month", "C next semester"],
-            answer: "B",
-          },
+        questionType: "flow_chart_completion",
+        chartType: "image",
+        instruction:
+          "Complete the flowchart below. Write NO MORE THAN TWO WORDS for each answer.",
+        wordLimit: 2,
+        wordLimitText: "NO MORE THAN TWO WORDS",
+        chartImage:
+          "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=600&fit=crop&crop=center",
+        inputPositions: [
+          { stepId: "27", x: 20.0, y: 25.0 }, // First input position
+          { stepId: "28", x: 50.0, y: 45.0 }, // Second input position
+          { stepId: "29", x: 80.0, y: 65.0 }, // Third input position
+          { stepId: "30", x: 50.0, y: 85.0 }, // Fourth input position
         ],
+        questions: [
+          { stepId: "27", correctAnswer: "research plan" },
+          { stepId: "28", correctAnswer: "data analysis" },
+          { stepId: "29", correctAnswer: "peer review" },
+          { stepId: "30", correctAnswer: "final report" },
+        ],
+        options: [
+          "research plan",
+          "data analysis",
+          "peer review",
+          "final report",
+          "literature search",
+          "methodology",
+          "conclusion",
+          "bibliography",
+        ],
+        instructions:
+          "Follow the academic research process from start to finish.",
+        totalGaps: 4,
       },
     ],
   },
@@ -275,7 +322,8 @@ export const ieltsListeningTestSections = [
   {
     audio: {
       title: "Lecture on Marine Biology and Ocean Conservation",
-      audioUrl: "https://example.com/audio/section4.mp3",
+      audioUrl:
+        "https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3",
       transcript:
         "A university lecture about coral reef ecosystems, marine biodiversity, and conservation strategies...",
       difficulty: "hard",

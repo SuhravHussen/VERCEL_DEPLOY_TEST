@@ -430,14 +430,17 @@ const ieltsTestSections = [
       {
         id: "q14",
         questionType: "flow_chart_completion",
+        chartType: "image",
         instruction:
           "Complete the flow chart below. Choose NO MORE THAN TWO WORDS from the passage for each answer.",
         wordLimit: 2,
         wordLimitText: "NO MORE THAN TWO WORDS",
         chartImage: "/images/ielts/flowchart.webp",
-        chartStructure:
-          "Coral Conservation Process: Coral fragments grown in (33)_______ → Transplanted to (34)_______ reef areas → Scientists develop (35)_______ coral varieties",
-        startingQuestionNumber: 33,
+        inputPositions: [
+          { stepId: "33", x: 55.5, y: 28.1 }, // First input position
+          { stepId: "34", x: 77.4, y: 55.2 }, // Second input position
+          { stepId: "35", x: 41.5, y: 85.5 }, // Third input position
+        ],
         questions: [
           {
             stepId: "33",
@@ -452,6 +455,18 @@ const ieltsTestSections = [
             correctAnswer: "heat-resistant",
           },
         ],
+        options: [
+          "nurseries",
+          "degraded",
+          "heat-resistant",
+          "transplanted",
+          "conservation",
+          "breeding",
+          "restoration",
+          "fragments",
+        ],
+        instructions: "Follow the coral conservation process step by step.",
+        totalGaps: 3,
       },
       // Diagram Label Completion
       {
@@ -462,21 +477,34 @@ const ieltsTestSections = [
         wordLimit: 2,
         wordLimitText: "NO MORE THAN TWO WORDS",
         diagramImage: "/images/ielts/diagram.webp",
-        diagramDescription:
-          "Coral Reef Ecosystem Structure showing the relationship between coral polyps and their algae partners",
+        inputPositions: [
+          { labelId: "36", x: 20.0, y: 25.0 }, // Coral polyps position
+          { labelId: "37", x: 60.0, y: 45.0 }, // Zooxanthellae position
+          { labelId: "38", x: 40.0, y: 75.0 }, // Symbiotic relationship position
+        ],
         questions: [
           {
-            stepId: "36",
+            labelId: "36",
             correctAnswer: "coral polyps",
           },
           {
-            stepId: "37",
+            labelId: "37",
             correctAnswer: "zooxanthellae",
           },
           {
-            stepId: "38",
+            labelId: "38",
             correctAnswer: "symbiotic relationships",
           },
+        ],
+        options: [
+          "coral polyps",
+          "zooxanthellae",
+          "symbiotic relationships",
+          "marine animals",
+          "algae partners",
+          "calcium carbonate",
+          "nutrients",
+          "photosynthesis",
         ],
       },
     ],

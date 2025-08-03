@@ -9,7 +9,8 @@ import {
 } from "@/types/exam/ielts-academic/reading/question/question";
 import { CompletionGroupView } from "./CompletionGroupView";
 import { DefaultQuestionGroupView } from "./DefaultQuestionGroupView";
-import { DiagramCompletionView } from "./DiagramCompletionView";
+import { DiagramLabelCompletionView } from "./DiagramLabelCompletionView";
+import { FlowChartCompletionView } from "./FlowChartCompletionView";
 import { MatchingFeaturesGroupView } from "./MatchingFeaturesGroupView";
 import { MatchingHeadingsGroupView } from "./MatchingHeadingsGroupView";
 import { MatchingInformationGroupView } from "./MatchingInformationGroupView";
@@ -87,9 +88,16 @@ export function QuestionGroupRenderer({
       );
 
     case "diagram_label_completion":
+      return (
+        <DiagramLabelCompletionView
+          group={group}
+          getQuestionTypeLabel={getQuestionTypeLabel}
+        />
+      );
+
     case "flow_chart_completion":
       return (
-        <DiagramCompletionView
+        <FlowChartCompletionView
           group={group}
           getQuestionTypeLabel={getQuestionTypeLabel}
         />

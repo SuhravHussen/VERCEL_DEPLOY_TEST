@@ -40,7 +40,7 @@ export function DiagramLabelCompletionView({
         </p>
       </div>
 
-      {/* Display diagram image if available */}
+      {/* Display diagram image */}
       {typedGroup.diagramImage && (
         <div className="mb-3 sm:mb-4">
           <div className="flex items-center gap-2 mb-2">
@@ -49,18 +49,43 @@ export function DiagramLabelCompletionView({
           </div>
 
           <div className="border rounded-md overflow-hidden">
-            <img
-              src={typedGroup.diagramImage}
-              alt="Diagram"
-              className="max-w-full h-auto"
-            />
-          </div>
+            <div className="relative inline-block min-w-[400px] max-w-full">
+              <img
+                src={typedGroup.diagramImage}
+                alt="Diagram"
+                className="w-full h-auto object-contain"
+                style={{
+                  minHeight: "300px",
+                  minWidth: "500px",
+                }}
+              />
 
-          {typedGroup.diagramDescription && (
-            <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
-              {typedGroup.diagramDescription}
-            </p>
-          )}
+              {/* Show input positions if available */}
+              {Array.isArray(typedGroup.inputPositions) &&
+                typedGroup.inputPositions.length > 0 && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    {typedGroup.inputPositions.map(
+                      (
+                        position: { labelId: string; x: number; y: number },
+                        index: number
+                      ) => (
+                        <div
+                          key={index}
+                          className="absolute w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg border-2 border-white"
+                          style={{
+                            left: `${position.x}%`,
+                            top: `${position.y}%`,
+                            transform: "translate(-50%, -50%)",
+                          }}
+                        >
+                          {index + 1}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
+            </div>
+          </div>
         </div>
       )}
 
@@ -75,10 +100,10 @@ export function DiagramLabelCompletionView({
             >
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h4 className="font-medium text-sm sm:text-base">
-                  Label {question.labelId || `${qIndex + 1}`}
+                  Label {qIndex + 1}
                 </h4>
                 <div className="px-2 py-0.5 bg-primary/20 rounded-sm border border-primary/30 text-primary font-medium text-xs sm:text-sm w-fit">
-                  {question.labelId || `Label ${qIndex + 1}`}
+                  ID: {question.labelId}
                 </div>
               </div>
 
@@ -93,7 +118,7 @@ export function DiagramLabelCompletionView({
 
       {typedGroup.options && typedGroup.options.length > 0 && (
         <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t">
-          <h4 className="font-medium mb-2 text-sm sm:text-base">Options</h4>
+          <h4 className="font-medium mb-2 text-sm sm:text-base">Word Bank</h4>
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {typedGroup.options.map((option, index) => (
               <Badge
@@ -105,6 +130,23 @@ export function DiagramLabelCompletionView({
               </Badge>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Additional metadata */}
+      {(typedGroup.totalLabels || typedGroup.instructions) && (
+        <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t">
+          {typedGroup.totalLabels && (
+            <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+              Total labels: {typedGroup.totalLabels}
+            </p>
+          )}
+          {typedGroup.instructions && (
+            <div className="text-xs sm:text-sm text-muted-foreground">
+              <span className="font-medium">Additional instructions:</span>
+              <p className="mt-1">{typedGroup.instructions}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
