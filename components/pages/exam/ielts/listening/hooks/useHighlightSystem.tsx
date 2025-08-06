@@ -1,3 +1,4 @@
+"use client";
 import { useState, useCallback, useEffect, RefObject } from "react";
 
 export interface HighlightData {
@@ -213,11 +214,31 @@ export function useHighlightSystem({ contentRef }: UseHighlightSystemProps) {
     (text: string) => {
       if (!text) return false;
 
-      return highlights.some(
+      // Check for exact match (should show "Remove Highlight")
+      const hasExactMatch = highlights.some(
         (highlight) =>
-          highlight.text.toLowerCase().includes(text.toLowerCase()) ||
-          text.toLowerCase().includes(highlight.text.toLowerCase())
+          highlight.text.toLowerCase().trim() === text.toLowerCase().trim()
       );
+
+      if (hasExactMatch) {
+        return true;
+      }
+
+      // Check if selected text is completely contained within an existing highlight
+      // (should show "Remove Highlight")
+      const isCompletelyContained = highlights.some(
+        (highlight) =>
+          highlight.text.toLowerCase().includes(text.toLowerCase()) &&
+          highlight.text.toLowerCase().trim() !== text.toLowerCase().trim()
+      );
+
+      if (isCompletelyContained) {
+        return true;
+      }
+
+      // If selected text partially overlaps or extends beyond existing highlights,
+      // should show "Highlight" to extend the selection
+      return false;
     },
     [highlights]
   );

@@ -15,6 +15,7 @@ interface ContextMenuProps {
   isVisible: boolean;
   position: { x: number; y: number };
   selectedText: string;
+  highlights: Array<{ text: string; id: string }>;
   onHighlight: (text: string) => void;
   onUnhighlight: (text: string) => void;
   onNote: (text: string, note: string) => void;
@@ -25,6 +26,7 @@ export default function TextSelectionContextMenu({
   isVisible,
   position,
   selectedText,
+  highlights,
   onHighlight,
   onUnhighlight,
   onNote,
@@ -48,21 +50,36 @@ export default function TextSelectionContextMenu({
 
   // Check if selected text is already highlighted
   const isTextHighlighted = useMemo(() => {
-    if (!selectedText) return false;
+    if (!selectedText || !highlights) return false;
 
-    try {
-      const highlights = JSON.parse(
-        localStorage.getItem("ielts-highlights") || "[]"
-      );
-      return highlights.some(
-        (highlight: { text: string; id: string }) =>
-          highlight.text.toLowerCase().includes(selectedText.toLowerCase()) ||
-          selectedText.toLowerCase().includes(highlight.text.toLowerCase())
-      );
-    } catch {
-      return false;
+    // Check for exact match (should show "Remove Highlight")
+    const hasExactMatch = highlights.some(
+      (highlight) =>
+        highlight.text.toLowerCase().trim() ===
+        selectedText.toLowerCase().trim()
+    );
+
+    if (hasExactMatch) {
+      return true;
     }
-  }, [selectedText]);
+
+    // Check if selected text is completely contained within an existing highlight
+    // (should show "Remove Highlight")
+    const isCompletelyContained = highlights.some(
+      (highlight) =>
+        highlight.text.toLowerCase().includes(selectedText.toLowerCase()) &&
+        highlight.text.toLowerCase().trim() !==
+          selectedText.toLowerCase().trim()
+    );
+
+    if (isCompletelyContained) {
+      return true;
+    }
+
+    // If selected text partially overlaps or extends beyond existing highlights,
+    // should show "Highlight" to extend the selection
+    return false;
+  }, [selectedText, highlights]);
 
   const handleHighlightClick = useCallback(() => {
     if (isTextHighlighted) {

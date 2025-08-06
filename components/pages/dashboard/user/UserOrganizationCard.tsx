@@ -3,6 +3,7 @@ import { UserOrganization } from "@/types/user-organization";
 import Image from "next/image";
 import Link from "next/link";
 import { Role } from "@/types/role";
+import { getOrganizationUrl } from "@/lib/getOrgUrl";
 
 interface UserOrganizationCardProps {
   userOrganization: UserOrganization;
@@ -88,7 +89,7 @@ export function UserOrganizationCard({
 
             {/* Organization link for all users */}
             <Link
-              href={`/dashboard/user/organization/${organization.id}`}
+              href={getOrganizationUrl(organization.slug)}
               className="px-4 py-2 rounded-full text-sm font-medium transition-colors border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 inline-block text-center"
             >
               Go to Organization

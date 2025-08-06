@@ -1,3 +1,4 @@
+"use client";
 import { useMemo } from "react";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
 

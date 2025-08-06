@@ -90,7 +90,7 @@ const TabsList = React.forwardRef<
         listRef.current = node;
       }}
       className={cn(
-        "inline-flex h-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-900/50 p-1.5 text-gray-600 dark:text-gray-400 relative overflow-hidden backdrop-blur-sm border border-gray-200 dark:border-gray-800",
+        "inline-flex h-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-900/50 py-1 text-gray-600 dark:text-gray-400 relative overflow-hidden backdrop-blur-sm border border-gray-200 dark:border-gray-800",
         className
       )}
       {...props}

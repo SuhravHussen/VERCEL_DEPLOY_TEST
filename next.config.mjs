@@ -44,7 +44,9 @@ const nextConfig = {
   experimental: {
     viewTransition: true,
   },
-  env: {},
+  env: {
+    NEXT_PUBLIC_DOMAIN: process.env.NEXT_PUBLIC_DOMAIN,
+  },
 };
 
 // @ts-ignore

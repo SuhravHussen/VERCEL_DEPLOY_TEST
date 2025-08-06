@@ -23,6 +23,7 @@ export const mockIELTSExams: ExamModel[] = [
     is_free: false,
     currency: Currency.BDT,
     type_of_exam: ExamType.IELTS,
+    require_grading: true,
 
     lrw_group: {
       exam_date: "2026-08-15",
@@ -161,6 +162,7 @@ export const mockIELTSExams: ExamModel[] = [
     is_free: false,
     currency: Currency.BDT,
     type_of_exam: ExamType.IELTS,
+    require_grading: true,
     lrw_group: {
       exam_date: "2026-10-19",
       listening_time_start: "09:30",
@@ -249,6 +251,57 @@ export const mockIELTSExams: ExamModel[] = [
     is_published: true,
     max_students: 35,
     registration_deadline: "2026-11-11T23:59:59Z",
+  },
+
+  {
+    id: "ielts_exam_2026_12_general",
+    title: "IELTS General Training - December 2026",
+    description:
+      "General Training test with extended speaking sessions for detailed assessment.",
+    require_grading: true,
+
+    listening_test: ieltsListeningTest[0],
+
+    reading_test: ieltsReadingTest[0],
+
+    writing_test: mockIeltsWritingTests[0],
+
+    price: 205.0,
+    is_free: false,
+    currency: Currency.BDT,
+    type_of_exam: ExamType.IELTS,
+    lrw_group: {
+      exam_date: "2024-12-16",
+      listening_time_start: "13:30",
+      reading_time_start: "14:10",
+      writing_time_start: "15:10",
+      assigned_instructors: [mockUsers[0], mockUsers[3]],
+    },
+
+    speaking_group: {
+      time_windows: [
+        {
+          id: "tw_008",
+          date: "2024-12-17",
+          start_time: "09:00",
+          end_time: "13:00",
+        },
+        {
+          id: "tw_009",
+          date: "2024-12-17",
+          start_time: "14:00",
+          end_time: "17:00",
+        },
+      ],
+      assigned_instructors: [mockUsers[1], mockUsers[2]],
+      session_per_student: 18,
+    },
+
+    created_at: "2026-08-15T14:00:00Z",
+    updated_at: "2026-08-25T10:15:00Z",
+    is_published: true,
+    max_students: 35,
+    registration_deadline: "2024-12-11T23:59:59Z",
   },
 ];
 

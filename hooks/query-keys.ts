@@ -8,6 +8,7 @@ export const QUERY_KEYS = {
     BY_ID: (id: number) => ["organization", id],
     LIST: ["organizations"],
     INSTRUCTORS_LIST: "instructors-list",
+    BY_SLUG: (slug: string) => ["organization", slug],
   },
   SUPER_ADMIN: {
     USERS_LIST: "super-admin-users-list",
@@ -85,5 +86,29 @@ export const QUERY_KEYS = {
   REGISTERED_EXAMS: {
     BY_USER: (userId: string) => ["registered-exams", "user", userId],
     BY_ID: (id: string) => ["registered-exam", id],
+  },
+  ASSIGNED_EXAMS: {
+    BY_USER: (userId: string) => ["assigned-exams", "user", userId],
+    BY_ORGANIZATION: (organizationId: string) => [
+      "assigned-exams",
+      "organization",
+      organizationId,
+    ],
+    BY_ORGANIZATION_FILTERED: (
+      organizationId: string,
+      filters: {
+        examType?: string;
+        priceFilter?: string;
+        sortBy?: string;
+        sortOrder?: string;
+        searchQuery?: string;
+      }
+    ) => [
+      "assigned-exams",
+      "organization",
+      organizationId,
+      "filtered",
+      filters,
+    ],
   },
 };

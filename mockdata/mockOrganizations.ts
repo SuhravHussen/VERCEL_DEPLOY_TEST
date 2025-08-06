@@ -7,6 +7,7 @@ export const mockOrganizations: Organization[] = [
     name: "Acme Corporation",
     description: "Leading provider of innovative solutions",
     logo: "/images/home-laptop.png",
+    slug: "acme",
     users: [
       {
         id: "user-123",
@@ -31,6 +32,7 @@ export const mockOrganizations: Organization[] = [
     name: "TechSolutions Inc",
     description: "Enterprise technology solutions provider",
     logo: "/images/home-laptop.png",
+    slug: "techsolutions",
     users: [
       {
         id: "user-456",
@@ -55,41 +57,48 @@ export const mockOrganizations: Organization[] = [
     name: "Global Innovations",
     description: "Cutting-edge research and development",
     logo: "",
+    slug: "global-innovations",
   },
   {
     id: 4,
     name: "EduTech Academy",
     description: "Educational technology and learning solutions",
     logo: "/images/home-laptop.png",
+    slug: "edutech-academy",
   },
   {
     id: 5,
     name: "HealthCare Partners",
     description: "Healthcare management and services",
     logo: "",
+    slug: "healthcare-partners",
   },
   {
     id: 6,
     name: "Green Solutions",
     description: "Sustainable and eco-friendly technologies",
     logo: "/images/home-laptop.png",
+    slug: "green-solutions",
   },
   {
     id: 7,
     name: "Financial Strategies",
     description: "Financial planning and investment services",
     logo: "",
+    slug: "financial-strategies",
   },
   {
     id: 8,
     name: "Creative Studios",
     description: "Digital design and creative solutions",
     logo: "/images/home-laptop.png",
+    slug: "creative-studios",
   },
   {
     id: 9,
     name: "Global Logistics",
     description: "Supply chain and logistics management",
     logo: "",
+    slug: "global-logistics",
   },
 ];

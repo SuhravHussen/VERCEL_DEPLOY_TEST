@@ -1,7 +1,4 @@
 // Main components
-export { default as IELTSListeningTestPageRefactored } from "./ielts-listening-test-page-refactored";
-
-// For backwards compatibility - prefer the refactored version above
 export { default as IELTSListeningTestPage } from "./ielts-listening-test-page";
 
 // Supporting components

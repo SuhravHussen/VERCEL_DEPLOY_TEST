@@ -13,6 +13,7 @@ export async function getUserOrganizations(): Promise<UserOrganization[]> {
         name: "Acme Corporation",
         description: "Leading provider of innovative solutions",
         logo: "/images/home-laptop.png",
+        slug: "acme",
       },
     },
     {
@@ -22,6 +23,7 @@ export async function getUserOrganizations(): Promise<UserOrganization[]> {
         name: "TechSolutions Inc",
         description: "Enterprise technology solutions provider",
         logo: "/images/home-laptop.png",
+        slug: "techsolutions",
       },
     },
     {
@@ -31,6 +33,7 @@ export async function getUserOrganizations(): Promise<UserOrganization[]> {
         name: "EduTech Academy",
         description: "Educational technology and learning solutions",
         logo: "/images/home-laptop.png",
+        slug: "edutech-academy",
       },
     },
   ];

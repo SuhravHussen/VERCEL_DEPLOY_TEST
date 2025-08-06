@@ -1,5 +1,5 @@
+import { IELTSListeningTestPage } from "@/components/pages/exam/ielts/listening";
 import { getListeningTestData } from "@/server-actions/exam/get-exam-data";
-import IELTSListeningTestPage from "@/components/pages/exam/ielts/listening/ielts-listening-test-page";
 
 export default async function ListeningTestContent({
   examId,
@@ -12,9 +12,7 @@ export default async function ListeningTestContent({
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Listening Test Not Found
-          </h1>
+          <h1 className="text-2xl font-bold  mb-4">Listening Test Not Found</h1>
           <p className="text-gray-600 mb-6">
             The requested listening test could not be found or is not available.
           </p>

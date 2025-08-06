@@ -121,6 +121,7 @@ export const useOrganizationInstructors = (
               name: organization.name,
               description: organization.description,
               logo: organization.logo,
+              slug: organization.slug,
             });
           }
         }

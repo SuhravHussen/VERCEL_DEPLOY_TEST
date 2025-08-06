@@ -276,7 +276,7 @@ export default function FlowChartCompletionRenderer({
                   className="flex flex-col items-center w-full"
                 >
                   {/* Step Content */}
-                  <div className="bg-white rounded-lg border-2 border-gray-300 p-4 w-full max-w-md shadow-sm">
+                  <div className="bg-white text-black rounded-lg border-2 border-gray-300 p-4 w-full max-w-md shadow-sm">
                     <div className="flex items-center justify-center space-x-2 text-sm sm:text-base">
                       {/* Step Number */}
                       <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-xs shrink-0">

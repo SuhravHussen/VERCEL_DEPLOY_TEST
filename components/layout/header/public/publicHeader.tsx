@@ -14,6 +14,7 @@ export async function PublicHeader() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
+    { href: "/exams", label: "Exams" },
   ];
 
   return (

@@ -1,0 +1,15 @@
+export { default as MultipleChoiceRenderer } from "./multiple-choice-renderer";
+export { default as MultipleChoiceMultipleAnswersRenderer } from "./multiple-choice-multiple-answers-renderer";
+export { default as TrueFalseNotGivenRenderer } from "./true-false-not-given-renderer";
+export { default as YesNoNotGivenRenderer } from "./yes-no-not-given-renderer";
+export { default as SentenceCompletionRenderer } from "./sentence-completion-renderer";
+export { default as SummaryCompletionRenderer } from "./summary-completion-renderer";
+export { default as NoteCompletionRenderer } from "./note-completion-renderer";
+export { default as TableCompletionRenderer } from "./table-completion-renderer";
+export { default as FlowChartCompletionRenderer } from "./flow-chart-completion-renderer";
+export { default as DiagramLabelCompletionRenderer } from "./diagram-label-completion-renderer";
+export { default as MatchingInformationRenderer } from "./matching-information-renderer";
+export { default as MatchingHeadingsRenderer } from "./matching-headings-renderer";
+export { default as MatchingFeaturesRenderer } from "./matching-features-renderer";
+export { default as MatchingSentenceEndingsRenderer } from "./matching-sentence-endings-renderer";
+export { default as ShortAnswerRenderer } from "./short-answer-renderer";

@@ -1,9 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { useUserOrganization } from "@/hooks/user/use-user-organization";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, FileText, Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Building2,
+  FileText,
+  Bell,
+  UserPlus,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
@@ -13,15 +32,16 @@ import { AnnouncementsTab } from "./announcements-tab";
 import { ExamsTab } from "./exams-tab";
 
 interface OrganizationViewProps {
-  organizationId: string;
+  organizationSlug: string;
 }
 
-export function OrganizationView({ organizationId }: OrganizationViewProps) {
+export function OrganizationView({ organizationSlug }: OrganizationViewProps) {
+  const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
   const {
     data: organization,
     isLoading,
     error,
-  } = useUserOrganization(organizationId);
+  } = useUserOrganization(organizationSlug);
 
   if (isLoading) {
     return (
@@ -114,6 +134,86 @@ export function OrganizationView({ organizationId }: OrganizationViewProps) {
           </div>
         </div>
       </div>
+
+      {/* Join Organization Section */}
+      <Card className="border-0 shadow-md sm:shadow-lg shadow-black/5 bg-gradient-to-r from-green-50/50 to-emerald-50/30 dark:from-green-950/20 dark:to-emerald-950/10 border border-green-200/50 dark:border-green-800/30">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+            <div className="flex-shrink-0">
+              <div className="p-3 sm:p-4 rounded-xl bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800">
+                <UserPlus className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+            <div className="flex-grow space-y-3 sm:space-y-4 text-center sm:text-left">
+              <div className="space-y-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-green-800 dark:text-green-200">
+                  Join {organization.name}
+                </h2>
+                <p className="text-sm sm:text-base text-green-700 dark:text-green-300 leading-relaxed">
+                  Become a member of our organization and get access to
+                  exclusive exams, announcements, and learning resources. Join
+                  our community today!
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Dialog
+                  open={isJoinDialogOpen}
+                  onOpenChange={setIsJoinDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      size="lg"
+                      className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white border-0 shadow-md"
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Request to Join
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold">
+                        Join {organization.name}
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-muted-foreground mt-2">
+                        Are you sure you want to request to join{" "}
+                        {organization.name}? Your request will be sent to the
+                        organization administrators for approval.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsJoinDialogOpen(false)}
+                        className="w-full sm:w-auto"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          // Handle join request logic here
+                          console.log("Join request submitted");
+                          setIsJoinDialogOpen(false);
+                        }}
+                        className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Confirm Request
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/30"
+                >
+                  Learn More
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Organization Details */}
       <div className="grid gap-6 md:gap-8">
@@ -221,16 +321,106 @@ export function OrganizationView({ organizationId }: OrganizationViewProps) {
 
               <TabsContent value="exams" className="mt-0">
                 <div className="p-6">
-                  <ExamsTab organizationId={organizationId} />
+                  <ExamsTab organizationId={organization.id.toString()} />
                 </div>
               </TabsContent>
 
               <TabsContent value="announcements" className="mt-0">
                 <div className="p-6">
-                  <AnnouncementsTab organizationId={organizationId} />
+                  <AnnouncementsTab
+                    organizationId={organization.id.toString()}
+                  />
                 </div>
               </TabsContent>
             </Tabs>
+          </CardContent>
+        </Card>
+
+        {/* Contact Us Section */}
+        <Card className="border-0 shadow-md sm:shadow-lg shadow-black/5 bg-gradient-to-r from-blue-50/50 to-cyan-50/30 dark:from-blue-950/20 dark:to-cyan-950/10 border border-blue-200/50 dark:border-blue-800/30">
+          <CardHeader className="pb-4 sm:pb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                <Mail className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              <CardTitle className="text-lg sm:text-xl md:text-2xl font-semibold text-blue-800 dark:text-blue-200">
+                Contact Us
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 sm:space-y-6">
+              <p className="text-sm sm:text-base text-blue-700 dark:text-blue-300 leading-relaxed">
+                Have questions about {organization.name}? Need help with
+                registration or want to learn more about our programs?
+                We&apos;re here to help!
+              </p>
+
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+                {/* Email Contact */}
+                <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg bg-white/60 dark:bg-gray-900/60 border border-blue-100 dark:border-blue-900/50">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                      <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-blue-800 dark:text-blue-200 text-sm sm:text-base">
+                      Email Support
+                    </h3>
+                    <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                      contact@
+                      {organization.name.toLowerCase().replace(/\s+/g, "")}.org
+                    </p>
+                    <p className="text-xs text-blue-500 dark:text-blue-500">
+                      Response within 24 hours
+                    </p>
+                  </div>
+                </div>
+
+                {/* Phone Contact */}
+                <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg bg-white/60 dark:bg-gray-900/60 border border-blue-100 dark:border-blue-900/50">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                      <Phone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-blue-800 dark:text-blue-200 text-sm sm:text-base">
+                      Phone Support
+                    </h3>
+                    <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                      +1 (555) 123-4567
+                    </p>
+                    <p className="text-xs text-blue-500 dark:text-blue-500">
+                      Mon-Fri, 9 AM - 6 PM
+                    </p>
+                  </div>
+                </div>
+
+                {/* Office Address */}
+                <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg bg-white/60 dark:bg-gray-900/60 border border-blue-100 dark:border-blue-900/50 md:col-span-2">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                      <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-blue-800 dark:text-blue-200 text-sm sm:text-base">
+                      Office Address
+                    </h3>
+                    <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                      123 Education Street, Learning District
+                      <br />
+                      Knowledge City, KC 12345
+                    </p>
+                    <p className="text-xs text-blue-500 dark:text-blue-500">
+                      Visit us during business hours
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

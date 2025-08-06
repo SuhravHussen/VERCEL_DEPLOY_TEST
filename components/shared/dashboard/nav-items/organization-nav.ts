@@ -3,13 +3,6 @@ import { Role } from "@/types/role";
 
 const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
   {
-    title: "Home",
-    url: "/",
-    icon: "home",
-    isActive: false,
-    items: [],
-  },
-  {
     title: "Dashboard",
     url: `/dashboard/organization/${id}/overview`,
     icon: "dashboard",
@@ -31,6 +24,12 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
   {
     title: "All Exams",
     url: `/dashboard/organization/${id}/all-exams`,
+    icon: "exam",
+    isActive: false,
+  },
+  {
+    title: "Assigned Exams",
+    url: `/dashboard/organization/${id}/assigned-exams`,
     icon: "exam",
     isActive: false,
   },

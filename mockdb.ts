@@ -53,6 +53,7 @@ interface MockDB {
   ) => { success: boolean; message: string };
   organizations: Organization[];
   findOrganizationById: (id: number) => Organization | undefined;
+  findOrganizationBySlug: (slug: string) => Organization | undefined;
 
   // ielts reading questions
   ieltsReadingQuestions: IELTSReadingQuestionGroup[];
@@ -242,6 +243,11 @@ const mockdb: MockDB = {
   // Find organization by ID
   findOrganizationById(id: number) {
     return this.organizations.find((org) => org.id === id);
+  },
+
+  // Find organization by slug
+  findOrganizationBySlug(slug: string) {
+    return this.organizations.find((org) => org.slug === slug);
   },
 
   // ielts reading questions

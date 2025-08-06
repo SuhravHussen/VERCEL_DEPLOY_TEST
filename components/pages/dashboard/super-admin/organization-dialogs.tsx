@@ -247,6 +247,7 @@ export function CreateOrganizationDialog({
     name: "",
     description: "",
     logo: "",
+    slug: "",
   });
 
   useEffect(() => {
@@ -256,6 +257,7 @@ export function CreateOrganizationDialog({
         name: "",
         description: "",
         logo: "",
+        slug: "",
       });
     }
   }, [isOpen]);

@@ -7,12 +7,12 @@ import mockdb from "@/mockdb";
 
 // Mock function to get organization public information
 async function fetchOrganizationPublicInfo(
-  organizationId: number
+  organizationSlug: string
 ): Promise<Organization | null> {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 300));
 
-  const organization = mockdb.findOrganizationById(organizationId);
+  const organization = mockdb.findOrganizationBySlug(organizationSlug);
 
   if (!organization) {
     return null;
@@ -24,6 +24,7 @@ async function fetchOrganizationPublicInfo(
     name: organization.name,
     logo: organization.logo,
     description: organization.description,
+    slug: organization.slug,
     // Excluding users and instructors arrays for public view
   };
 }
@@ -33,16 +34,11 @@ async function fetchOrganizationPublicInfo(
  * @param organizationId The organization ID
  * @returns Query result with organization public data
  */
-export function useUserOrganization(organizationId: number | string) {
-  const numericId =
-    typeof organizationId === "string"
-      ? parseInt(organizationId, 10)
-      : organizationId;
-
+export function useUserOrganization(organizationSlug: string) {
   return useQuery<Organization | null>({
-    queryKey: QUERY_KEYS.ORGANIZATION.BY_ID(numericId),
-    queryFn: () => fetchOrganizationPublicInfo(numericId),
-    enabled: !!numericId && !isNaN(numericId),
+    queryKey: QUERY_KEYS.ORGANIZATION.BY_SLUG(organizationSlug),
+    queryFn: () => fetchOrganizationPublicInfo(organizationSlug),
+    enabled: !!organizationSlug,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }

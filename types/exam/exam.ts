@@ -89,4 +89,5 @@ export interface ExamModel {
   max_students?: number;
   registration_deadline?: string;
   is_practice_exam?: boolean;
+  require_grading?: boolean;
 }

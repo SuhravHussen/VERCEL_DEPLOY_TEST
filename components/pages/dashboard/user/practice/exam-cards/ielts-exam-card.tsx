@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Headphones, FileText, PenTool } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface IELTSExamCardProps {
   exam: ExamModel;
@@ -22,10 +23,23 @@ interface IELTSExamCardProps {
 export const IELTSExamCard: React.FC<IELTSExamCardProps> = ({
   exam,
   className,
-  onStartPractice,
 }) => {
+  const router = useRouter();
+
+  let testType = "writing";
+
+  if (exam.listening_test) {
+    testType = "listening";
+  } else if (exam.reading_test) {
+    testType = "reading";
+  } else if (exam.writing_test) {
+    testType = "writing";
+  }
+
+  console.log(exam);
+
   const handleStartPractice = () => {
-    onStartPractice?.(exam.id);
+    router.push(`/exam/ielts/${testType}?examId=${exam.id}`);
   };
 
   const getIELTSType = () => {
