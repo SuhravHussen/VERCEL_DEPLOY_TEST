@@ -4,10 +4,12 @@ import { ieltsReadingTest } from "./mockieltsReadingTest";
 import { mockIeltsWritingTests } from "./mockIeltsWritingTests";
 import { mockUsers } from "./mockUsers";
 import { ExamModel, ExamType } from "@/types/exam/exam";
+import { mockOrganizations } from "./mockOrganizations";
 
 // Array of Mock IELTS Exams
 export const mockIELTSExams: ExamModel[] = [
   {
+    organization: mockOrganizations[0],
     is_practice_exam: true,
     id: "ielts_exam_2026_08_academic",
     title: "IELTS Academic Test - August 2026 Session",
@@ -60,6 +62,7 @@ export const mockIELTSExams: ExamModel[] = [
   },
 
   {
+    organization: mockOrganizations[0],
     id: "ielts_exam_2026_09_general",
     title: "IELTS General Training - September 2026",
     description:
@@ -110,6 +113,7 @@ export const mockIELTSExams: ExamModel[] = [
   },
 
   {
+    organization: mockOrganizations[0],
     id: "ielts_practice_free_001",
     title: "Free IELTS Practice Test",
     description:
@@ -147,6 +151,7 @@ export const mockIELTSExams: ExamModel[] = [
   },
 
   {
+    organization: mockOrganizations[0],
     id: "ielts_exam_2026_10_academic",
     title: "IELTS Academic Test - October 2026 Session",
     description:
@@ -192,7 +197,7 @@ export const mockIELTSExams: ExamModel[] = [
           end_time: "16:00",
         },
       ],
-      assigned_instructors: [mockUsers[0], mockUsers[1], mockUsers[2]],
+      assigned_instructors: [mockUsers[0], mockUsers[1], mockUsers[6]],
       session_per_student: 15,
     },
 
@@ -204,6 +209,7 @@ export const mockIELTSExams: ExamModel[] = [
   },
 
   {
+    organization: mockOrganizations[0],
     id: "ielts_exam_2026_11_general",
     title: "IELTS General Training - November 2026",
     description:
@@ -254,6 +260,7 @@ export const mockIELTSExams: ExamModel[] = [
   },
 
   {
+    organization: mockOrganizations[0],
     id: "ielts_exam_2026_12_general",
     title: "IELTS General Training - December 2026",
     description:
@@ -275,7 +282,7 @@ export const mockIELTSExams: ExamModel[] = [
       listening_time_start: "13:30",
       reading_time_start: "14:10",
       writing_time_start: "15:10",
-      assigned_instructors: [mockUsers[0], mockUsers[3]],
+      assigned_instructors: [mockUsers[0], mockUsers[6]],
     },
 
     speaking_group: {
@@ -293,7 +300,7 @@ export const mockIELTSExams: ExamModel[] = [
           end_time: "17:00",
         },
       ],
-      assigned_instructors: [mockUsers[1], mockUsers[2]],
+      assigned_instructors: [mockUsers[1], mockUsers[6]],
       session_per_student: 18,
     },
 
@@ -309,6 +316,7 @@ export const mockIELTSExams: ExamModel[] = [
 export const mockAdditionalExams: ExamModel[] = [
   // GRE Exams
   {
+    organization: mockOrganizations[0],
     id: "gre_general_2026_08",
     title: "GRE General Test - August 2026",
     description:
@@ -331,6 +339,7 @@ export const mockAdditionalExams: ExamModel[] = [
     registration_deadline: "2026-08-15T23:59:59Z",
   },
   {
+    organization: mockOrganizations[0],
     id: "gre_practice_free_001",
     title: "Free GRE Practice Test",
     description:
@@ -355,6 +364,7 @@ export const mockAdditionalExams: ExamModel[] = [
 
   // TOEFL Exams
   {
+    organization: mockOrganizations[0],
     id: "toefl_ibt_2026_09",
     title: "TOEFL iBT - September 2026",
     description:
@@ -391,6 +401,7 @@ export const mockAdditionalExams: ExamModel[] = [
 
   // SAT Exams
   {
+    organization: mockOrganizations[0],
     id: "sat_general_2026_10",
     title: "SAT Reasoning Test - October 2026",
     description:
@@ -415,6 +426,7 @@ export const mockAdditionalExams: ExamModel[] = [
 
   // GMAT Exams
   {
+    organization: mockOrganizations[0],
     id: "gmat_focus_2026_11",
     title: "GMAT Focus Edition - November 2026",
     description:

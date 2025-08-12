@@ -1,5 +1,5 @@
-import { OrganizationView } from "@/components/pages/dashboard/user/organization/organization-view";
-import { Skeleton } from "@/components/ui/skeleton";
+import { OrganizationServerView } from "@/components/pages/dashboard/user/organization/organization-server-view";
+import { OrganizationViewSkeleton } from "@/components/pages/dashboard/user/organization/components/organization-view-skeleton";
 import { generateMetadata as generateSeoMetadata } from "@/config/seo";
 import { Suspense } from "react";
 import type { Metadata } from "next";
@@ -98,27 +98,11 @@ export default async function OrganizationPage({
   params,
 }: OrganizationPageProps) {
   const { slug } = await params;
-
+  const organization = await getOrganizationBySlug(slug);
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-      <Suspense
-        fallback={
-          <div className="space-y-4 sm:space-y-6">
-            <div className="space-y-6 md:space-y-8">
-              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                <Skeleton className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl" />
-                <div className="space-y-2 sm:space-y-3 text-center sm:text-left">
-                  <Skeleton className="h-8 sm:h-10 w-64 sm:w-80 mx-auto sm:mx-0" />
-                  <Skeleton className="h-5 sm:h-6 w-24 sm:w-32 mx-auto sm:mx-0" />
-                </div>
-              </div>
-              <Skeleton className="h-32 sm:h-40 w-full rounded-xl" />
-              <Skeleton className="h-48 sm:h-64 w-full rounded-xl" />
-            </div>
-          </div>
-        }
-      >
-        <OrganizationView organizationSlug={slug} />
+      <Suspense fallback={<OrganizationViewSkeleton />}>
+        <OrganizationServerView organization={organization} />
       </Suspense>
     </div>
   );

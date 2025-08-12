@@ -12,11 +12,13 @@ import {
 interface ReadingTestOverlayProps {
   isOpen: boolean;
   onStartTest: () => void;
+  isLoading?: boolean;
 }
 
 export default function ReadingTestOverlay({
   isOpen,
   onStartTest,
+  isLoading = false,
 }: ReadingTestOverlayProps) {
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
@@ -98,9 +100,10 @@ export default function ReadingTestOverlay({
         <div className="flex justify-center pt-2 sm:pt-4">
           <Button
             onClick={onStartTest}
+            disabled={isLoading}
             className="w-full sm:w-auto px-8 py-2 sm:py-3"
           >
-            Start Reading Test
+            {isLoading ? "Loading..." : "Start Reading Test"}
           </Button>
         </div>
       </DialogContent>

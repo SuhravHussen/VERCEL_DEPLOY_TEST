@@ -1,6 +1,7 @@
 import { User } from "@/types/user";
 import { Currency } from "@/types/currency";
 import { ExamModel } from "./exam/exam";
+import { SpeakingSession } from "./exam/speaking-session";
 
 // Registered exam type, when a user registers for an exam
 export interface RegisteredExam {
@@ -11,14 +12,6 @@ export interface RegisteredExam {
   payment_status: "pending" | "paid" | "failed" | "refunded";
   paid_amount: number;
   currency: Currency;
-  speaking_time?: {
-    date: string; // ISO date
-    start: string; // Time string
-    end: string; // Time string
-    instructor?: {
-      id: string;
-      name?: string;
-    };
-  };
+  speaking_session?: SpeakingSession;
   status: "registered" | "cancelled" | "completed";
 }

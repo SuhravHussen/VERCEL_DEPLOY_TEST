@@ -1,12 +1,12 @@
 import { IELTSListeningTestPage } from "@/components/pages/exam/ielts/listening";
-import { getListeningTestData } from "@/server-actions/exam/get-exam-data";
+import { getListeningTestBasicInfoByRegId } from "@/server-actions/exam/get-exam-data";
 
 export default async function ListeningTestContent({
-  examId,
+  regId,
 }: {
-  examId: string;
+  regId: string;
 }) {
-  const listeningTest = await getListeningTestData(examId as string);
+  const listeningTest = await getListeningTestBasicInfoByRegId(regId as string);
 
   if (!listeningTest) {
     return (
@@ -30,7 +30,7 @@ export default async function ListeningTestContent({
   return (
     <IELTSListeningTestPage
       listeningTest={listeningTest}
-      examId={examId as string}
+      regId={regId as string}
     />
   );
 }

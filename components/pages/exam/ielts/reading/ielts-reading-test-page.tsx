@@ -29,9 +29,11 @@ import { useTextHighlighting } from "@/hooks/use-text-highlighting";
 import { useNotesManagement } from "@/hooks/use-notes-management";
 import { useReadingQuestionJumping } from "@/hooks/use-reading-question-jumping";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { useReadingTestFullData } from "@/hooks/use-exam-test-data";
 
 interface IELTSReadingTestPageProps {
   readingTest: IELTSReadingTest;
+  regId?: string;
 }
 
 const ReadingTestContent = memo(function ReadingTestContent({
@@ -87,8 +89,10 @@ const ReadingPassageContent = memo(function ReadingPassageContent({
 
 export default function IELTSReadingTestPage({
   readingTest,
+  regId,
 }: IELTSReadingTestPageProps) {
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
+  const { fetchReadingTestFullData } = useReadingTestFullData();
 
   const [showOverlay, setShowOverlay] = useState(true);
   const [currentSection, setCurrentSection] = useState(1);
@@ -96,8 +100,15 @@ export default function IELTSReadingTestPage({
   const [testStarted, setTestStarted] = useState(false);
   const [isNotesSheetOpen, setIsNotesSheetOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("passage");
+  const [fullTestData, setFullTestData] = useState<IELTSReadingTest | null>(
+    null
+  );
+  const [isStartingTest, setIsStartingTest] = useState(false);
 
-  const sections = convertReadingTestToSections(readingTest);
+  // Use full test data if available, otherwise use basic info
+  const currentTestData = fullTestData || readingTest;
+
+  const sections = convertReadingTestToSections(currentTestData);
   const sectionProgress = calculateSectionProgress(sections, answers);
   const sectionQuestionNumbers = extractSectionQuestionNumbers(sections);
 
@@ -163,9 +174,36 @@ export default function IELTSReadingTestPage({
     });
   };
 
-  const handleStartTest = () => {
-    setShowOverlay(false);
-    setTestStarted(true);
+  const handleStartTest = async () => {
+    try {
+      setIsStartingTest(true);
+
+      // Fetch full exam data with questions if regId is provided
+      if (regId) {
+        console.log("Fetching full reading test data...");
+        const fullData = await fetchReadingTestFullData(regId);
+
+        if (!fullData) {
+          throw new Error("Failed to fetch full exam data");
+        }
+
+        setFullTestData(fullData);
+      }
+
+      setShowOverlay(false);
+      setTestStarted(true);
+    } catch (error) {
+      console.error("Error starting test:", error);
+      showConfirmation({
+        title: "Error Starting Test",
+        description: "Failed to load exam data. Please try again.",
+        confirmText: "OK",
+        variant: "destructive",
+        onConfirm: () => {},
+      });
+    } finally {
+      setIsStartingTest(false);
+    }
   };
 
   useKeyboardShortcuts(
@@ -179,7 +217,11 @@ export default function IELTSReadingTestPage({
   // Show overlay if test hasn't started yet
   if (!testStarted) {
     return (
-      <ReadingTestOverlay isOpen={showOverlay} onStartTest={handleStartTest} />
+      <ReadingTestOverlay
+        isOpen={showOverlay}
+        onStartTest={handleStartTest}
+        isLoading={isStartingTest}
+      />
     );
   }
 

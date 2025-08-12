@@ -14,6 +14,7 @@ import { useTextHighlighting } from "@/hooks/use-text-highlighting";
 import { useNotesManagement } from "@/hooks/use-notes-management";
 import { useQuestionJumping } from "@/hooks/use-question-jumping";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { useListeningTestFullData } from "@/hooks/use-exam-test-data";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
 import {
   convertListeningTestToSections,
@@ -24,14 +25,15 @@ import {
 
 interface IELTSListeningTestPageProps {
   listeningTest: IELTSListeningTest;
-  examId: string;
+  regId: string;
 }
 
 export default function IELTSListeningTestPage({
   listeningTest,
-  examId,
+  regId,
 }: IELTSListeningTestPageProps) {
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
+  const { fetchListeningTestFullData } = useListeningTestFullData();
 
   // Basic state
   const [showOverlay, setShowOverlay] = useState(true);
@@ -39,9 +41,16 @@ export default function IELTSListeningTestPage({
   const [currentPart, setCurrentPart] = useState(1);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [isNotesSheetOpen, setIsNotesSheetOpen] = useState(false);
+  const [fullTestData, setFullTestData] = useState<IELTSListeningTest | null>(
+    null
+  );
+  const [isStartingTest, setIsStartingTest] = useState(false);
+
+  // Use full test data if available, otherwise use basic info
+  const currentTestData = fullTestData || listeningTest;
 
   // Convert sections to array format
-  const sections = convertListeningTestToSections(listeningTest);
+  const sections = convertListeningTestToSections(currentTestData);
   const audioItems = getAudioUrlsWithSectionMapping(sections);
 
   // Extract just the URLs for the simple audio player
@@ -101,7 +110,7 @@ export default function IELTSListeningTestPage({
 
   const handleSubmit = () => {
     console.log("Listening test answers:", answers);
-    console.log("Exam ID:", examId);
+    console.log("Registration ID:", regId);
     console.log("Total questions answered:", Object.keys(answers).length);
 
     // Clear any flags after submission (removed navigation prevention)
@@ -125,13 +134,37 @@ export default function IELTSListeningTestPage({
   const partProgress = calculatePartProgress(sections, answers);
   const partQuestionNumbers = extractPartQuestionNumbers(sections);
 
-  const handleStartTest = () => {
-    setShowOverlay(false);
-    setTestStarted(true);
+  const handleStartTest = async () => {
+    try {
+      setIsStartingTest(true);
 
-    // Start audio playback immediately in user interaction context
-    console.log("Starting test - attempting to play audio...");
-    audioPlayer.startPlayback();
+      // Fetch full exam data with questions
+      console.log("Fetching full exam data...");
+      const fullData = await fetchListeningTestFullData(regId);
+
+      if (!fullData) {
+        throw new Error("Failed to fetch full exam data");
+      }
+
+      setFullTestData(fullData);
+      setShowOverlay(false);
+      setTestStarted(true);
+
+      // Start audio playback immediately in user interaction context
+      console.log("Starting test - attempting to play audio...");
+      audioPlayer.startPlayback();
+    } catch (error) {
+      console.error("Error starting test:", error);
+      showConfirmation({
+        title: "Error Starting Test",
+        description: "Failed to load exam data. Please try again.",
+        confirmText: "OK",
+        variant: "destructive",
+        onConfirm: () => {},
+      });
+    } finally {
+      setIsStartingTest(false);
+    }
   };
 
   const handleAnswerChange = (
@@ -164,6 +197,7 @@ export default function IELTSListeningTestPage({
       <ListeningTestOverlay
         isOpen={showOverlay}
         onStartTest={handleStartTest}
+        isLoading={isStartingTest}
       />
     );
   }

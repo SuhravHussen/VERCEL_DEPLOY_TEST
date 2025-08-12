@@ -48,17 +48,17 @@ function WritingTestSkeleton() {
 export default async function WritingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ examId?: string }>;
+  searchParams: Promise<{ regId?: string }>;
 }) {
-  const { examId } = (await searchParams) || {};
+  const { regId } = (await searchParams) || {};
 
-  if (!examId) {
+  if (!regId) {
     redirect("/exam");
   }
 
   return (
     <Suspense fallback={<WritingTestSkeleton />}>
-      <WritingTestContent examId={examId} />
+      <WritingTestContent regId={regId} />
     </Suspense>
   );
 }

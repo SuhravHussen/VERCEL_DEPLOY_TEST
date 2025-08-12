@@ -15,12 +15,14 @@ interface WritingTestOverlayProps {
   isOpen: boolean;
   onStartTest: () => void;
   writingTest: IELTSWritingTest;
+  isLoading?: boolean;
 }
 
 export default function WritingTestOverlay({
   isOpen,
   onStartTest,
   writingTest,
+  isLoading = false,
 }: WritingTestOverlayProps) {
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
@@ -107,8 +109,13 @@ export default function WritingTestOverlay({
 
           {/* Start Button */}
           <div className="flex justify-center pt-4">
-            <Button onClick={onStartTest} size="lg" className="px-8">
-              Start Writing Test
+            <Button
+              onClick={onStartTest}
+              size="lg"
+              className="px-8"
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "Start Writing Test"}
             </Button>
           </div>
         </div>

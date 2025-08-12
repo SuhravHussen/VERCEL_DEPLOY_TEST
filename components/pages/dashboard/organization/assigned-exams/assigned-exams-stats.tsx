@@ -98,8 +98,8 @@ export function AssignedExamsStats({
     );
   }
 
-  // Calculate exams that need grading (past dates)
-  const needsGradingCount = stats.totalExams - stats.upcomingExams;
+  // Calculate exams that are past or today
+  const pastAndTodayCount = stats.totalExams - stats.upcomingExams;
 
   return (
     <div className={`grid gap-6 md:grid-cols-3 ${className || ""}`}>
@@ -111,9 +111,9 @@ export function AssignedExamsStats({
       />
 
       <StatCard
-        title="Needs Grading"
-        value={needsGradingCount}
-        description="Exams ready for review"
+        title="Past & Today"
+        value={pastAndTodayCount}
+        description="Exams from today or earlier"
         icon={CheckCircle2}
       />
 

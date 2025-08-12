@@ -12,11 +12,13 @@ import {
 interface ListeningTestOverlayProps {
   isOpen: boolean;
   onStartTest: () => void;
+  isLoading?: boolean;
 }
 
 export default function ListeningTestOverlay({
   isOpen,
   onStartTest,
+  isLoading = false,
 }: ListeningTestOverlayProps) {
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
@@ -85,9 +87,10 @@ export default function ListeningTestOverlay({
           <Button
             onClick={onStartTest}
             size="sm"
+            disabled={isLoading}
             className="w-full sm:w-auto px-4 sm:px-6 py-2 text-xs sm:text-base font-semibold"
           >
-            Start Test
+            {isLoading ? "Loading..." : "Start Test"}
           </Button>
         </div>
       </DialogContent>

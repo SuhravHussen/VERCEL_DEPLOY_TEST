@@ -23,7 +23,7 @@ interface UseUpcomingExamsResult {
   refetch: () => void;
 }
 
-// Mock function to simulate fetching upcoming exams
+// Mock function to simulate fetching upcoming exams (future dates)
 async function fetchUpcomingExams(
   organizationId: string,
   filters: ExamFilters = {}
@@ -35,7 +35,7 @@ async function fetchUpcomingExams(
   const allExams = [...mockIELTSExams];
   const now = new Date();
 
-  // Filter to upcoming exams (future dates)
+  // Filter to upcoming exams (future dates only)
   let upcomingExams = allExams.filter((exam) => {
     if (exam.lrw_group?.exam_date) {
       const examDate = new Date(exam.lrw_group.exam_date);

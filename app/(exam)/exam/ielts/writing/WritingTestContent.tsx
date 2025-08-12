@@ -1,12 +1,8 @@
 import { IELTSWritingTestPage } from "@/components/pages/exam/ielts/writing";
-import { getWritingTestData } from "@/server-actions/exam/get-exam-data";
+import { getWritingTestBasicInfoByRegId } from "@/server-actions/exam/get-exam-data";
 
-export default async function WritingTestContent({
-  examId,
-}: {
-  examId: string;
-}) {
-  const writingTest = await getWritingTestData(examId as string);
+export default async function WritingTestContent({ regId }: { regId: string }) {
+  const writingTest = await getWritingTestBasicInfoByRegId(regId as string);
 
   if (!writingTest) {
     return (
@@ -23,5 +19,5 @@ export default async function WritingTestContent({
     );
   }
 
-  return <IELTSWritingTestPage writingTest={writingTest} />;
+  return <IELTSWritingTestPage writingTest={writingTest} regId={regId} />;
 }

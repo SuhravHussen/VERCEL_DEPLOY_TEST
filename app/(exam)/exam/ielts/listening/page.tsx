@@ -46,17 +46,17 @@ function ListeningTestSkeleton() {
 export default async function ListeningPage({
   searchParams,
 }: {
-  searchParams: Promise<{ examId?: string }>;
+  searchParams: Promise<{ regId?: string }>;
 }) {
-  const { examId } = (await searchParams) || {};
+  const { regId } = (await searchParams) || {};
 
-  if (!examId) {
+  if (!regId) {
     redirect("/exam");
   }
 
   return (
     <Suspense fallback={<ListeningTestSkeleton />}>
-      <ListeningTestContent examId={examId} />
+      <ListeningTestContent regId={regId} />
     </Suspense>
   );
 }

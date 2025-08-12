@@ -2,6 +2,7 @@ import { RegisteredExam } from "@/types/registered-exam";
 import { mockUsers } from "./mockUsers";
 import { mockAdditionalExams, mockIELTSExams } from "./mockIeltsExam";
 import { Currency } from "@/types/currency";
+import { mockInstructorSpeakingSessions } from "./mockInstructorSpeakingSessions";
 
 export const registeredExams: RegisteredExam[] = [
   {
@@ -13,15 +14,7 @@ export const registeredExams: RegisteredExam[] = [
     paid_amount: 100,
     currency: Currency.BDT,
     status: "registered",
-    speaking_time: {
-      date: "2025-08-01",
-      start: "10:00",
-      end: "10:30",
-      instructor: {
-        id: "inst-1",
-        name: "Instructor A",
-      },
-    },
+    speaking_session: mockInstructorSpeakingSessions[0],
   },
   {
     id: "reg-2",
@@ -72,15 +65,7 @@ export const registeredExams: RegisteredExam[] = [
     paid_amount: 200,
     currency: Currency.BDT,
     status: "registered",
-    speaking_time: {
-      date: "2025-08-01",
-      start: "10:00",
-      end: "10:30",
-      instructor: {
-        id: "inst-1",
-        name: "Instructor A",
-      },
-    },
+    speaking_session: mockInstructorSpeakingSessions[1],
   },
   {
     id: "reg-7",
@@ -121,14 +106,6 @@ export const registeredExams: RegisteredExam[] = [
     paid_amount: 160,
     currency: Currency.BDT,
     status: "completed",
-    speaking_time: {
-      date: "2025-08-02",
-      start: "11:00",
-      end: "11:30",
-      instructor: {
-        id: "inst-2",
-        name: "Instructor B",
-      },
-    },
+    speaking_session: mockInstructorSpeakingSessions[2],
   },
 ];

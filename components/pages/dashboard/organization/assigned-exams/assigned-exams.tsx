@@ -16,12 +16,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PaginationWrapper } from "@/components/ui/pagination-wrapper";
 import {
   useAssignedExamsStats,
-  useNeedsGradingExams,
+  usePastAndTodayExams,
   useUpcomingExams,
 } from "@/hooks/organization/assigned-exams";
 import { AssignedExamCard } from "./assigned-exam-card";
 import { AssignedExamsStats } from "./assigned-exams-stats";
 import { ExamFilters, ExamModel } from "@/types/exam/exam";
+import { getCurrentUser } from "@/lib/auth-client";
 
 interface AssignedExamsProps {
   organizationId: string;
@@ -32,9 +33,10 @@ export function AssignedExams({
   organizationId,
   className,
 }: AssignedExamsProps) {
+  const user = getCurrentUser();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [needsGradingPage, setNeedsGradingPage] = useState(1);
+  const [pastAndTodayPage, setPastAndTodayPage] = useState(1);
   const [upcomingPage, setUpcomingPage] = useState(1);
   const [filters, setFilters] = useState<ExamFilters>({
     examType: "all",
@@ -48,10 +50,10 @@ export function AssignedExams({
     organizationId,
   });
 
-  // Get paginated needs grading exams
-  const needsGradingResult = useNeedsGradingExams({
+  // Get paginated past and today exams
+  const pastAndTodayResult = usePastAndTodayExams({
     organizationId,
-    page: needsGradingPage,
+    page: pastAndTodayPage,
     pageSize: 6,
     filters: {
       ...filters,
@@ -73,7 +75,7 @@ export function AssignedExams({
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     // Reset pagination when searching
-    setNeedsGradingPage(1);
+    setPastAndTodayPage(1);
     setUpcomingPage(1);
   };
 
@@ -83,14 +85,14 @@ export function AssignedExams({
       [key]: value,
     }));
     // Reset pagination when filtering
-    setNeedsGradingPage(1);
+    setPastAndTodayPage(1);
     setUpcomingPage(1);
   };
 
   const handleViewSubmissions = (examId: string) => {
     // Navigate to exam submissions page
     router.push(
-      `/dashboard/organization/${organizationId}/ielts/exam/${examId}/submissions`
+      `/dashboard/organization/${organizationId}/assigned-exams/submissions/${examId}`
     );
   };
 
@@ -98,6 +100,13 @@ export function AssignedExams({
     // Navigate to exam details page
     router.push(
       `/dashboard/organization/${organizationId}/ielts/exam/${examId}`
+    );
+  };
+
+  const handleViewSpeakingSessions = (examId: string) => {
+    // Navigate to speaking sessions page
+    router.push(
+      `/dashboard/organization/${organizationId}/assigned-exams/speaking-sessions/${examId}`
     );
   };
 
@@ -154,14 +163,19 @@ export function AssignedExams({
         ) : (
           <>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {result.exams.map((exam) => (
-                <AssignedExamCard
-                  key={exam.id}
-                  exam={exam}
-                  onViewSubmissions={handleViewSubmissions}
-                  onViewDetails={handleViewDetails}
-                />
-              ))}
+              {result.exams.map(
+                (exam) =>
+                  exam.type_of_exam === "ielts" && (
+                    <AssignedExamCard
+                      key={exam.id}
+                      exam={exam}
+                      user={user}
+                      onViewSubmissions={handleViewSubmissions}
+                      onViewDetails={handleViewDetails}
+                      onViewSpeakingSessions={handleViewSpeakingSessions}
+                    />
+                  )
+              )}
             </div>
 
             {result.totalPages > 1 && (
@@ -267,22 +281,22 @@ export function AssignedExams({
         </Card>
 
         {/* Content */}
-        {needsGradingResult.error || upcomingResult.error ? (
+        {pastAndTodayResult.error || upcomingResult.error ? (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {needsGradingResult.error || upcomingResult.error} Please try
+              {pastAndTodayResult.error || upcomingResult.error} Please try
               refreshing the page.
             </AlertDescription>
           </Alert>
         ) : (
           <div className="space-y-8">
-            {/* Needs Grading Section */}
+            {/* Past & Today Section */}
             {renderExamSection(
-              "Needs Grading",
-              needsGradingResult,
-              "No exams currently need grading.",
-              setNeedsGradingPage
+              "Past & Today",
+              pastAndTodayResult,
+              "No past or today's exams found.",
+              setPastAndTodayPage
             )}
 
             {/* Upcoming Exams Section */}

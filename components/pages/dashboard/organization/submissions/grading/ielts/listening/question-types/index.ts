@@ -1,0 +1,9 @@
+export { default as MultipleChoiceGradingRenderer } from "./multiple-choice-grading-renderer";
+export { default as SentenceCompletionGradingRenderer } from "./sentence-completion-grading-renderer";
+export { default as FormCompletionGradingRenderer } from "./form-completion-grading-renderer";
+export { default as NoteCompletionGradingRenderer } from "./note-completion-grading-renderer";
+export { default as TableCompletionGradingRenderer } from "./table-completion-grading-renderer";
+export { default as FlowChartCompletionGradingRenderer } from "./flow-chart-completion-grading-renderer";
+export { default as DiagramLabelCompletionGradingRenderer } from "./diagram-label-completion-grading-renderer";
+export { default as MatchingGradingRenderer } from "./matching-grading-renderer";
+export { default as ShortAnswerGradingRenderer } from "./short-answer-grading-renderer";

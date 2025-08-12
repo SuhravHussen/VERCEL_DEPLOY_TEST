@@ -9,6 +9,14 @@ export const QUERY_KEYS = {
     LIST: ["organizations"],
     INSTRUCTORS_LIST: "instructors-list",
     BY_SLUG: (slug: string) => ["organization", slug],
+    SPEAKING_SESSIONS: {
+      INSTRUCTOR: (examId: string, instructorId: string) => [
+        "speaking-sessions",
+        "instructor",
+        examId,
+        instructorId,
+      ],
+    },
   },
   SUPER_ADMIN: {
     USERS_LIST: "super-admin-users-list",
@@ -109,6 +117,60 @@ export const QUERY_KEYS = {
       organizationId,
       "filtered",
       filters,
+    ],
+  },
+  EXAM_SUBMISSIONS: {
+    BY_EXAM: (examId: string) => ["exam-submissions", "exam", examId],
+    BY_EXAM_PAGINATED: (
+      examId: string,
+      page: number,
+      pageSize: number,
+      filters?: {
+        status?: string;
+        sortBy?: string;
+        sortOrder?: string;
+        searchQuery?: string;
+      }
+    ) => [
+      "exam-submissions",
+      "exam",
+      examId,
+      "paginated",
+      { page, pageSize, ...filters },
+    ],
+    BY_ID: (id: string) => ["exam-submission", id],
+    BY_STUDENT: (studentId: string) => [
+      "exam-submissions",
+      "student",
+      studentId,
+    ],
+  },
+  GRADING: {
+    SAVE_SECTION: (submissionId: string, section: string) => [
+      "grading",
+      "save-section",
+      submissionId,
+      section,
+    ],
+    SAVE_LISTENING: (submissionId: string) => [
+      "grading",
+      "save-listening",
+      submissionId,
+    ],
+    SAVE_READING: (submissionId: string) => [
+      "grading",
+      "save-reading",
+      submissionId,
+    ],
+    SAVE_WRITING: (submissionId: string) => [
+      "grading",
+      "save-writing",
+      submissionId,
+    ],
+    SAVE_SPEAKING: (submissionId: string) => [
+      "grading",
+      "save-speaking",
+      submissionId,
     ],
   },
 };

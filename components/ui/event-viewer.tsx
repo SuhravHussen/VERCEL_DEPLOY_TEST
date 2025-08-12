@@ -8,6 +8,7 @@ import {
   ClockIcon,
   ListIcon,
   CalendarDaysIcon,
+  Video,
 } from "lucide-react";
 import {
   format,
@@ -41,6 +42,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export interface CalendarEvent {
   id: string;
@@ -48,6 +50,8 @@ export interface CalendarEvent {
   date: Date;
   time?: string;
   description?: string;
+  start?: Date;
+  end?: Date;
   color?:
     | "blue"
     | "green"
@@ -99,6 +103,13 @@ const dotColors = {
   teal: "bg-teal-500",
 };
 
+const LiveBadge = () => (
+  <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase text-red-700 bg-red-100 border border-red-200">
+    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+    LIVE
+  </span>
+);
+
 const EventBadge = React.forwardRef<
   HTMLDivElement,
   {
@@ -106,9 +117,29 @@ const EventBadge = React.forwardRef<
     compact?: boolean;
     screenSize?: "xs" | "sm" | "md" | "lg";
     onClick?: (event: React.MouseEvent) => void;
+    nowTick?: number;
   }
->(({ event, compact = false, screenSize = "lg", onClick }, ref) => {
+>(({ event, compact = false, screenSize = "lg", onClick, nowTick }, ref) => {
   const colorClass = eventColors[event.color || "blue"];
+  const isLive = (() => {
+    if (event.start && event.end) {
+      const now = nowTick ?? Date.now();
+      const startMs = event.start.getTime();
+      const endMs = event.end.getTime();
+      const live = now >= startMs && now <= endMs;
+      if (typeof window !== "undefined") {
+        console.log("[EventViewer] isLive", {
+          id: event.id,
+          start: event.start.toISOString(),
+          end: event.end.toISOString(),
+          now: new Date(now).toISOString(),
+          live,
+        });
+      }
+      return live;
+    }
+    return event.category === "LIVE";
+  })();
 
   return (
     <TooltipProvider>
@@ -150,26 +181,35 @@ const EventBadge = React.forwardRef<
               !compact &&
               screenSize !== "sm" &&
               screenSize !== "xs" && (
-                <span className="text-[8px] sm:text-[10px] opacity-75 ml-auto">
+                <span className="text-[8px] sm:text-[10px] ml-auto">
                   {event.time}
                 </span>
               )}
+            {isLive && (
+              <span className="ml-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs">
-          <div className="space-y-1">
-            <p className="font-medium">{event.title}</p>
-            {event.time && (
-              <p className="text-sm flex items-center gap-1">
-                <ClockIcon className="w-3 h-3" />
-                {event.time}
-              </p>
-            )}
+          <div className="space-y-2">
+            <div>
+              <p className="font-semibold leading-snug">{event.title}</p>
+              {event.time && (
+                <p className="mt-1">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted/60 border border-border/50 text-xs text-foreground">
+                    <ClockIcon className="w-3 h-3" />
+                    {event.time}
+                  </span>
+                </p>
+              )}
+            </div>
             {event.description && (
-              <p className="text-sm opacity-80">{event.description}</p>
-            )}
-            {event.category && (
-              <p className="text-xs opacity-70">Category: {event.category}</p>
+              <>
+                <Separator className="my-1" />
+                <p className="text-xs leading-5 whitespace-pre-line">
+                  {event.description}
+                </p>
+              </>
             )}
           </div>
         </TooltipContent>
@@ -185,11 +225,13 @@ const EventModal = ({
   onClose,
   events,
   selectedDate,
+  onEventClick,
 }: {
   isOpen: boolean;
   onClose: () => void;
   events: CalendarEvent[];
   selectedDate: Date | null;
+  onEventClick?: (event: CalendarEvent) => void;
 }) => {
   if (!selectedDate) return null;
 
@@ -250,16 +292,37 @@ const EventModal = ({
                   <h3 className="font-semibold text-sm leading-5">
                     {event.title}
                   </h3>
-                  {event.category && (
-                    <Badge variant="secondary" className="text-xs shrink-0">
-                      {event.category}
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {event.category === "LIVE" ? (
+                      <LiveBadge />
+                    ) : (
+                      event.category && (
+                        <Badge variant="secondary" className="text-xs">
+                          {event.category}
+                        </Badge>
+                      )
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 px-2 text-[10px] sm:text-xs"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onEventClick?.(event);
+                      }}
+                    >
+                      <Video className="w-3 h-3 mr-1" />
+                      Start video call
+                    </Button>
+                  </div>
                 </div>
                 {event.time && (
-                  <p className="text-sm text-muted-foreground flex items-center gap-1 mt-2">
-                    <ClockIcon className="w-3 h-3" />
-                    {event.time}
+                  <p className="mt-2">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted/60 border border-border/50 text-xs text-foreground">
+                      <ClockIcon className="w-3 h-3" />
+                      {event.time}
+                    </span>
                   </p>
                 )}
                 {event.description && (
@@ -321,13 +384,17 @@ const ListView = ({
       {currentMonthEvents.map((event) => (
         <div
           key={event.id}
-          onClick={() => onEventClick?.(event)}
           className={cn(
             "p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.98]",
             screenSize === "xs" || screenSize === "sm"
               ? "hover:scale-[1.01]"
               : "hover:scale-[1.02]",
-            eventColors[event.color || "blue"]
+            eventColors[event.color || "blue"],
+            event.start &&
+              event.end &&
+              Date.now() >= event.start.getTime() &&
+              Date.now() <= event.end.getTime() &&
+              "ring ring-red-300"
           )}
         >
           <div className="flex items-start justify-between gap-2">
@@ -349,6 +416,14 @@ const ListView = ({
                   </span>
                 )}
               </div>
+              {event.start &&
+                event.end &&
+                Date.now() >= event.start.getTime() &&
+                Date.now() <= event.end.getTime() && (
+                  <div className="mt-1">
+                    <LiveBadge />
+                  </div>
+                )}
               {event.description &&
                 (screenSize === "md" || screenSize === "lg") && (
                   <p className="text-xs sm:text-sm mt-2 opacity-70 line-clamp-2">
@@ -356,13 +431,28 @@ const ListView = ({
                   </p>
                 )}
             </div>
-            {event.category && (
-              <Badge variant="secondary" className="text-xs shrink-0">
-                {screenSize === "xs" && event.category.length > 8
-                  ? `${event.category.slice(0, 8)}...`
-                  : event.category}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              {event.category && (
+                <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                  {screenSize === "xs" && event.category.length > 8
+                    ? `${event.category.slice(0, 8)}...`
+                    : event.category}
+                </Badge>
+              )}
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 px-2 text-[10px] sm:text-xs"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEventClick?.(event);
+                }}
+              >
+                <Video className="w-3 h-3 mr-1" />
+                Start video call
+              </Button>
+            </div>
           </div>
         </div>
       ))}
@@ -456,6 +546,15 @@ export function EventViewer({
   const [viewMode, setViewMode] = React.useState<ViewMode>("calendar");
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [, forceTick] = React.useState(0);
+
+  // Force re-render every 30s to update live indicators
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      forceTick((t) => (t + 1) % Number.MAX_SAFE_INTEGER);
+    }, 30000);
+    return () => clearInterval(id);
+  }, []);
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -757,6 +856,7 @@ export function EventViewer({
                                         e.stopPropagation();
                                         onEventClick?.(event);
                                       }}
+                                      nowTick={Date.now()}
                                     />
                                   ))}
 
@@ -765,7 +865,8 @@ export function EventViewer({
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        toggleDayExpansion(day);
+                                        setSelectedDate(day);
+                                        setModalOpen(true);
                                       }}
                                       className="text-[10px] sm:text-xs text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors text-left"
                                     >
@@ -773,17 +874,19 @@ export function EventViewer({
                                     </button>
                                   )}
 
-                                {isExpanded && dayEvents.length > maxEvents && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleDayExpansion(day);
-                                    }}
-                                    className="text-[10px] sm:text-xs text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors text-left"
-                                  >
-                                    show less
-                                  </button>
-                                )}
+                                {false &&
+                                  isExpanded &&
+                                  dayEvents.length > maxEvents && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleDayExpansion(day);
+                                      }}
+                                      className="text-[10px] sm:text-xs text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors text-left"
+                                    >
+                                      show less
+                                    </button>
+                                  )}
                               </div>
                             )}
                           </div>
@@ -804,6 +907,7 @@ export function EventViewer({
         onClose={() => setModalOpen(false)}
         events={events}
         selectedDate={selectedDate}
+        onEventClick={onEventClick}
       />
     </>
   );

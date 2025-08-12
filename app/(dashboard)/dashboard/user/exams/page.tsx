@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { GraduationCap } from "lucide-react";
-import { RegisteredExams } from "@/components/pages/dashboard/organization/all-exam/exams/registered-exams";
+import { RegisteredExams } from "@/components/pages/dashboard/user/exams/registered-exams";
 
 // Loading fallback component
 function ExamsPageSkeleton() {
@@ -55,8 +55,8 @@ export default function ExamsPage() {
         </div>
 
         {/* Main Content */}
-        <Card className="border-0 shadow-sm bg-background/65">
-          <CardContent className="p-0 md:p-4 sm:p-6 lg:p-8">
+        <Card className="border-0  bg-transparent  md:bg-background shadow-none">
+          <CardContent className="p-2 md:p-4 sm:p-6 lg:p-8 bg-transparent shadow-none">
             <Suspense fallback={<ExamsPageSkeleton />}>
               <RegisteredExams />
             </Suspense>

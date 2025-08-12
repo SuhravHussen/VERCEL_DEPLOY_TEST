@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ExamModel } from "@/types/exam/exam";
+import { User } from "@/types/user";
 import { ExamStatusBadge } from "./components/ExamStatusBadge";
 import { ExamStatusIcon } from "./components/ExamStatusIcon";
 import { ExamDetails } from "./components/ExamDetails";
@@ -17,14 +18,18 @@ import { GradingIndicator } from "./components/grading-indicator";
 
 interface AssignedExamCardProps {
   exam: ExamModel;
+  user: User | null;
   onViewSubmissions?: (examId: string) => void;
   onViewDetails?: (examId: string) => void;
+  onViewSpeakingSessions?: (examId: string) => void;
 }
 
 export function AssignedExamCard({
   exam,
+  user,
   onViewSubmissions,
   onViewDetails,
+  onViewSpeakingSessions,
 }: AssignedExamCardProps) {
   const getDaysUntilExam = () => {
     if (!exam.lrw_group?.exam_date) return null;
@@ -49,9 +54,7 @@ export function AssignedExamCard({
 
   const isExamAvailable = () => {
     const status = getExamStatus();
-    return (
-      status === "today" || status === "upcoming" || status === "scheduled"
-    );
+    return status === "today" || status === "completed";
   };
 
   const status = getExamStatus();
@@ -66,7 +69,9 @@ export function AssignedExamCard({
       <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></div>
 
       {/* Grading Required Indicator */}
-      <GradingIndicator show={exam.require_grading || false} />
+      {isExamAvailable() && (
+        <GradingIndicator show={exam.require_grading || false} />
+      )}
 
       <CardHeader className="relative z-10 pb-4 space-y-4">
         <div className="flex items-start justify-between gap-4">
@@ -107,10 +112,12 @@ export function AssignedExamCard({
 
       <CardFooter className="relative z-10 pt-6 px-6 pb-6 border-t border-border/20 bg-muted/5">
         <ExamActions
-          examId={exam.id}
+          exam={exam}
+          user={user}
           isExamAvailable={isExamAvailable()}
           onViewDetails={onViewDetails}
           onViewSubmissions={onViewSubmissions}
+          onViewSpeakingSessions={onViewSpeakingSessions}
         />
       </CardFooter>
     </Card>

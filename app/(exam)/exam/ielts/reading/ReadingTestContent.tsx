@@ -1,12 +1,8 @@
 import { IELTSReadingTestPage } from "@/components/pages/exam/ielts/reading";
-import { getReadingTestData } from "@/server-actions/exam/get-exam-data";
+import { getReadingTestBasicInfoByRegId } from "@/server-actions/exam/get-exam-data";
 
-export default async function ReadingTestContent({
-  examId,
-}: {
-  examId: string;
-}) {
-  const readingTest = await getReadingTestData(examId as string);
+export default async function ReadingTestContent({ regId }: { regId: string }) {
+  const readingTest = await getReadingTestBasicInfoByRegId(regId as string);
 
   if (!readingTest) {
     return (
@@ -23,5 +19,5 @@ export default async function ReadingTestContent({
     );
   }
 
-  return <IELTSReadingTestPage readingTest={readingTest} />;
+  return <IELTSReadingTestPage readingTest={readingTest} regId={regId} />;
 }

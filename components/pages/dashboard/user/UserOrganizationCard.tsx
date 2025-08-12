@@ -35,21 +35,30 @@ export function UserOrganizationCard({
 
   return (
     <div
-      className={`${gradientClass} rounded-2xl p-6 border border-gray-100 dark:border-gray-800 overflow-hidden`}
+      className={`${gradientClass} relative rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow`}
     >
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+      {/* Mobile badge (overlay) */}
+      <span
+        className={`absolute top-3 right-3 sm:hidden inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getRoleBadgeColor(
+          role
+        )}`}
+      >
+        {formatRole(role)}
+      </span>
+
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
         {/* Logo */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-white/60 dark:bg-gray-900/30 border border-gray-100 dark:border-gray-800">
           {organization.logo ? (
             <Image
               src={organization.logo}
               alt={organization.name}
               width={100}
               height={100}
-              className="rounded-lg object-cover w-full h-full"
+              className="object-cover w-full h-full"
             />
           ) : (
-            <div className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+            <div className="flex h-full w-full items-center justify-center text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200">
               {organization.name.substring(0, 2).toUpperCase()}
             </div>
           )}
@@ -57,12 +66,12 @@ export function UserOrganizationCard({
 
         {/* Organization Details */}
         <div className="flex-1 py-1 text-center sm:text-left">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-            <h3 className="text-xl font-bold text-[#333] dark:text-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 mb-2">
+            <h3 className="text-lg sm:text-xl font-bold text-[#333] dark:text-gray-100 break-words">
               {organization.name}
             </h3>
             <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeColor(
+              className={`hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeColor(
                 role
               )}`}
             >
@@ -75,13 +84,13 @@ export function UserOrganizationCard({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex-shrink-0 self-center mt-3 sm:mt-0 sm:self-center">
-          <div className="flex flex-col gap-2">
+        <div className="flex-shrink-0 self-stretch sm:self-center mt-3 sm:mt-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             {/* Dashboard link for admins and instructors */}
             {(role === "ADMIN" || role === "INSTRUCTOR") && (
               <Link
                 href={`/dashboard/organization/${organization.id}`}
-                className="px-4 py-2 rounded-full text-sm font-medium transition-colors text-white hover:bg-black/90 bg-primary dark:text-black dark:hover:bg-gray-200 inline-block text-center"
+                className="w-full sm:w-auto px-4 py-2 rounded-full text-sm font-medium transition-colors text-white hover:bg-black/90 bg-primary dark:text-black dark:hover:bg-gray-200 inline-block text-center"
               >
                 Go to Dashboard
               </Link>
@@ -90,7 +99,7 @@ export function UserOrganizationCard({
             {/* Organization link for all users */}
             <Link
               href={getOrganizationUrl(organization.slug)}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 inline-block text-center"
+              className="w-full sm:w-auto px-4 py-2 rounded-full text-sm font-medium transition-colors border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 inline-block text-center"
             >
               Go to Organization
             </Link>

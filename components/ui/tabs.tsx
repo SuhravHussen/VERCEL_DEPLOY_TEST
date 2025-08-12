@@ -90,7 +90,7 @@ const TabsList = React.forwardRef<
         listRef.current = node;
       }}
       className={cn(
-        "inline-flex h-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-900/50 py-1 text-gray-600 dark:text-gray-400 relative overflow-hidden backdrop-blur-sm border border-gray-200 dark:border-gray-800",
+        "inline-flex h-12 items-center justify-center rounded-sm bg-gray-100 dark:bg-gray-900/50 py-1 text-gray-600 dark:text-gray-400 relative overflow-hidden backdrop-blur-sm border border-gray-200 dark:border-gray-800",
         className
       )}
       {...props}
@@ -99,7 +99,7 @@ const TabsList = React.forwardRef<
       <AnimatePresence>
         {activeTab && tabPositions[activeTab] && (
           <motion.div
-            className="absolute top-1.5 bottom-1.5 bg-primary rounded-lg shadow-md border border-gray-200 dark:border-gray-700 z-0"
+            className="absolute top-1.5 bottom-1.5 bg-primary rounded-sm shadow-md border border-gray-200 dark:border-gray-700 z-0"
             initial={false}
             animate={{
               left: tabPositions[activeTab].left,
@@ -126,7 +126,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-5 py-2.5 text-sm font-semibold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative z-10",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-5 py-2.5 text-sm font-semibold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative z-10",
       "data-[state=active]:text-primary-foreground data-[state=active]:shadow-none",
       "data-[state=inactive]:text-gray-500 dark:data-[state=inactive]:text-gray-400",
       "hover:text-gray-700 dark:hover:text-gray-200 data-[state=active]:hover:text-primary-foreground",

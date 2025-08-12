@@ -61,17 +61,17 @@ function ReadingTestSkeleton() {
 export default async function ReadingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ examId?: string }>;
+  searchParams: Promise<{ regId?: string }>;
 }) {
-  const { examId } = (await searchParams) || {};
+  const { regId } = (await searchParams) || {};
 
-  if (!examId) {
+  if (!regId) {
     redirect("/exam");
   }
 
   return (
     <Suspense fallback={<ReadingTestSkeleton />}>
-      <ReadingTestContent examId={examId} />
+      <ReadingTestContent regId={regId} />
     </Suspense>
   );
 }

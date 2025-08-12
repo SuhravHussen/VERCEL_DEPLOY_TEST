@@ -32,7 +32,9 @@ const getOrganizationNavItems = (id: string, role: Role | null): NavItem[] => [
     url: `/dashboard/organization/${id}/assigned-exams`,
     icon: "exam",
     isActive: false,
+    items: [],
   },
+
   {
     title: "Ielts",
     url: "#",

@@ -3,6 +3,7 @@ import { IELTSListeningTest } from "./ielts-academic/listening/listening";
 import { IELTSReadingTest } from "./ielts-academic/reading/test/test";
 import { IELTSWritingTest } from "./ielts-academic/writing/writing";
 import { Currency } from "@/types/currency";
+import { Organization } from "../organization";
 
 // Time slot interface for speaking test scheduling
 export interface TimeSlot {
@@ -52,6 +53,7 @@ export interface ExamStatsData {
 
 // Main IELTS Exam model
 export interface ExamModel {
+  organization?: Organization;
   // Basic exam information
   id: string;
   title: string;

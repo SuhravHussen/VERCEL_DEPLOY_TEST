@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { IELTSWritingTest } from "@/types/exam/ielts-academic/writing/writing";
 
 import WritingTestSectionHeader from "./writing-test-section-header";
@@ -9,18 +10,22 @@ import { WritingMobileLayout } from "./components/writing-mobile-layout";
 import { useWritingTestState } from "./hooks/use-writing-test-state";
 import { useConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { useWritingTestFullData } from "@/hooks/use-exam-test-data";
 import WritingTestOverlay from "./writing-test-overlay";
 import WritingTestHeader from "./writing-test-header";
 import WritingTestBottomNav from "./writing-test-bottom-nav";
 
 interface IELTSWritingTestPageProps {
   writingTest: IELTSWritingTest;
+  regId?: string;
 }
 
 export default function IELTSWritingTestPage({
   writingTest,
+  regId,
 }: IELTSWritingTestPageProps) {
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
+  const { fetchWritingTestFullData } = useWritingTestFullData();
 
   const {
     showOverlay,
@@ -32,11 +37,21 @@ export default function IELTSWritingTestPage({
     setActiveTab,
     handleTaskChange,
     handleResponseChange,
-    handleStartTest,
+    setShowOverlay,
+    setTestStarted,
   } = useWritingTestState();
 
+  // Additional state for two-phase data fetching
+  const [fullTestData, setFullTestData] = useState<IELTSWritingTest | null>(
+    null
+  );
+  const [isStartingTest, setIsStartingTest] = useState(false);
+
+  // Use full test data if available, otherwise use basic info
+  const currentTestData = fullTestData || writingTest;
+
   const currentTaskData =
-    currentTask === "task1" ? writingTest.task1 : writingTest.task2;
+    currentTask === "task1" ? currentTestData.task1 : currentTestData.task2;
   const currentResponse =
     currentTask === "task1" ? task1Response : task2Response;
 
@@ -49,6 +64,38 @@ export default function IELTSWritingTestPage({
   const handlePrevious = () => {
     if (currentTask === "task2") {
       handleTaskChange("task1");
+    }
+  };
+
+  const handleStartTest = async () => {
+    try {
+      setIsStartingTest(true);
+
+      // Fetch full exam data with questions if regId is provided
+      if (regId) {
+        console.log("Fetching full writing test data...");
+        const fullData = await fetchWritingTestFullData(regId);
+
+        if (!fullData) {
+          throw new Error("Failed to fetch full exam data");
+        }
+
+        setFullTestData(fullData);
+      }
+
+      setShowOverlay(false);
+      setTestStarted(true);
+    } catch (error) {
+      console.error("Error starting test:", error);
+      showConfirmation({
+        title: "Error Starting Test",
+        description: "Failed to load exam data. Please try again.",
+        confirmText: "OK",
+        variant: "destructive",
+        onConfirm: () => {},
+      });
+    } finally {
+      setIsStartingTest(false);
     }
   };
 
@@ -82,7 +129,8 @@ export default function IELTSWritingTestPage({
       <WritingTestOverlay
         isOpen={showOverlay}
         onStartTest={handleStartTest}
-        writingTest={writingTest}
+        writingTest={currentTestData}
+        isLoading={isStartingTest}
       />
     );
   }
