@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import ListeningTestContent from "./LsiteningTestContent";
+import ListeningTestWrapper from "./ListeningTestWrapper";
 
 function ListeningTestSkeleton() {
   return (
@@ -46,17 +47,19 @@ function ListeningTestSkeleton() {
 export default async function ListeningPage({
   searchParams,
 }: {
-  searchParams: Promise<{ regId?: string }>;
+  searchParams: Promise<{ regId?: string; practiceId?: string }>;
 }) {
-  const { regId } = (await searchParams) || {};
+  const { regId, practiceId } = (await searchParams) || {};
 
-  if (!regId) {
+  if (!regId && !practiceId) {
     redirect("/exam");
   }
 
   return (
     <Suspense fallback={<ListeningTestSkeleton />}>
-      <ListeningTestContent regId={regId} />
+      <ListeningTestWrapper>
+        <ListeningTestContent regId={regId} practiceId={practiceId} />
+      </ListeningTestWrapper>
     </Suspense>
   );
 }

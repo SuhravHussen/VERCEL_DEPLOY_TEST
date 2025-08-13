@@ -22,15 +22,18 @@ import {
   calculatePartProgress,
   extractPartQuestionNumbers,
 } from "@/lib/listening-test-utils";
+import { audioManager } from "@/lib/audio-manager";
 
 interface IELTSListeningTestPageProps {
   listeningTest: IELTSListeningTest;
   regId: string;
+  type?: "practice" | "registered";
 }
 
 export default function IELTSListeningTestPage({
   listeningTest,
   regId,
+  type = "registered",
 }: IELTSListeningTestPageProps) {
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
   const { fetchListeningTestFullData } = useListeningTestFullData();
@@ -140,7 +143,7 @@ export default function IELTSListeningTestPage({
 
       // Fetch full exam data with questions
       console.log("Fetching full exam data...");
-      const fullData = await fetchListeningTestFullData(regId);
+      const fullData = await fetchListeningTestFullData(regId, type);
 
       if (!fullData) {
         throw new Error("Failed to fetch full exam data");
@@ -181,10 +184,54 @@ export default function IELTSListeningTestPage({
     setCurrentPart(part);
   };
 
-  // Cleanup audio on unmount (only on actual unmount, not re-renders)
+  // Cleanup audio on unmount and page leave
   useEffect(() => {
+    // Register with the audio manager
+    const unregisterAudioCleanup = audioManager.registerCleanup(() => {
+      console.log("🚨 AudioManager cleanup - force stopping audio player");
+      audioPlayer.forceStopPlayback();
+    });
+
+    // Removed handleBeforeUnload - we want audio to continue if user cancels reload
+    // If user actually reloads, page refreshes and audio stops naturally
+
+    // Create a force stop function for NavigationGuard
+    const forceStopAudio = () => {
+      console.log("🚨 NavigationGuard triggered - stopping all audio");
+      audioManager.stopAllAudio();
+    };
+
+    // Register cleanup function with parent NavigationGuard wrapper
+    if (typeof window !== "undefined") {
+      const globalWindow = window as typeof window & {
+        __listeningTestCleanup?: (cleanupFn: (() => void) | null) => void;
+      };
+      if (globalWindow.__listeningTestCleanup) {
+        console.log("🚨 Registering cleanup function with NavigationGuard");
+        globalWindow.__listeningTestCleanup(forceStopAudio);
+      } else {
+        console.log("🚨 NavigationGuard cleanup function not available");
+      }
+    }
+
+    // No beforeunload event listener - let audio continue if user cancels reload
+
     return () => {
-      audioPlayer.stopPlayback();
+      // Cleanup audio and remove event listeners
+      console.log("🚨 Component unmounting - stopping all audio");
+      audioManager.stopAllAudio();
+      unregisterAudioCleanup();
+      // No beforeunload listener to remove since we don't add one
+
+      // Clear the global cleanup function
+      if (typeof window !== "undefined") {
+        const globalWindow = window as typeof window & {
+          __listeningTestCleanup?: (cleanupFn: (() => void) | null) => void;
+        };
+        if (globalWindow.__listeningTestCleanup) {
+          globalWindow.__listeningTestCleanup(null);
+        }
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array - only runs on mount/unmount

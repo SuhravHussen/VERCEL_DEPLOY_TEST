@@ -18,11 +18,13 @@ import WritingTestBottomNav from "./writing-test-bottom-nav";
 interface IELTSWritingTestPageProps {
   writingTest: IELTSWritingTest;
   regId?: string;
+  type?: "practice" | "registered";
 }
 
 export default function IELTSWritingTestPage({
   writingTest,
   regId,
+  type = "registered",
 }: IELTSWritingTestPageProps) {
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
   const { fetchWritingTestFullData } = useWritingTestFullData();
@@ -74,7 +76,7 @@ export default function IELTSWritingTestPage({
       // Fetch full exam data with questions if regId is provided
       if (regId) {
         console.log("Fetching full writing test data...");
-        const fullData = await fetchWritingTestFullData(regId);
+        const fullData = await fetchWritingTestFullData(regId, type);
 
         if (!fullData) {
           throw new Error("Failed to fetch full exam data");

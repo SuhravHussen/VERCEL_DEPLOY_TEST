@@ -111,9 +111,21 @@ export async function getWritingTestData(
 }
 
 // Basic exam info functions (without questions) - Phase 1
-export async function getListeningTestBasicInfo(examId: string) {
+export async function getListeningTestBasicInfo(
+  id: string,
+  type: "practice" | "registered" = "registered"
+) {
   try {
-    const exam = await getExamData(examId);
+    let exam;
+
+    if (type === "practice") {
+      // For practice, id is examId - get directly from mock exams
+      exam = await getExamData(id);
+    } else {
+      // For registered, id is regId - get from registered exam
+      const registeredExam = registeredExams.find((reg) => reg.id === id);
+      exam = registeredExam?.exam || null;
+    }
 
     if (!exam || !exam.listening_test) {
       return null;
@@ -146,13 +158,22 @@ export async function getListeningTestBasicInfo(examId: string) {
   }
 }
 
-export async function getReadingTestBasicInfo(examId: string) {
+export async function getReadingTestBasicInfo(
+  id: string,
+  type: "practice" | "registered" = "registered"
+) {
   try {
-    // For now, return the same data since it's mock data
-    // In production, this would exclude questions and return only basic info
-    const readingTest =
-      ieltsReadingTest.find((test) => test.id === examId) ||
-      ieltsReadingTest[0];
+    let readingTest;
+
+    if (type === "practice") {
+      // For practice, id is examId - get directly from mock reading tests
+      readingTest =
+        ieltsReadingTest.find((test) => test.id === id) || ieltsReadingTest[0];
+    } else {
+      // For registered, id is regId - get from registered exam
+      const registeredExam = registeredExams.find((reg) => reg.id === id);
+      readingTest = registeredExam?.exam?.reading_test || null;
+    }
 
     if (!readingTest) {
       return null;
@@ -182,14 +203,23 @@ export async function getReadingTestBasicInfo(examId: string) {
 }
 
 export async function getWritingTestBasicInfo(
-  examId: string
+  id: string,
+  type: "practice" | "registered" = "registered"
 ): Promise<IELTSWritingTest | null> {
   try {
-    // For now, return the same data since it's mock data
-    // In production, this would exclude questions and return only basic info
-    const writingTest =
-      mockIeltsWritingTests.find((test) => test.id === examId) ||
-      mockIeltsWritingTests[0];
+    let writingTest;
+
+    if (type === "practice") {
+      // For practice, id is examId - get directly from mock writing tests
+      writingTest =
+        mockIeltsWritingTests.find((test) => test.id === id) ||
+        mockIeltsWritingTests[0];
+    } else {
+      // For registered, id is regId - get from registered exam
+      const registeredExam = registeredExams.find((reg) => reg.id === id);
+      writingTest = registeredExam?.exam?.writing_test || null;
+    }
+
     return writingTest || null;
   } catch (error) {
     console.error("Error fetching writing test basic info:", error);
@@ -198,22 +228,28 @@ export async function getWritingTestBasicInfo(
 }
 
 // Full exam data functions (with questions) - Phase 2
-export async function getListeningTestFullData(examId: string) {
+export async function getListeningTestFullData(
+  id: string,
+  type: "practice" | "registered" = "registered"
+) {
   try {
-    // For now, this is the same as getListeningTestData
+    // For now, this is the same as getListeningTestBasicInfo
     // In production, this would include all questions
-    return await getListeningTestData(examId);
+    return await getListeningTestBasicInfo(id, type);
   } catch (error) {
     console.error("Error fetching listening test full data:", error);
     return null;
   }
 }
 
-export async function getReadingTestFullData(examId: string) {
+export async function getReadingTestFullData(
+  id: string,
+  type: "practice" | "registered" = "registered"
+) {
   try {
-    // For now, this is the same as getReadingTestData
+    // For now, this is the same as getReadingTestBasicInfo
     // In production, this would include all questions
-    return await getReadingTestData(examId);
+    return await getReadingTestBasicInfo(id, type);
   } catch (error) {
     console.error("Error fetching reading test full data:", error);
     return null;
@@ -221,12 +257,13 @@ export async function getReadingTestFullData(examId: string) {
 }
 
 export async function getWritingTestFullData(
-  examId: string
+  id: string,
+  type: "practice" | "registered" = "registered"
 ): Promise<IELTSWritingTest | null> {
   try {
-    // For now, this is the same as getWritingTestData
+    // For now, this is the same as getWritingTestBasicInfo
     // In production, this would include all questions
-    return await getWritingTestData(examId);
+    return await getWritingTestBasicInfo(id, type);
   } catch (error) {
     console.error("Error fetching writing test full data:", error);
     return null;
@@ -350,12 +387,10 @@ export async function getWritingTestDataByRegId(
   }
 }
 
-// Basic info functions using regId
+// Basic info functions using regId (backward compatibility)
 export async function getListeningTestBasicInfoByRegId(regId: string) {
   try {
-    // For now, return the same data since it's mock data
-    // In production, this would exclude questions and return only basic info
-    return await getListeningTestDataByRegId(regId);
+    return await getListeningTestBasicInfo(regId, "registered");
   } catch (error) {
     console.error("Error fetching listening test basic info by regId:", error);
     return null;
@@ -364,9 +399,7 @@ export async function getListeningTestBasicInfoByRegId(regId: string) {
 
 export async function getReadingTestBasicInfoByRegId(regId: string) {
   try {
-    // For now, return the same data since it's mock data
-    // In production, this would exclude questions and return only basic info
-    return await getReadingTestDataByRegId(regId);
+    return await getReadingTestBasicInfo(regId, "registered");
   } catch (error) {
     console.error("Error fetching reading test basic info by regId:", error);
     return null;
@@ -377,21 +410,17 @@ export async function getWritingTestBasicInfoByRegId(
   regId: string
 ): Promise<IELTSWritingTest | null> {
   try {
-    // For now, return the same data since it's mock data
-    // In production, this would exclude questions and return only basic info
-    return await getWritingTestDataByRegId(regId);
+    return await getWritingTestBasicInfo(regId, "registered");
   } catch (error) {
     console.error("Error fetching writing test basic info by regId:", error);
     return null;
   }
 }
 
-// Full data functions using regId
+// Full data functions using regId (backward compatibility)
 export async function getListeningTestFullDataByRegId(regId: string) {
   try {
-    // For now, this is the same as getListeningTestDataByRegId
-    // In production, this would include all questions
-    return await getListeningTestDataByRegId(regId);
+    return await getListeningTestFullData(regId, "registered");
   } catch (error) {
     console.error("Error fetching listening test full data by regId:", error);
     return null;
@@ -400,9 +429,7 @@ export async function getListeningTestFullDataByRegId(regId: string) {
 
 export async function getReadingTestFullDataByRegId(regId: string) {
   try {
-    // For now, this is the same as getReadingTestDataByRegId
-    // In production, this would include all questions
-    return await getReadingTestDataByRegId(regId);
+    return await getReadingTestFullData(regId, "registered");
   } catch (error) {
     console.error("Error fetching reading test full data by regId:", error);
     return null;
@@ -413,9 +440,7 @@ export async function getWritingTestFullDataByRegId(
   regId: string
 ): Promise<IELTSWritingTest | null> {
   try {
-    // For now, this is the same as getWritingTestDataByRegId
-    // In production, this would include all questions
-    return await getWritingTestDataByRegId(regId);
+    return await getWritingTestFullData(regId, "registered");
   } catch (error) {
     console.error("Error fetching writing test full data by regId:", error);
     return null;

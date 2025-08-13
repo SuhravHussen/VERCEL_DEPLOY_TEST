@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import {
-  getListeningTestFullDataByRegId,
-  getReadingTestFullDataByRegId,
-  getWritingTestFullDataByRegId,
+  getListeningTestFullData,
+  getReadingTestFullData,
+  getWritingTestFullData,
 } from "@/server-actions/exam/get-exam-data";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
 import { IELTSReadingTest } from "@/types/exam/ielts-academic/reading/test/test";
@@ -16,12 +16,13 @@ export function useListeningTestFullData() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchListeningTestFullData = async (
-    regId: string
+    id: string,
+    type: "practice" | "registered" = "registered"
   ): Promise<IELTSListeningTest | null> => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getListeningTestFullDataByRegId(regId);
+      const data = await getListeningTestFullData(id, type);
       return data;
     } catch (err) {
       const errorMessage =
@@ -36,8 +37,16 @@ export function useListeningTestFullData() {
     }
   };
 
+  // Backward compatibility method
+  const fetchListeningTestFullDataByRegId = async (
+    regId: string
+  ): Promise<IELTSListeningTest | null> => {
+    return fetchListeningTestFullData(regId, "registered");
+  };
+
   return {
     fetchListeningTestFullData,
+    fetchListeningTestFullDataByRegId,
     isLoading,
     error,
   };
@@ -49,12 +58,13 @@ export function useReadingTestFullData() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchReadingTestFullData = async (
-    regId: string
+    id: string,
+    type: "practice" | "registered" = "registered"
   ): Promise<IELTSReadingTest | null> => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getReadingTestFullDataByRegId(regId);
+      const data = await getReadingTestFullData(id, type);
       return data;
     } catch (err) {
       const errorMessage =
@@ -69,8 +79,16 @@ export function useReadingTestFullData() {
     }
   };
 
+  // Backward compatibility method
+  const fetchReadingTestFullDataByRegId = async (
+    regId: string
+  ): Promise<IELTSReadingTest | null> => {
+    return fetchReadingTestFullData(regId, "registered");
+  };
+
   return {
     fetchReadingTestFullData,
+    fetchReadingTestFullDataByRegId,
     isLoading,
     error,
   };
@@ -82,12 +100,13 @@ export function useWritingTestFullData() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchWritingTestFullData = async (
-    regId: string
+    id: string,
+    type: "practice" | "registered" = "registered"
   ): Promise<IELTSWritingTest | null> => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getWritingTestFullDataByRegId(regId);
+      const data = await getWritingTestFullData(id, type);
       return data;
     } catch (err) {
       const errorMessage =
@@ -102,8 +121,16 @@ export function useWritingTestFullData() {
     }
   };
 
+  // Backward compatibility method
+  const fetchWritingTestFullDataByRegId = async (
+    regId: string
+  ): Promise<IELTSWritingTest | null> => {
+    return fetchWritingTestFullData(regId, "registered");
+  };
+
   return {
     fetchWritingTestFullData,
+    fetchWritingTestFullDataByRegId,
     isLoading,
     error,
   };

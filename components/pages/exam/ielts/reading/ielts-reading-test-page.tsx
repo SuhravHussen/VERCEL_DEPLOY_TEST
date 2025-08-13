@@ -34,6 +34,7 @@ import { useReadingTestFullData } from "@/hooks/use-exam-test-data";
 interface IELTSReadingTestPageProps {
   readingTest: IELTSReadingTest;
   regId?: string;
+  type?: "practice" | "registered";
 }
 
 const ReadingTestContent = memo(function ReadingTestContent({
@@ -90,6 +91,7 @@ const ReadingPassageContent = memo(function ReadingPassageContent({
 export default function IELTSReadingTestPage({
   readingTest,
   regId,
+  type = "registered",
 }: IELTSReadingTestPageProps) {
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
   const { fetchReadingTestFullData } = useReadingTestFullData();
@@ -181,7 +183,7 @@ export default function IELTSReadingTestPage({
       // Fetch full exam data with questions if regId is provided
       if (regId) {
         console.log("Fetching full reading test data...");
-        const fullData = await fetchReadingTestFullData(regId);
+        const fullData = await fetchReadingTestFullData(regId, type);
 
         if (!fullData) {
           throw new Error("Failed to fetch full exam data");

@@ -5,6 +5,7 @@ interface UseSimpleAudioPlayerReturn {
   currentAudioIndex: number;
   startPlayback: () => void;
   stopPlayback: () => void;
+  forceStopPlayback: () => void;
 }
 
 export const useSimpleAudioPlayer = (
@@ -14,6 +15,7 @@ export const useSimpleAudioPlayer = (
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isStartingRef = useRef(false);
+  const isForceStopped = useRef(false);
 
   const playAudioAtIndex = useCallback(
     (index: number) => {
@@ -42,6 +44,17 @@ export const useSimpleAudioPlayer = (
       // When this audio ends successfully, play the next one
       const handleEnded = () => {
         if (hasMovedToNext) return;
+
+        // Don't proceed to next audio if it was force stopped
+        if (isForceStopped.current) {
+          console.log(
+            `🛑 Audio ${index + 1} was force stopped - not proceeding to next`
+          );
+          hasMovedToNext = true;
+          isStartingRef.current = false;
+          return;
+        }
+
         hasMovedToNext = true;
         isStartingRef.current = false; // Reset starting flag when audio ends
         console.log(`✅ Finished audio ${index + 1}`);
@@ -51,6 +64,18 @@ export const useSimpleAudioPlayer = (
       // Handle errors - only skip if it's a critical error
       const handleError = () => {
         if (hasMovedToNext) return;
+
+        // Don't proceed to next audio if it was force stopped
+        if (isForceStopped.current) {
+          console.log(
+            `🛑 Audio ${
+              index + 1
+            } error during force stop - not proceeding to next`
+          );
+          hasMovedToNext = true;
+          isStartingRef.current = false;
+          return;
+        }
 
         // Log error details for debugging
         console.log(`ℹ️ Audio ${index + 1} error event:`, {
@@ -86,6 +111,19 @@ export const useSimpleAudioPlayer = (
       // Start playing
       audio.play().catch((error) => {
         if (hasMovedToNext) return;
+
+        // Don't proceed to next audio if it was force stopped
+        if (isForceStopped.current) {
+          console.log(
+            `🛑 Audio ${
+              index + 1
+            } play failed during force stop - not proceeding to next`
+          );
+          hasMovedToNext = true;
+          isStartingRef.current = false;
+          return;
+        }
+
         hasMovedToNext = true;
         isStartingRef.current = false; // Reset starting flag on error
         console.error(`❌ Failed to start audio ${index + 1}:`, error);
@@ -103,6 +141,9 @@ export const useSimpleAudioPlayer = (
     }
 
     console.log("🚀 Starting sequential audio playback...");
+
+    // Reset force stopped flag when starting fresh
+    isForceStopped.current = false;
     isStartingRef.current = true;
     setIsPlaying(true);
     playAudioAtIndex(0);
@@ -116,6 +157,10 @@ export const useSimpleAudioPlayer = (
     }
 
     console.log("🛑 Stopping audio playback");
+
+    // Reset force stopped flag for normal stop
+    isForceStopped.current = false;
+
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.src = "";
@@ -124,10 +169,37 @@ export const useSimpleAudioPlayer = (
     setCurrentAudioIndex(0);
   }, []);
 
+  const forceStopPlayback = useCallback(() => {
+    console.log("🛑 Force stopping audio playback (bypassing starting check)");
+
+    // Set force stopped flag to prevent auto-progression
+    isForceStopped.current = true;
+    isStartingRef.current = false; // Reset the starting flag
+
+    if (audioRef.current) {
+      // Remove event listeners to prevent ended event from triggering next audio
+      const currentAudio = audioRef.current;
+      currentAudio.removeEventListener("ended", () => {});
+      currentAudio.removeEventListener("error", () => {});
+      currentAudio.removeEventListener("canplay", () => {});
+
+      // Stop the audio
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio.src = "";
+    }
+
+    setIsPlaying(false);
+    setCurrentAudioIndex(0);
+
+    console.log("🛑 Audio forcefully stopped - auto-progression disabled");
+  }, []);
+
   return {
     isPlaying,
     currentAudioIndex,
     startPlayback,
     stopPlayback,
+    forceStopPlayback,
   };
 };

@@ -14,4 +14,5 @@ export interface RegisteredExam {
   currency: Currency;
   speaking_session?: SpeakingSession;
   status: "registered" | "cancelled" | "completed";
+  isPractice?: boolean;
 }

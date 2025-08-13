@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import ReadingTestContent from "./ReadingTestContent";
+import NavigationGuard from "@/components/NavigationGuard";
 
 function ReadingTestSkeleton() {
   return (
@@ -61,17 +62,22 @@ function ReadingTestSkeleton() {
 export default async function ReadingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ regId?: string }>;
+  searchParams: Promise<{ regId?: string; practiceId?: string }>;
 }) {
-  const { regId } = (await searchParams) || {};
+  const { regId, practiceId } = (await searchParams) || {};
 
-  if (!regId) {
+  if (!regId && !practiceId) {
     redirect("/exam");
   }
 
   return (
     <Suspense fallback={<ReadingTestSkeleton />}>
-      <ReadingTestContent regId={regId} />
+      <NavigationGuard
+        message="Are you sure you want to leave the exam? Your progress will be lost."
+        exitPath="/dashboard"
+      >
+        <ReadingTestContent regId={regId} practiceId={practiceId} />
+      </NavigationGuard>
     </Suspense>
   );
 }

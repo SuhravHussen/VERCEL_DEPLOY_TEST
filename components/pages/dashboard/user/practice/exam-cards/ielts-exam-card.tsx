@@ -39,7 +39,7 @@ export const IELTSExamCard: React.FC<IELTSExamCardProps> = ({
   console.log(exam);
 
   const handleStartPractice = () => {
-    router.push(`/exam/ielts/${testType}?examId=${exam.id}`);
+    router.push(`/exam/ielts/${testType}?practiceId=${exam.id}`);
   };
 
   const getIELTSType = () => {

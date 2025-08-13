@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRegisteredExam } from "@/hooks/organization/use-registered-exam";
 import { useScreenRecording } from "@/hooks/use-screen-recording";
 import { Spinner } from "@/components/ui/spinner-1";
@@ -11,6 +11,7 @@ import {
   SpeakingTestHeader,
   SpeakingGradingDrawer,
 } from "@/components/pages/exam/ielts/speaking";
+import NavigationGuard from "@/components/NavigationGuard";
 
 // Dynamically import JitsiMeeting component to avoid SSR issues
 const JitsiMeeting = dynamic(
@@ -59,10 +60,11 @@ function SpeakingTestPageContent() {
   }, [registeredExam, isStudent, isAssignedTeacher, currentUserId]);
 
   // Recording functionality
-  const { isRecording, recordingStatus, toggleRecording } = useScreenRecording({
-    studentName: registeredExam?.user?.name,
-  });
-
+  const { isRecording, recordingStatus, toggleRecording, forceStopAndSave } =
+    useScreenRecording({
+      studentName: registeredExam?.user?.name,
+    });
+  const router = useRouter();
   // Generate Jitsi JWT token using server action
   useEffect(() => {
     const generateToken = async () => {
@@ -232,7 +234,11 @@ function SpeakingTestPageContent() {
               console.log("Jitsi Meet API ready for speaking test");
             }}
             onReadyToClose={() => {
-              console.log("Speaking test session ready to close");
+              // If recording is ongoing, stop and save it first
+              if (isRecording) {
+                forceStopAndSave();
+              }
+              router.push("/");
             }}
           />
         </div>
@@ -263,7 +269,12 @@ export default function IELTSSpeakingTestPage() {
         </div>
       }
     >
-      <SpeakingTestPageContent />
+      <NavigationGuard
+        message="Are you sure you want to leave the exam? Your progress will be lost."
+        exitPath="/dashboard"
+      >
+        <SpeakingTestPageContent />
+      </NavigationGuard>
     </Suspense>
   );
 }
