@@ -173,4 +173,19 @@ export const QUERY_KEYS = {
       submissionId,
     ],
   },
+  EXAM_STUDENTS: {
+    BY_EXAM: (examId: string) => ["exam-students", "exam", examId],
+    ADD_STUDENT: (examId: string, studentId: string) => [
+      "exam-students",
+      "add",
+      examId,
+      studentId,
+    ],
+    REMOVE_STUDENT: (examId: string, studentId: string) => [
+      "exam-students",
+      "remove",
+      examId,
+      studentId,
+    ],
+  },
 };

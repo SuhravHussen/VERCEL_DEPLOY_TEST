@@ -45,9 +45,10 @@ export default function ExamDetailsPage() {
     );
   };
 
-  const handleRegisterForExam = () => {
-    // TODO: Navigate to registration page
-    console.log("Register for exam:", examId);
+  const handleViewStudents = () => {
+    router.push(
+      `/dashboard/organization/${organizationId}/ielts/exam/${examId}/students`
+    );
   };
 
   // Loading state
@@ -151,9 +152,9 @@ export default function ExamDetailsPage() {
                 <span className="hidden sm:inline">Edit Exam</span>
                 <span className="sm:hidden">Edit</span>
               </Button>
-              <Button size="sm" onClick={handleRegisterForExam}>
-                <span className="hidden sm:inline">Register for Exam</span>
-                <span className="sm:hidden">Register</span>
+              <Button size="sm" onClick={handleViewStudents}>
+                <span className="hidden sm:inline">View Students</span>
+                <span className="sm:hidden">Students</span>
               </Button>
             </div>
           </div>
