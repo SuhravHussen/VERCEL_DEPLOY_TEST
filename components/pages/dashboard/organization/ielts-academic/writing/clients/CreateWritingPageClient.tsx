@@ -35,7 +35,7 @@ import Task1GeneralForm from "./task-form/Task1GeneralForm";
 import Task2Form from "./task-form/Task2Form";
 
 interface CreateWritingPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 // Form data now represents a single task, not a complete test
@@ -46,7 +46,7 @@ export interface FormData {
 }
 
 export default function CreateWritingPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateWritingPageClientProps) {
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
   const { success, error: showError } = useToasts();
@@ -116,7 +116,7 @@ export default function CreateWritingPageClient({
 
       success("Writing task created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/writing/questions`
+        `/dashboard/organization/${organizationSlug}/ielts/writing/questions`
       );
     } catch (e) {
       console.error(e);

@@ -7,13 +7,13 @@ import { PlusCircle, Search } from "lucide-react";
 
 interface EmptyStateProps {
   hasFilters: boolean;
-  organizationId: number;
+  organizationSlug: string;
   onClearFilters: () => void;
 }
 
 export function EmptyState({
   hasFilters,
-  organizationId,
+  organizationSlug,
   onClearFilters,
 }: EmptyStateProps) {
   return (
@@ -30,7 +30,7 @@ export function EmptyState({
         </p>
         {!hasFilters ? (
           <Link
-            href={`/dashboard/organization/${organizationId}/ielts/reading/tests/create`}
+            href={`/dashboard/organization/${organizationSlug}/ielts/reading/tests/create`}
           >
             <Button size="lg" className="shadow-sm">
               <PlusCircle className="mr-2 h-5 w-5" />

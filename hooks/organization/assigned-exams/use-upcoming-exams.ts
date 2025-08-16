@@ -5,7 +5,7 @@ import { mockIELTSExams } from "@/mockdata/mockIeltsExam";
 import { ExamModel, ExamFilters } from "@/types/exam/exam";
 
 interface UseUpcomingExamsParams {
-  organizationId: string;
+  organizationSlug: string;
   page?: number;
   pageSize?: number;
   filters?: ExamFilters;
@@ -25,7 +25,7 @@ interface UseUpcomingExamsResult {
 
 // Mock function to simulate fetching upcoming exams (future dates)
 async function fetchUpcomingExams(
-  organizationId: string,
+  organizationSlug: string,
   filters: ExamFilters = {}
 ): Promise<ExamModel[]> {
   // Simulate API delay
@@ -73,7 +73,7 @@ async function fetchUpcomingExams(
 }
 
 export function useUpcomingExams({
-  organizationId,
+  organizationSlug,
   page = 1,
   pageSize = 6,
   filters = {},
@@ -87,15 +87,15 @@ export function useUpcomingExams({
   } = useQuery({
     queryKey: [
       ...QUERY_KEYS.ASSIGNED_EXAMS.BY_ORGANIZATION_FILTERED(
-        organizationId,
+        organizationSlug,
         filters
       ),
       "upcoming",
     ],
-    queryFn: () => fetchUpcomingExams(organizationId, filters),
+    queryFn: () => fetchUpcomingExams(organizationSlug, filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    enabled: !!organizationId,
+    enabled: !!organizationSlug,
   });
 
   // Calculate pagination

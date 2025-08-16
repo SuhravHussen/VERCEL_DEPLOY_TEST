@@ -10,14 +10,14 @@ interface TestListProps {
   tests: IELTSListeningTest[];
   selectedTestId?: string;
   onSelectTest: (test: IELTSListeningTest) => void;
-  organizationId?: number;
+  organizationSlug?: string;
 }
 
 export function TestList({
   tests,
   selectedTestId,
   onSelectTest,
-  organizationId,
+  organizationSlug,
 }: TestListProps) {
   return (
     <div className="flex flex-col gap-3 mb-8">
@@ -94,9 +94,9 @@ export function TestList({
               </div>
             </div>
             <div className="self-end md:self-center flex items-center gap-2">
-              {organizationId && (
+              {organizationSlug && (
                 <Link
-                  href={`/dashboard/organization/${organizationId}/ielts/listening/tests/edit/${test.id}`}
+                  href={`/dashboard/organization/${organizationSlug}/ielts/listening/tests/edit/${test.id}`}
                 >
                   <Button
                     variant="outline"

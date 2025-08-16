@@ -11,7 +11,7 @@ export interface ExamCreationStep {
 export interface BaseStepProps {
   examData: Partial<ExamModel>;
   updateExamData: (updates: Partial<ExamModel>) => void;
-  organizationId: number;
+  organizationSlug: string;
   isEditMode?: boolean;
   examId?: string;
   isAdmin?: boolean;

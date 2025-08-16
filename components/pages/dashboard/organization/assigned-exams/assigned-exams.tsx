@@ -25,12 +25,12 @@ import { ExamFilters, ExamModel } from "@/types/exam/exam";
 import { getCurrentUser } from "@/lib/auth-client";
 
 interface AssignedExamsProps {
-  organizationId: string;
+  organizationSlug: string;
   className?: string;
 }
 
 export function AssignedExams({
-  organizationId,
+  organizationSlug,
   className,
 }: AssignedExamsProps) {
   const user = getCurrentUser();
@@ -47,12 +47,12 @@ export function AssignedExams({
 
   // Get statistics for the header (independent of filters)
   const { stats, isLoading: statsLoading } = useAssignedExamsStats({
-    organizationId,
+    organizationSlug,
   });
 
   // Get paginated past and today exams
   const pastAndTodayResult = usePastAndTodayExams({
-    organizationId,
+    organizationSlug,
     page: pastAndTodayPage,
     pageSize: 6,
     filters: {
@@ -63,7 +63,7 @@ export function AssignedExams({
 
   // Get paginated upcoming exams
   const upcomingResult = useUpcomingExams({
-    organizationId,
+    organizationSlug,
     page: upcomingPage,
     pageSize: 6,
     filters: {
@@ -92,21 +92,21 @@ export function AssignedExams({
   const handleViewSubmissions = (examId: string) => {
     // Navigate to exam submissions page
     router.push(
-      `/dashboard/organization/${organizationId}/assigned-exams/submissions/${examId}`
+      `/dashboard/organization/${organizationSlug}/assigned-exams/submissions/${examId}`
     );
   };
 
   const handleViewDetails = (examId: string) => {
     // Navigate to exam details page
     router.push(
-      `/dashboard/organization/${organizationId}/ielts/exam/${examId}`
+      `/dashboard/organization/${organizationSlug}/ielts/exam/${examId}`
     );
   };
 
   const handleViewSpeakingSessions = (examId: string) => {
     // Navigate to speaking sessions page
     router.push(
-      `/dashboard/organization/${organizationId}/assigned-exams/speaking-sessions/${examId}`
+      `/dashboard/organization/${organizationSlug}/assigned-exams/speaking-sessions/${examId}`
     );
   };
 

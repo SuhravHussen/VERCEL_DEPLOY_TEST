@@ -11,7 +11,7 @@ interface TestListProps {
   onSelectTest: (test: IELTSReadingTest) => void;
   isLoading?: boolean;
   searchQuery?: string;
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export function TestList({
@@ -20,7 +20,7 @@ export function TestList({
   onSelectTest,
   isLoading = false,
   searchQuery = "",
-  organizationId,
+  organizationSlug,
 }: TestListProps) {
   if (isLoading) {
     return (
@@ -74,7 +74,7 @@ export function TestList({
           isSelected={test.id === selectedTestId}
           onSelect={onSelectTest}
           layout="list"
-          organizationId={organizationId}
+          organizationSlug={organizationSlug}
         />
       ))}
     </div>

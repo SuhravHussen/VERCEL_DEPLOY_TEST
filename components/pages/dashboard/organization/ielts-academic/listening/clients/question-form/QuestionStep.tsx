@@ -36,7 +36,7 @@ interface QuestionStepProps {
   formData: IELTSListeningQuestionGroup[];
   updateFormData: (data: IELTSListeningQuestionGroup[]) => void;
   audio: IELTSListeningAudio;
-  organizationId: number;
+  organizationSlug: string;
 }
 
 const questionTypes = [

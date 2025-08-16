@@ -27,11 +27,11 @@ import { useToasts } from "@/components/ui/toast";
 import { useConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export interface QuestionsPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function QuestionsPageClient({
-  organizationId,
+  organizationSlug,
 }: QuestionsPageClientProps) {
   // State for search, filters, pagination
   const [search, setSearch] = useState("");
@@ -45,7 +45,7 @@ export default function QuestionsPageClient({
     useState<IELTSListeningTestSection | null>(null);
 
   const { data, isLoading, isFetching, error } = useGetIeltsListeningQuestions(
-    organizationId,
+    organizationSlug,
     page,
     10,
     search,
@@ -160,7 +160,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   const handleCreateQuestion = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts/listening/questions/create`;
+    window.location.href = `/dashboard/organization/${organizationSlug}/ielts/listening/questions/create`;
   };
 
   return (
@@ -239,7 +239,7 @@ export default function QuestionsPageClient({
                   <AudioCard
                     key={index}
                     item={item}
-                    organizationId={organizationId}
+                    organizationSlug={organizationSlug}
                     getQuestionTypeLabel={getQuestionTypeLabel}
                     isSelected={
                       selectedAudio?.audio?.title === item.audio?.title

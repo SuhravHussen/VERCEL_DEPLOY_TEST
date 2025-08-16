@@ -32,7 +32,7 @@ import { TimeWindow } from "@/types/exam/exam";
 interface SpeakingGroupStepProps {
   examData: Partial<ExamModel>;
   updateExamData: (updates: Partial<ExamModel>) => void;
-  organizationId: number;
+  organizationSlug: string;
   onNext: () => void;
   onPrevious: () => void;
   isAdmin?: boolean;
@@ -41,7 +41,7 @@ interface SpeakingGroupStepProps {
 export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
   examData,
   updateExamData,
-  organizationId,
+  organizationSlug,
   onNext,
   onPrevious,
   isAdmin,
@@ -49,7 +49,7 @@ export const SpeakingGroupStep: React.FC<SpeakingGroupStepProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { instructors, isLoading } = useOrganizationInstructors({
-    organizationId,
+    organizationSlug,
     initialPageSize: 50,
   });
 

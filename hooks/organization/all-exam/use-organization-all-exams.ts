@@ -12,7 +12,7 @@ import {
 import mockdb from "@/mockdb";
 
 export interface UseOrganizationAllExamsParams {
-  organizationId: string;
+  organizationSlug: string;
   page?: number;
   pageSize?: number;
   filters?: ExamFilters;
@@ -41,13 +41,13 @@ export interface UseOrganizationAllExamsResult {
 }
 
 const fetchOrganizationAllExams = async (
-  organizationId: string,
+  organizationSlug: string,
   filters?: ExamFilters
 ): Promise<ExamModel[]> => {
   // Simulate API delay for realistic behavior
   await new Promise((resolve) => setTimeout(resolve, 400));
 
-  return mockdb.getAllExamsByOrganization(organizationId, filters);
+  return mockdb.getAllExamsByOrganization(organizationSlug, filters);
 };
 
 const calculateExamStats = (exams: ExamModel[]): ExamStatsData => {
@@ -99,7 +99,7 @@ const calculateExamStats = (exams: ExamModel[]): ExamStatsData => {
 };
 
 export function useOrganizationAllExams({
-  organizationId,
+  organizationSlug,
   page = 1,
   pageSize = 12,
   filters = {},
@@ -112,13 +112,13 @@ export function useOrganizationAllExams({
     refetch,
   } = useQuery({
     queryKey: QUERY_KEYS.ALL_EXAMS.BY_ORGANIZATION_FILTERED(
-      organizationId,
+      organizationSlug,
       filters
     ),
-    queryFn: () => fetchOrganizationAllExams(organizationId, filters),
+    queryFn: () => fetchOrganizationAllExams(organizationSlug, filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    enabled: !!organizationId,
+    enabled: !!organizationSlug,
   });
 
   // Calculate pagination and stats

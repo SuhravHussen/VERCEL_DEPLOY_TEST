@@ -32,14 +32,14 @@ import { useConfirmationDialog } from "@/components/ui/confirmation-dialog";
 interface TestDetailDrawerProps {
   test: IELTSListeningTest | null;
   open: boolean;
-  organizationId: number;
+  organizationSlug: string;
   onClose: () => void;
 }
 
 export function TestDetailDrawer({
   test,
   open,
-  organizationId,
+  organizationSlug,
   onClose,
 }: TestDetailDrawerProps) {
   const toast = useToasts();
@@ -266,7 +266,7 @@ export function TestDetailDrawer({
             {/* Actions */}
             <div className="space-y-4">
               <Link
-                href={`/dashboard/organization/${organizationId}/ielts/listening/tests/edit/${test.id}`}
+                href={`/dashboard/organization/${organizationSlug}/ielts/listening/tests/edit/${test.id}`}
                 className="w-full"
               >
                 <Button variant="outline" className="w-full" size="sm">

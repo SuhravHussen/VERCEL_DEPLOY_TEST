@@ -36,6 +36,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Skip rewriting if already on dashboard routes (nested navigation)
+  if (url.pathname.startsWith("/dashboard/")) {
+    console.log("⚠️  Already on dashboard route, skipping rewrite");
+    return NextResponse.next();
+  }
+
   // Clean hostname by removing port if present
   const cleanHostname = hostname.split(":")[0];
   console.log("🔍 Clean hostname:", cleanHostname);
@@ -93,12 +99,26 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Create the rewrite path
+  // Handle special subdomain routes
   let newPath;
-  if (url.pathname === "/") {
-    newPath = `/organization/${subdomain}`;
-  } else {
-    newPath = `/organization/${subdomain}${url.pathname}`;
+
+  // Handle subdomain.mydomain.com/dashboard -> /dashboard/user
+  if (url.pathname === "/dashboard") {
+    newPath = "/dashboard/user";
+    console.log("✅ Subdomain dashboard route - Rewriting to:", newPath);
+  }
+  // Handle subdomain.mydomain.com/admin -> /dashboard/organization/subdomain
+  else if (url.pathname === "/admin") {
+    newPath = `/dashboard/organization/${subdomain}`;
+    console.log("✅ Subdomain admin route - Rewriting to:", newPath);
+  }
+  // Handle general subdomain routes (existing logic)
+  else {
+    if (url.pathname === "/") {
+      newPath = `/organization/${subdomain}`;
+    } else {
+      newPath = `/organization/${subdomain}${url.pathname}`;
+    }
   }
 
   console.log("✅ Rewriting to:", newPath);

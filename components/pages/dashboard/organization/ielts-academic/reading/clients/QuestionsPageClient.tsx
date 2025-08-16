@@ -25,11 +25,11 @@ import {
 } from "@/components/ui/drawer";
 
 export interface QuestionsPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function QuestionsPageClient({
-  organizationId,
+  organizationSlug,
 }: QuestionsPageClientProps) {
   // State for search, filters, pagination
   const [search, setSearch] = useState("");
@@ -44,7 +44,7 @@ export default function QuestionsPageClient({
 
   const { data, isLoading, isFetching, error, refetch } =
     useGetIeltsReadingQuestions(
-      organizationId,
+      organizationSlug,
       page,
       10,
       search,
@@ -123,7 +123,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   const handleCreateQuestion = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts/reading/questions/create`;
+    window.location.href = `/dashboard/organization/${organizationSlug}/ielts/reading/questions/create`;
   };
 
   return (
@@ -205,7 +205,7 @@ export default function QuestionsPageClient({
                   <PassageCard
                     key={index}
                     item={item}
-                    organizationId={organizationId}
+                    organizationSlug={organizationSlug}
                     getQuestionTypeLabel={getQuestionTypeLabel}
                     isSelected={
                       selectedPassage?.passage?.title === item.passage?.title

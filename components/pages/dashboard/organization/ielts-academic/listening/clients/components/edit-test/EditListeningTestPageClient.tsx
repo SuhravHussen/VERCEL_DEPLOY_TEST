@@ -27,12 +27,12 @@ import {
 } from "../create-test";
 
 interface EditListeningTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   testId: string;
 }
 
 export default function EditListeningTestPageClient({
-  organizationId,
+  organizationSlug,
   testId,
 }: EditListeningTestPageClientProps) {
   const router = useRouter();
@@ -44,7 +44,7 @@ export default function EditListeningTestPageClient({
     data: existingTest,
     isLoading,
     error,
-  } = useGetIeltsListeningTestById(testId);
+  } = useGetIeltsListeningTestById(organizationSlug, testId);
   const updateTestMutation = useUpdateIeltsListeningTest();
 
   const [formData, setFormData] = useState<FormData>({
@@ -95,7 +95,7 @@ export default function EditListeningTestPageClient({
       const testData: CreateListeningTestDto = {
         title: formData.title,
         description: formData.description || "",
-        organizationId,
+        organizationSlug,
         difficulty: formData.difficulty,
         section_one: formData.section_one,
         section_two: formData.section_two,
@@ -119,7 +119,7 @@ export default function EditListeningTestPageClient({
 
       toast.success("Test updated successfully!");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/listening/tests`
+        `/dashboard/organization/${organizationSlug}/ielts/listening/tests`
       );
     } catch (error) {
       console.error("Error updating test:", error);
@@ -179,7 +179,7 @@ export default function EditListeningTestPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts/listening/tests`
+                `/dashboard/organization/${organizationSlug}/ielts/listening/tests`
               )
             }
             className="gap-1.5"
@@ -238,7 +238,7 @@ export default function EditListeningTestPageClient({
             <TestSectionsStep
               formData={formData}
               updateFormData={updateFormData}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

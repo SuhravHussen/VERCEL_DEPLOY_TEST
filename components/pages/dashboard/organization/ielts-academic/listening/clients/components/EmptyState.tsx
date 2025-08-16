@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 
 interface EmptyStateProps {
   hasFilters: boolean;
-  organizationId: number;
+  organizationSlug: string;
   onClearFilters: () => void;
 }
 
 export function EmptyState({
   hasFilters,
-  organizationId,
+  organizationSlug,
   onClearFilters,
 }: EmptyStateProps) {
   return (
@@ -46,7 +46,7 @@ export function EmptyState({
             four listening sections.
           </p>
           <Link
-            href={`/dashboard/organization/${organizationId}/ielts/listening/tests/create`}
+            href={`/dashboard/organization/${organizationSlug}/ielts/listening/tests/create`}
           >
             <Button size="lg">
               <PlusCircle className="mr-2 h-5 w-5" />

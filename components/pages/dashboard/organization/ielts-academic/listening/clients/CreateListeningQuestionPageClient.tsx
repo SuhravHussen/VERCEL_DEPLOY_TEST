@@ -23,13 +23,13 @@ import {
 import { IELTSListeningQuestionGroup } from "@/types/exam/ielts-academic/listening/listening";
 
 interface CreateListeningQuestionPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 import { StepperContext, FormData } from "./shared/StepperContext";
 
 export default function CreateListeningQuestionPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateListeningQuestionPageClientProps) {
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
   const { success, error } = useToasts();
@@ -132,7 +132,7 @@ export default function CreateListeningQuestionPageClient({
                 setFormData((prev) => ({ ...prev, questions }))
               }
               audio={formData.audio}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

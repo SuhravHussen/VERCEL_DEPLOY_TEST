@@ -32,7 +32,7 @@ export interface TestDetailsStepProps {
 export interface TestSectionsStepProps {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export interface TestPreviewStepProps {
@@ -65,7 +65,7 @@ export interface SelectedPassageDisplayProps {
 }
 
 export interface CreateTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 // Add the IStepperMethods interface since it's used in StepperContextType

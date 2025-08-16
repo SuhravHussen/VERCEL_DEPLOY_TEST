@@ -8,7 +8,7 @@ import mockdb from "@/mockdb";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchIeltsReadingTests = async (
-  organizationId: number,
+  organizationSlug: string,
   page: number = 1,
   limit: number = 10,
   search: string = "",
@@ -42,7 +42,7 @@ const fetchIeltsReadingTests = async (
 };
 
 export const useGetIeltsReadingTests = (
-  organizationId: number,
+  organizationSlug: string,
   page: number = 1,
   limit: number = 10,
   search: string = "",
@@ -52,7 +52,7 @@ export const useGetIeltsReadingTests = (
   return useQuery({
     queryKey: [
       QUERY_KEYS.IELTS_READING.TESTS,
-      organizationId,
+      organizationSlug,
       page,
       limit,
       search,
@@ -60,6 +60,13 @@ export const useGetIeltsReadingTests = (
       order,
     ],
     queryFn: () =>
-      fetchIeltsReadingTests(organizationId, page, limit, search, sort, order),
+      fetchIeltsReadingTests(
+        organizationSlug,
+        page,
+        limit,
+        search,
+        sort,
+        order
+      ),
   });
 };

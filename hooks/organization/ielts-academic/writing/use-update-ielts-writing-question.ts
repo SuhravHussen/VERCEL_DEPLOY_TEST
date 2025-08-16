@@ -16,9 +16,9 @@ import mockdb from "@/mockdb";
 
 // Union type for updating writing questions
 export type UpdateWritingQuestionDto =
-  | (CreateAcademicTask1Dto & { organizationId: number; questionId: string })
-  | (CreateGeneralTask1Dto & { organizationId: number; questionId: string })
-  | (CreateTask2Dto & { organizationId: number; questionId: string });
+  | (CreateAcademicTask1Dto & { organizationSlug: string; questionId: string })
+  | (CreateGeneralTask1Dto & { organizationSlug: string; questionId: string })
+  | (CreateTask2Dto & { organizationSlug: string; questionId: string });
 
 interface UpdateIeltsWritingQuestionOptions {
   onSuccess?: (data: IELTSWritingTask) => void;

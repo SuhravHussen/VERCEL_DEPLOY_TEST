@@ -22,7 +22,7 @@ import { useGetIeltsReadingQuestions } from "@/hooks/organization/ielts-academic
 export function TestSectionsStep({
   formData,
   updateFormData,
-  organizationId,
+  organizationSlug,
 }: TestSectionsStepProps) {
   const { stepperRef } = useContext(StepperContext);
   const [currentSection, setCurrentSection] = useState<1 | 2 | 3>(1);
@@ -37,7 +37,7 @@ export function TestSectionsStep({
     isError,
     error: fetchError,
   } = useGetIeltsReadingQuestions(
-    organizationId,
+    organizationSlug,
     page,
     100, // Fetch up to 100 items to have enough choices
     search,

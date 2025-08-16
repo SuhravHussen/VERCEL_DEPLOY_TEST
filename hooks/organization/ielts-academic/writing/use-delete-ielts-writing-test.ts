@@ -14,7 +14,7 @@ interface DeleteIeltsWritingTestOptions {
 }
 
 interface DeleteWritingTestParams {
-  organizationId: number;
+  organizationSlug: string;
   testId: string;
 }
 

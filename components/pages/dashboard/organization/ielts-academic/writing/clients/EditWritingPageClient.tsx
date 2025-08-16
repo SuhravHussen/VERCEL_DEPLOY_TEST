@@ -38,7 +38,7 @@ import Task1GeneralForm from "./task-form/Task1GeneralForm";
 import Task2Form from "./task-form/Task2Form";
 
 interface EditWritingPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   questionId: string;
 }
 
@@ -50,7 +50,7 @@ export interface FormData {
 }
 
 export default function EditWritingPageClient({
-  organizationId,
+  organizationSlug,
   questionId,
 }: EditWritingPageClientProps) {
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
@@ -63,7 +63,7 @@ export default function EditWritingPageClient({
     data: questionData,
     isLoading,
     error,
-  } = useGetIeltsWritingQuestion(organizationId, questionId);
+  } = useGetIeltsWritingQuestion(organizationSlug, questionId);
 
   const [formData, setFormData] = useState<FormData>({
     testType: "academic",
@@ -127,7 +127,7 @@ export default function EditWritingPageClient({
       const taskData = {
         ...formData.task,
         taskType: formData.taskType,
-        organizationId,
+        organizationSlug,
         questionId,
       } as UpdateWritingQuestionDto;
 
@@ -136,7 +136,7 @@ export default function EditWritingPageClient({
 
       success("Writing task updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/writing/questions`
+        `/dashboard/organization/${organizationSlug}/ielts/writing/questions`
       );
     } catch (e) {
       console.error(e);
@@ -177,7 +177,7 @@ export default function EditWritingPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts/writing/questions`
+                `/dashboard/organization/${organizationSlug}/ielts/writing/questions`
               )
             }
             className="flex items-center gap-2"

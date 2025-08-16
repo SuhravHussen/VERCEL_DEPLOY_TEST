@@ -11,13 +11,13 @@ export type SortOrder = "asc" | "desc";
 
 interface UseOrganizationInstructorsOptions {
   initialPageSize?: number;
-  organizationId?: number;
+  organizationSlug?: string;
 }
 
 export const useOrganizationInstructors = (
   options: UseOrganizationInstructorsOptions = {}
 ) => {
-  const { initialPageSize = 10, organizationId } = options;
+  const { initialPageSize = 10, organizationSlug } = options;
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
@@ -34,7 +34,7 @@ export const useOrganizationInstructors = (
   } = useQuery({
     queryKey: [
       QUERY_KEYS.ORGANIZATION.INSTRUCTORS_LIST,
-      organizationId,
+      organizationSlug,
       page,
       pageSize,
       search,
@@ -42,7 +42,7 @@ export const useOrganizationInstructors = (
       sortOrder,
     ],
     queryFn: () => {
-      if (!organizationId) {
+      if (!organizationSlug) {
         return {
           instructors: [],
           meta: {
@@ -64,7 +64,7 @@ export const useOrganizationInstructors = (
         },
       };
     },
-    enabled: !!organizationId,
+    enabled: !!organizationSlug,
   });
 
   // Delete instructor mutation
@@ -73,12 +73,12 @@ export const useOrganizationInstructors = (
       // In real app, this would be an API call
       // For mock, we'll update the mockdb users array to remove the instructor role from this organization
       const userIndex = mockdb.users.findIndex((user) => user.id === userId);
-      if (userIndex !== -1 && organizationId) {
+      if (userIndex !== -1 && organizationSlug) {
         // Remove this organization from the user's organizations_instructor list
         const user = mockdb.users[userIndex];
         if (user.organizations_instructor) {
           user.organizations_instructor = user.organizations_instructor.filter(
-            (org) => org.id !== organizationId
+            (org) => org.slug !== organizationSlug
           );
         }
         return { success: true };
@@ -87,7 +87,7 @@ export const useOrganizationInstructors = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.ORGANIZATION.INSTRUCTORS_LIST, organizationId],
+        queryKey: [QUERY_KEYS.ORGANIZATION.INSTRUCTORS_LIST, organizationSlug],
       });
     },
   });
@@ -97,7 +97,7 @@ export const useOrganizationInstructors = (
     mutationFn: async ({ userId }: { userId: string }) => {
       // In real app, this would be an API call
       const userIndex = mockdb.users.findIndex((user) => user.id === userId);
-      if (userIndex !== -1 && organizationId) {
+      if (userIndex !== -1 && organizationSlug) {
         const user = mockdb.users[userIndex];
 
         // Add this organization to the user's organizations_instructor list
@@ -107,12 +107,12 @@ export const useOrganizationInstructors = (
 
         // Check if the organization already exists in the list
         const orgIndex = user.organizations_instructor.findIndex(
-          (org) => org.id === organizationId
+          (org) => org.slug === organizationSlug
         );
 
         if (orgIndex === -1) {
           const organization = mockdb.organizations.find(
-            (org) => org.id === organizationId
+            (org) => org.slug === organizationSlug
           );
 
           if (organization) {
@@ -138,7 +138,7 @@ export const useOrganizationInstructors = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.ORGANIZATION.INSTRUCTORS_LIST, organizationId],
+        queryKey: [QUERY_KEYS.ORGANIZATION.INSTRUCTORS_LIST, organizationSlug],
       });
     },
   });

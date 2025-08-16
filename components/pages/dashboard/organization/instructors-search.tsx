@@ -18,12 +18,10 @@ import { useSearchParams } from "next/navigation";
 
 export function InstructorsSearch() {
   const searchParams = useSearchParams();
-  const organizationId = searchParams.get("id")
-    ? parseInt(searchParams.get("id") as string, 10)
-    : undefined;
+  const organizationSlug = searchParams.get("slug") as string;
 
   const { search, setSearch, setSortField, setSortOrder, setPageSize } =
-    useOrganizationInstructors({ organizationId });
+    useOrganizationInstructors({ organizationSlug });
   const [searchInput, setSearchInput] = useState(search);
   const [showFilters, setShowFilters] = useState(false);
 

@@ -86,7 +86,7 @@ interface AddInstructorDialogProps {
   onClose: () => void;
   onConfirmAdd: (userId: string) => void;
   isAdding: boolean;
-  organizationId?: number;
+  organizationSlug?: string;
 }
 
 export function AddInstructorDialog({
@@ -94,7 +94,7 @@ export function AddInstructorDialog({
   onClose,
   onConfirmAdd,
   isAdding,
-  organizationId,
+  organizationSlug,
 }: AddInstructorDialogProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -108,7 +108,7 @@ export function AddInstructorDialog({
 
   // Get users that match the search term and are not already instructors in this org
   const getFilteredUsers = () => {
-    if (!searchTerm.trim() || !organizationId) return [];
+    if (!searchTerm.trim() || !organizationSlug) return [];
 
     return mockdb.users
       .filter(
@@ -118,7 +118,7 @@ export function AddInstructorDialog({
             user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
           // Exclude users already as instructors in this organization
           !user.organizations_instructor?.some(
-            (org: Organization) => org.id === organizationId
+            (org: Organization) => org.slug === organizationSlug
           )
       )
       .slice(0, 5); // Limit results

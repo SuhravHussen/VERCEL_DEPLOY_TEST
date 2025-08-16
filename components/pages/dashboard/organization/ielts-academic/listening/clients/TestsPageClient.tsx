@@ -14,11 +14,11 @@ import { EmptyState } from "./components/EmptyState";
 import { TestDetailDrawer } from "./components/TestDetailDrawer";
 
 export interface TestsPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function TestsPageClient({
-  organizationId,
+  organizationSlug,
 }: TestsPageClientProps) {
   // State for filters and pagination
   const [search, setSearch] = useState("");
@@ -34,7 +34,7 @@ export default function TestsPageClient({
 
   // Fetch tests using the hook
   const { data, isLoading } = useGetIeltsListeningTests(
-    organizationId,
+    organizationSlug,
     page,
     10,
     search,
@@ -88,7 +88,7 @@ export default function TestsPageClient({
   const hasActiveFilters = search !== "" || difficulty !== "all";
 
   const handleCreateTest = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts/listening/tests/create`;
+    window.location.href = `/dashboard/organization/${organizationSlug}/ielts/listening/tests/create`;
   };
 
   return (
@@ -127,14 +127,14 @@ export default function TestsPageClient({
               selectedTestId={selectedTest?.id}
               onSelectTest={handleSelectTest}
               isLoading={false}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           ) : (
             <TestList
               tests={filteredTests}
               selectedTestId={selectedTest?.id}
               onSelectTest={handleSelectTest}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           )}
 
@@ -150,7 +150,7 @@ export default function TestsPageClient({
       ) : (
         <EmptyState
           hasFilters={hasActiveFilters}
-          organizationId={organizationId}
+          organizationSlug={organizationSlug}
           onClearFilters={clearFilters}
         />
       )}
@@ -159,7 +159,7 @@ export default function TestsPageClient({
       <TestDetailDrawer
         test={selectedTest}
         open={isTestDetailOpen}
-        organizationId={organizationId}
+        organizationSlug={organizationSlug}
         onClose={handleCloseTestDetail}
       />
     </PageLayout>

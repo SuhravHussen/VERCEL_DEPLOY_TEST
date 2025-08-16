@@ -7,7 +7,7 @@ import {
 export interface CreateListeningTestDto {
   title: string;
   description: string;
-  organizationId: number;
+  organizationSlug: string;
   difficulty: "easy" | "medium" | "hard";
   section_one: IELTSListeningTestSection;
   section_two: IELTSListeningTestSection;

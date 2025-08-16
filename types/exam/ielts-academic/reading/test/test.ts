@@ -6,7 +6,8 @@ export interface IELTSReadingTest {
   id: string;
   title: string;
   description?: string;
-  organizationId: number;
+  organizationId?: number;
+  organizationSlug?: string;
   difficulty: "easy" | "medium" | "hard";
   createdAt: string;
   updatedAt: string;

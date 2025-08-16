@@ -4,6 +4,7 @@ import mockdb from "@/mockdb";
 import { IELTSListeningTest } from "@/types/exam/ielts-academic/listening/listening";
 
 async function fetchIELTSListeningTestById(
+  organizationSlug: string,
   testId: string
 ): Promise<IELTSListeningTest | null> {
   // Simulate network delay
@@ -18,12 +19,15 @@ async function fetchIELTSListeningTestById(
   return test;
 }
 
-export function useGetIeltsListeningTestById(testId: string) {
+export function useGetIeltsListeningTestById(
+  organizationSlug: string,
+  testId: string
+) {
   const queryKey = QUERY_KEYS.IELTS_LISTENING.TEST_BY_ID(testId);
 
   return useQuery({
     queryKey,
-    queryFn: () => fetchIELTSListeningTestById(testId),
+    queryFn: () => fetchIELTSListeningTestById(organizationSlug, testId),
     enabled: !!testId, // Only run the query if testId is provided
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes

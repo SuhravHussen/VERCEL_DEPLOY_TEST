@@ -15,11 +15,11 @@ import { TestDetailDrawer } from "./components/TestDetailDrawer";
 import { EmptyState } from "./components/EmptyState";
 
 export interface TestsPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function TestsPageClient({
-  organizationId,
+  organizationSlug,
 }: TestsPageClientProps) {
   // State for filters and pagination
   const [search, setSearch] = useState("");
@@ -35,7 +35,7 @@ export default function TestsPageClient({
 
   // Fetch tests using the hook
   const { data, isLoading } = useGetIeltsReadingTests(
-    organizationId,
+    organizationSlug,
     page,
     10,
     search,
@@ -89,7 +89,7 @@ export default function TestsPageClient({
   const hasActiveFilters = search !== "" || difficulty !== "all";
 
   const handleCreateTest = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts/reading/tests/create`;
+    window.location.href = `/dashboard/organization/${organizationSlug}/ielts/reading/tests/create`;
   };
 
   return (
@@ -121,7 +121,7 @@ export default function TestsPageClient({
         <TestGrid
           isLoading={true}
           viewMode={viewMode}
-          organizationId={organizationId}
+          organizationSlug={organizationSlug}
         />
       ) : filteredTests.length > 0 ? (
         <>
@@ -133,14 +133,14 @@ export default function TestsPageClient({
               onSelectTest={handleSelectTest}
               viewMode={viewMode}
               isLoading={false}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           ) : (
             <TestList
               tests={filteredTests}
               selectedTestId={selectedTest?.id}
               onSelectTest={handleSelectTest}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           )}
 
@@ -156,7 +156,7 @@ export default function TestsPageClient({
       ) : (
         <EmptyState
           hasFilters={hasActiveFilters}
-          organizationId={organizationId}
+          organizationSlug={organizationSlug}
           onClearFilters={clearFilters}
         />
       )}

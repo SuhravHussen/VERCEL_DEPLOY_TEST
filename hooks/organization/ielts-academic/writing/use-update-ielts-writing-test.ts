@@ -16,7 +16,7 @@ interface UpdateIeltsWritingTestOptions {
 
 interface UpdateWritingTestParams {
   testId: string;
-  organizationId: number;
+  organizationSlug: string;
   testData: Partial<IELTSWritingTest>;
 }
 

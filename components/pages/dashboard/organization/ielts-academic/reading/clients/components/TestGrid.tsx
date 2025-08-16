@@ -11,7 +11,7 @@ interface TestGridProps {
   onSelectTest?: (test: IELTSReadingTest) => void;
   viewMode: "grid" | "detail";
   isLoading: boolean;
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export function TestGrid({
@@ -20,7 +20,7 @@ export function TestGrid({
   onSelectTest,
   viewMode,
   isLoading,
-  organizationId,
+  organizationSlug,
 }: TestGridProps) {
   if (isLoading) {
     return (
@@ -60,7 +60,7 @@ export function TestGrid({
           isSelected={test.id === selectedTestId}
           onSelect={onSelectTest || (() => {})}
           layout="grid"
-          organizationId={organizationId}
+          organizationSlug={organizationSlug}
         />
       ))}
     </div>

@@ -3,7 +3,7 @@ import { IELTSReadingTestSection } from "@/types/exam/ielts-academic/reading/que
 export interface CreateReadingTestDto {
   title: string;
   description?: string;
-  organizationId: number;
+  organizationSlug: string;
   difficulty: "easy" | "medium" | "hard";
   createdAt: string;
   updatedAt: string;

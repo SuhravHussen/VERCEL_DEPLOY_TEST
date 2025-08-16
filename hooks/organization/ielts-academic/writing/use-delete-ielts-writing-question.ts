@@ -14,7 +14,7 @@ interface DeleteIeltsWritingQuestionOptions {
 }
 
 interface DeleteWritingQuestionParams {
-  organizationId: number;
+  organizationSlug: string;
   questionId: string;
 }
 

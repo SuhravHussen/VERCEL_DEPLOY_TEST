@@ -79,7 +79,8 @@ export interface IELTSWritingTest {
   id: string | number;
   title: string;
   description?: string;
-  organizationId: number;
+  organizationId?: number;
+  organizationSlug?: string;
   testType: "academic" | "general_training";
   difficulty: "easy" | "medium" | "hard";
   createdAt: string;

@@ -29,13 +29,13 @@ import {
 } from "@/components/ui/pagination";
 
 interface SelectQuestionsStepProps {
-  organizationId: number;
+  organizationSlug: string;
   testData: Partial<IELTSWritingTest>;
   updateTestData: (data: Partial<IELTSWritingTest>) => void;
 }
 
 export default function SelectQuestionsStep({
-  organizationId,
+  organizationSlug,
   testData,
   updateTestData,
 }: SelectQuestionsStepProps) {
@@ -60,7 +60,7 @@ export default function SelectQuestionsStep({
   // Fetch questions
   const { data: task1Data, isLoading: isLoadingTask1 } =
     useGetIeltsWritingQuestions(
-      organizationId,
+      organizationSlug,
       task1Page,
       ITEMS_PER_PAGE,
       searchTask1,
@@ -72,7 +72,7 @@ export default function SelectQuestionsStep({
 
   const { data: task2Data, isLoading: isLoadingTask2 } =
     useGetIeltsWritingQuestions(
-      organizationId,
+      organizationSlug,
       task2Page,
       ITEMS_PER_PAGE,
       searchTask2,

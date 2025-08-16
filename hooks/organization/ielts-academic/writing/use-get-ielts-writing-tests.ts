@@ -22,7 +22,7 @@ interface GetIeltsWritingTestsResponse {
  * @returns Query result with tests data
  */
 export function useGetIeltsWritingTests(
-  organizationId: number,
+  organizationSlug: string,
   page: number = 1,
   limit: number = 10,
   search: string = "",
@@ -33,7 +33,7 @@ export function useGetIeltsWritingTests(
   return useQuery({
     queryKey: [
       QUERY_KEYS.IELTS_WRITING.TESTS,
-      organizationId,
+      organizationSlug,
       page,
       limit,
       search,

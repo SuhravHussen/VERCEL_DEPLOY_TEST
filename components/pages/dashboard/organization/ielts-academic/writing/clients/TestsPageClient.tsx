@@ -14,11 +14,11 @@ import { TestCard } from "./test-page/TestCard";
 import { TestsPagination } from "./test-page/TestsPagination";
 
 export interface TestsPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function TestsPageClient({
-  organizationId,
+  organizationSlug,
 }: TestsPageClientProps) {
   const router = useRouter();
 
@@ -33,7 +33,7 @@ export default function TestsPageClient({
 
   // Fetch tests data
   const { data, isLoading, isFetching, error } = useGetIeltsWritingTests(
-    organizationId,
+    organizationSlug,
     page,
     10,
     search,
@@ -76,7 +76,7 @@ export default function TestsPageClient({
 
   const handleCreateTest = () => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts/writing/tests/create`
+      `/dashboard/organization/${organizationSlug}/ielts/writing/tests/create`
     );
   };
 
@@ -152,7 +152,7 @@ export default function TestsPageClient({
                 <TestCard
                   key={index}
                   test={test}
-                  organizationId={organizationId}
+                  organizationSlug={organizationSlug}
                 />
               ))
             )}

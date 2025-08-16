@@ -7,7 +7,7 @@ import {
 } from "@/types/exam/ielts-academic/listening/listening";
 
 export interface CreateListeningTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export interface FormData {
@@ -30,7 +30,7 @@ export interface TestDetailsStepProps {
 export interface TestSectionsStepProps {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export interface TestPreviewStepProps {

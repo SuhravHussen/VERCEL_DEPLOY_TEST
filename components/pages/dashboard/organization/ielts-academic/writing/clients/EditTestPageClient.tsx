@@ -28,12 +28,12 @@ import SelectQuestionsStep from "./test-page/SelectQuestionsStep";
 import PreviewStep from "./test-page/PreviewStep";
 
 export interface EditTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   testId: string;
 }
 
 export default function EditTestPageClient({
-  organizationId,
+  organizationSlug,
   testId,
 }: EditTestPageClientProps) {
   const router = useRouter();
@@ -45,11 +45,11 @@ export default function EditTestPageClient({
     data: existingTest,
     isLoading,
     error: fetchError,
-  } = useGetIeltsWritingTest(organizationId, testId);
+  } = useGetIeltsWritingTest(organizationSlug, testId);
 
   // Test data state
   const [testData, setTestData] = useState<Partial<IELTSWritingTest>>({
-    organizationId,
+    organizationSlug,
     testType: "academic",
     difficulty: "medium",
     status: "published",
@@ -67,7 +67,7 @@ export default function EditTestPageClient({
     onSuccess: () => {
       success("Test updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/writing/tests`
+        `/dashboard/organization/${organizationSlug}/ielts/writing/tests`
       );
     },
     onError: (err) => {
@@ -87,7 +87,7 @@ export default function EditTestPageClient({
 
     updateTest({
       testId,
-      organizationId,
+      organizationSlug,
       testData: testData as IELTSWritingTest,
     });
   };
@@ -118,7 +118,7 @@ export default function EditTestPageClient({
           size="icon"
           onClick={() =>
             router.push(
-              `/dashboard/organization/${organizationId}/ielts/writing/tests`
+              `/dashboard/organization/${organizationSlug}/ielts/writing/tests`
             )
           }
         >
@@ -194,7 +194,7 @@ export default function EditTestPageClient({
                 <div className="pt-6">
                   <Separator className="mb-6" />
                   <SelectQuestionsStep
-                    organizationId={organizationId}
+                    organizationSlug={organizationSlug}
                     testData={testData}
                     updateTestData={updateTestData}
                   />

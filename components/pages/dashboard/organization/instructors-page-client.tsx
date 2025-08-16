@@ -16,9 +16,7 @@ import { InstructorsTable } from "@/components/pages/dashboard/organization/inst
 
 export function InstructorsPageClient() {
   const params = useParams();
-  const organizationId = params.id
-    ? parseInt(params.id as string, 10)
-    : undefined;
+  const slug = params.slug as string;
 
   const {
     deleteInstructor,
@@ -27,7 +25,7 @@ export function InstructorsPageClient() {
     isAdding,
     isLoading,
     refetch,
-  } = useOrganizationInstructors({ organizationId });
+  } = useOrganizationInstructors({ organizationSlug: slug });
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -84,7 +82,7 @@ export function InstructorsPageClient() {
     refetch().finally(() => setIsRefreshing(false));
   };
 
-  if (!organizationId) {
+  if (!slug) {
     return (
       <div className="p-2 sm:p-4 md:p-6">
         <div className="bg-destructive/10 text-destructive p-4 rounded-md">
@@ -163,7 +161,7 @@ export function InstructorsPageClient() {
             onClose={() => setAddDialogOpen(false)}
             onConfirmAdd={handleConfirmAdd}
             isAdding={isAdding}
-            organizationId={organizationId}
+            organizationSlug={slug}
           />
         </div>
       </div>

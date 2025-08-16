@@ -28,7 +28,7 @@ interface TestCardProps {
   isSelected: boolean;
   onSelect: (test: IELTSReadingTest) => void;
   layout?: "grid" | "list";
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export function TestCard({
@@ -36,7 +36,7 @@ export function TestCard({
   isSelected,
   onSelect,
   layout = "grid",
-  organizationId,
+  organizationSlug,
 }: TestCardProps) {
   const { success, error } = useToasts();
   const deleteTest = useDeleteIeltsReadingTest();
@@ -171,7 +171,7 @@ export function TestCard({
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Link
-                              href={`/dashboard/organization/${organizationId}/ielts/reading/tests/${test.id}/edit`}
+                              href={`/dashboard/organization/${organizationSlug}/ielts/reading/tests/${test.id}/edit`}
                             >
                               <Edit className="h-3 w-3" />
                             </Link>
@@ -272,7 +272,7 @@ export function TestCard({
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Link
-                            href={`/dashboard/organization/${organizationId}/ielts/reading/tests/${test.id}/edit`}
+                            href={`/dashboard/organization/${organizationSlug}/ielts/reading/tests/${test.id}/edit`}
                           >
                             <Edit className="h-3 w-3" />
                           </Link>

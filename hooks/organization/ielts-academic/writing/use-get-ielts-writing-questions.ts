@@ -25,7 +25,7 @@ interface GetIeltsWritingQuestionsResponse {
  * @returns Query result with questions data
  */
 export function useGetIeltsWritingQuestions(
-  organizationId: number,
+  organizationSlug: string,
   page: number = 1,
   limit: number = 10,
   search: string = "",
@@ -37,7 +37,7 @@ export function useGetIeltsWritingQuestions(
   return useQuery({
     queryKey: [
       QUERY_KEYS.IELTS_WRITING.QUESTIONS,
-      organizationId,
+      organizationSlug,
       page,
       limit,
       search,

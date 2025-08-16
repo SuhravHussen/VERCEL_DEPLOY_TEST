@@ -3,13 +3,13 @@
 import TestEditor from "./components/edit-test/EditTestPageClient";
 
 interface EditTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   testId: string;
 }
 
 export default function EditTestPageClient({
-  organizationId,
+  organizationSlug,
   testId,
 }: EditTestPageClientProps) {
-  return <TestEditor organizationId={organizationId} testId={testId} />;
+  return <TestEditor organizationSlug={organizationSlug} testId={testId} />;
 }

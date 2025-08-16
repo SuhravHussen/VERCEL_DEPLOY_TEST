@@ -28,12 +28,12 @@ import {
 } from "../create-test";
 
 interface EditTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   testId: string;
 }
 
 export default function EditTestPageClient({
-  organizationId,
+  organizationSlug,
   testId,
 }: EditTestPageClientProps) {
   const router = useRouter();
@@ -105,7 +105,7 @@ export default function EditTestPageClient({
       const testData: CreateReadingTestDto = {
         title: formData.title,
         description: formData.description || "",
-        organizationId,
+        organizationSlug,
         difficulty: formData.difficulty,
         createdAt: existingTest?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -125,7 +125,7 @@ export default function EditTestPageClient({
       await updateTest.mutateAsync(testData);
       success("Test updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/reading/tests`
+        `/dashboard/organization/${organizationSlug}/ielts/reading/tests`
       );
     } catch (e) {
       console.error(e);
@@ -188,7 +188,7 @@ export default function EditTestPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts/reading/tests`
+                `/dashboard/organization/${organizationSlug}/ielts/reading/tests`
               )
             }
             className="gap-1.5"
@@ -247,7 +247,7 @@ export default function EditTestPageClient({
             <TestSectionsStep
               formData={formData}
               updateFormData={updateFormData}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

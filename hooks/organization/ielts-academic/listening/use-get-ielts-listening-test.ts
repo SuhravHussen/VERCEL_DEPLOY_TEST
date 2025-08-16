@@ -11,7 +11,7 @@ interface GetIeltsListeningTestsResponse {
 
 // Mock API call - replace with actual API when available
 const fetchIeltsListeningTests = async (
-  organizationId: number,
+  organizationSlug: string,
   page: number,
   pageSize: number,
   search?: string,
@@ -83,7 +83,7 @@ const fetchIeltsListeningTests = async (
 };
 
 export const useGetIeltsListeningTests = (
-  organizationId: number,
+  organizationSlug: string,
   page: number = 1,
   pageSize: number = 10,
   search?: string,
@@ -93,7 +93,7 @@ export const useGetIeltsListeningTests = (
   return useQuery({
     queryKey: [
       QUERY_KEYS.IELTS_LISTENING.TESTS,
-      organizationId,
+      organizationSlug,
       page,
       pageSize,
       search,
@@ -102,13 +102,13 @@ export const useGetIeltsListeningTests = (
     ],
     queryFn: () =>
       fetchIeltsListeningTests(
-        organizationId,
+        organizationSlug,
         page,
         pageSize,
         search,
         sortBy,
         sortOrder
       ),
-    enabled: !!organizationId,
+    enabled: !!organizationSlug,
   });
 };

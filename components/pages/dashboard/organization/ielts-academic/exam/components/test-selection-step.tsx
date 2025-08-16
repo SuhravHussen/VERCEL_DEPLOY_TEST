@@ -42,7 +42,7 @@ import { IELTSReadingTestSection } from "@/types/exam/ielts-academic/reading/que
 interface TestSelectionStepProps {
   examData: Partial<ExamModel>;
   updateExamData: (updates: Partial<ExamModel>) => void;
-  organizationId: number;
+  organizationSlug: string;
   onNext: () => void;
   onPrevious: () => void;
   isAdmin?: boolean;
@@ -51,7 +51,7 @@ interface TestSelectionStepProps {
 export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
   examData,
   updateExamData,
-  organizationId,
+  organizationSlug,
   onNext,
   onPrevious,
   isAdmin = false,
@@ -73,7 +73,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
   // Hooks for fetching tests
   const { data: listeningData, isLoading: listeningLoading } =
     useGetIeltsListeningTests(
-      organizationId,
+      organizationSlug,
       currentPages.listening,
       pageSize,
       searchTerms.listening
@@ -81,7 +81,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
 
   const { data: readingData, isLoading: readingLoading } =
     useGetIeltsReadingTests(
-      organizationId,
+      organizationSlug,
       currentPages.reading,
       pageSize,
       searchTerms.reading
@@ -89,7 +89,7 @@ export const TestSelectionStep: React.FC<TestSelectionStepProps> = ({
 
   const { data: writingData, isLoading: writingLoading } =
     useGetIeltsWritingTests(
-      organizationId,
+      organizationSlug,
       currentPages.writing,
       pageSize,
       searchTerms.writing

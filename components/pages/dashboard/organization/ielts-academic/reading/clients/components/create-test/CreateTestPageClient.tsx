@@ -25,7 +25,7 @@ import {
 } from ".";
 
 export default function CreateTestPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateTestPageClientProps) {
   const router = useRouter();
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
@@ -62,7 +62,7 @@ export default function CreateTestPageClient({
       const testData: CreateReadingTestDto = {
         title: formData.title,
         description: formData.description || "",
-        organizationId,
+        organizationSlug,
         difficulty: formData.difficulty,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -82,7 +82,7 @@ export default function CreateTestPageClient({
       await createTest.mutateAsync(testData);
       success("Test created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/reading/tests`
+        `/dashboard/organization/${organizationSlug}/ielts/reading/tests`
       );
     } catch (e) {
       console.error(e);
@@ -148,7 +148,7 @@ export default function CreateTestPageClient({
             <TestSectionsStep
               formData={formData}
               updateFormData={updateFormData}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

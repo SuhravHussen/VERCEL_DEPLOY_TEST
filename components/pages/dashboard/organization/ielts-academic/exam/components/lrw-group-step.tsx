@@ -24,7 +24,7 @@ import { User } from "@/types/user";
 interface LRWGroupStepProps {
   examData: Partial<ExamModel>;
   updateExamData: (updates: Partial<ExamModel>) => void;
-  organizationId: number;
+  organizationSlug: string;
   onNext: () => void;
   onPrevious: () => void;
   isAdmin?: boolean;
@@ -33,7 +33,7 @@ interface LRWGroupStepProps {
 export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
   examData,
   updateExamData,
-  organizationId,
+  organizationSlug,
   onNext,
   onPrevious,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,7 +42,7 @@ export const LRWGroupStep: React.FC<LRWGroupStepProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { instructors, isLoading } = useOrganizationInstructors({
-    organizationId,
+    organizationSlug,
     initialPageSize: 50,
   });
 

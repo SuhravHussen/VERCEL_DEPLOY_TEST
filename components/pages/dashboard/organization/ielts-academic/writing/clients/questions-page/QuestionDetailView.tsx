@@ -38,14 +38,14 @@ export interface QuestionDetailViewProps {
   selectedQuestion: IELTSWritingTask | null;
   getQuestionTypeLabel: (type: string) => string;
   getQuestionTypeFromQuestion: (question: IELTSWritingTask) => string;
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export function QuestionDetailView({
   selectedQuestion,
   getQuestionTypeLabel,
   getQuestionTypeFromQuestion,
-  organizationId,
+  organizationSlug,
 }: QuestionDetailViewProps) {
   const { success, error: showError } = useToasts();
   const { showConfirmation, ConfirmationDialog } = useConfirmationDialog();
@@ -72,7 +72,7 @@ export function QuestionDetailView({
       isLoading: deleteMutation.isPending,
       onConfirm: async () => {
         deleteMutation.mutate({
-          organizationId,
+          organizationSlug,
           questionId: selectedQuestion.id,
         });
       },
@@ -191,7 +191,7 @@ export function QuestionDetailView({
 
           <div className="flex gap-2">
             <Link
-              href={`/dashboard/organization/${organizationId}/ielts/writing/questions/${selectedQuestion.id}/edit`}
+              href={`/dashboard/organization/${organizationSlug}/ielts/writing/questions/${selectedQuestion.id}/edit`}
             >
               <Button variant="outline" size="sm" className="flex gap-1">
                 <Edit className="h-3 w-3" />

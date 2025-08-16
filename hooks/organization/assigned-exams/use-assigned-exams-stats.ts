@@ -5,7 +5,7 @@ import { mockIELTSExams } from "@/mockdata/mockIeltsExam";
 import { ExamModel, ExamStatsData } from "@/types/exam/exam";
 
 interface UseAssignedExamsStatsParams {
-  organizationId: string;
+  organizationSlug: string;
 }
 
 interface UseAssignedExamsStatsResult {
@@ -17,7 +17,7 @@ interface UseAssignedExamsStatsResult {
 
 // Mock function to simulate fetching all assigned exams for stats calculation
 async function fetchAllAssignedExamsForStats(
-  organizationId: string
+  organizationSlug: string
 ): Promise<ExamModel[]> {
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 200));
@@ -25,7 +25,7 @@ async function fetchAllAssignedExamsForStats(
   // Return all mock IELTS exams without any filters
   // In a real implementation, this would fetch all exams assigned to the organization with organizationId
   // For now, organizationId is acknowledged but not used in mock data
-  return mockIELTSExams.filter(() => !!organizationId); // Simple way to use organizationId parameter
+  return mockIELTSExams.filter(() => !!organizationSlug); // Simple way to use organizationId parameter
 }
 
 // Calculate comprehensive exam statistics
@@ -78,7 +78,7 @@ const calculateAssignedExamsStats = (exams: ExamModel[]): ExamStatsData => {
 };
 
 export function useAssignedExamsStats({
-  organizationId,
+  organizationSlug,
 }: UseAssignedExamsStatsParams): UseAssignedExamsStatsResult {
   // Fetch all assigned exams without any filters for stats calculation
   const {
@@ -88,13 +88,13 @@ export function useAssignedExamsStats({
     refetch,
   } = useQuery({
     queryKey: [
-      ...QUERY_KEYS.ASSIGNED_EXAMS.BY_ORGANIZATION(organizationId),
+      ...QUERY_KEYS.ASSIGNED_EXAMS.BY_ORGANIZATION(organizationSlug),
       "stats-only",
     ],
-    queryFn: () => fetchAllAssignedExamsForStats(organizationId),
+    queryFn: () => fetchAllAssignedExamsForStats(organizationSlug),
     staleTime: 10 * 60 * 1000, // 10 minutes - longer cache for stats
     gcTime: 15 * 60 * 1000, // 15 minutes
-    enabled: !!organizationId,
+    enabled: !!organizationSlug,
   });
 
   // Calculate stats from all exams

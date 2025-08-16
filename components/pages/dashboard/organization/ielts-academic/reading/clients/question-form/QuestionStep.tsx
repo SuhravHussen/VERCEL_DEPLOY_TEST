@@ -47,7 +47,7 @@ interface QuestionStepProps {
     content: string;
     difficulty: "easy" | "medium" | "hard";
   };
-  organizationId: number;
+  organizationSlug: string;
 }
 
 const questionTypes = [
@@ -75,7 +75,7 @@ export default function QuestionStep({
   formData,
   updateFormData,
   passage,
-  organizationId,
+  organizationSlug,
 }: QuestionStepProps) {
   const { stepperRef } = useContext(StepperContext);
   const [selectedQuestionType, setSelectedQuestionType] = useState<

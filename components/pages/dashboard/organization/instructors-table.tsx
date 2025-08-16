@@ -49,9 +49,7 @@ interface InstructorTableProps {
 
 export function InstructorsTable({ onDeleteInstructor }: InstructorTableProps) {
   const params = useParams();
-  const organizationId = params.id
-    ? parseInt(params.id as string, 10)
-    : undefined;
+  const organizationSlug = params.slug as string;
 
   const {
     instructors,
@@ -61,7 +59,7 @@ export function InstructorsTable({ onDeleteInstructor }: InstructorTableProps) {
     setSortField,
     setSortOrder,
     setPage,
-  } = useOrganizationInstructors({ organizationId });
+  } = useOrganizationInstructors({ organizationSlug });
 
   // Function to handle sorting
   const handleSort = (field: SortField) => {

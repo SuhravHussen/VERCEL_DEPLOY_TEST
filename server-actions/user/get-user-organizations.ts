@@ -42,12 +42,12 @@ export async function getUserOrganizations(): Promise<UserOrganization[]> {
 }
 
 export async function getUserOrganizationRole(
-  orgId: number
+  orgSlug: string
 ): Promise<Role | null> {
   const userOrganizations = await getUserOrganizations();
 
   const userOrganization = userOrganizations.find(
-    (userOrg) => userOrg.organization.id === orgId
+    (userOrg) => userOrg.organization.slug === orgSlug
   );
 
   return userOrganization ? userOrganization.role : null;

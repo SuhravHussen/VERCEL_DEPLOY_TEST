@@ -89,7 +89,7 @@ export function UserOrganizationCard({
             {/* Dashboard link for admins and instructors */}
             {(role === "ADMIN" || role === "INSTRUCTOR") && (
               <Link
-                href={`/dashboard/organization/${organization.id}`}
+                href={`/dashboard/organization/${organization.slug}`}
                 className="w-full sm:w-auto px-4 py-2 rounded-full text-sm font-medium transition-colors text-white hover:bg-black/90 bg-primary dark:text-black dark:hover:bg-gray-200 inline-block text-center"
               >
                 Go to Dashboard

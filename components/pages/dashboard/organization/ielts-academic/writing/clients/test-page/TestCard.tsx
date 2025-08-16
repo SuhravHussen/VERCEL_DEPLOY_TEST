@@ -41,10 +41,10 @@ import {
 
 export interface TestCardProps {
   test: IELTSWritingTest;
-  organizationId: number;
+  organizationSlug: string;
 }
 
-export function TestCard({ test, organizationId }: TestCardProps) {
+export function TestCard({ test, organizationSlug }: TestCardProps) {
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { error, success } = useToasts();
@@ -76,7 +76,7 @@ export function TestCard({ test, organizationId }: TestCardProps) {
 
   const editTest = () => {
     router.push(
-      `/dashboard/organization/${organizationId}/ielts/writing/tests/${test.id}/edit`
+      `/dashboard/organization/${organizationSlug}/ielts/writing/tests/${test.id}/edit`
     );
   };
 
@@ -89,7 +89,7 @@ export function TestCard({ test, organizationId }: TestCardProps) {
       variant: "destructive",
       onConfirm: () => {
         deleteTest({
-          organizationId,
+          organizationSlug,
           testId: test.id.toString(),
         });
       },

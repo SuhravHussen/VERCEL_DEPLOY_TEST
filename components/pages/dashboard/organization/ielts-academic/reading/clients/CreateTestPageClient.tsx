@@ -3,11 +3,11 @@
 import TestCreator from "./components/create-test/CreateTestPageClient";
 
 interface CreateTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function CreateTestPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateTestPageClientProps) {
-  return <TestCreator organizationId={organizationId} />;
+  return <TestCreator organizationSlug={organizationSlug} />;
 }

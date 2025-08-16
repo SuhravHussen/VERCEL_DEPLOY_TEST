@@ -29,7 +29,7 @@ export function useCreateIeltsWritingTest(
         const testDto: CreateIELTSWritingTestDto = {
           title: testData.title,
           description: testData.description,
-          organizationId: testData.organizationId,
+          organizationId: testData.organizationId as number,
           testType: testData.testType,
           difficulty: testData.difficulty,
           task1: testData.task1,

@@ -27,11 +27,11 @@ import SelectQuestionsStep from "./test-page/SelectQuestionsStep";
 import PreviewStep from "./test-page/PreviewStep";
 
 export interface CreateTestPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function CreateTestPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateTestPageClientProps) {
   const router = useRouter();
   const { error, success } = useToasts();
@@ -39,7 +39,7 @@ export default function CreateTestPageClient({
 
   // Test data state
   const [testData, setTestData] = useState<Partial<IELTSWritingTest>>({
-    organizationId,
+    organizationSlug,
     testType: "academic",
     difficulty: "medium",
     status: "published",
@@ -50,7 +50,7 @@ export default function CreateTestPageClient({
     onSuccess: () => {
       success("Test created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/writing/tests`
+        `/dashboard/organization/${organizationSlug}/ielts/writing/tests`
       );
     },
     onError: (err) => {
@@ -79,7 +79,7 @@ export default function CreateTestPageClient({
           size="icon"
           onClick={() =>
             router.push(
-              `/dashboard/organization/${organizationId}/ielts/writing/tests`
+              `/dashboard/organization/${organizationSlug}/ielts/writing/tests`
             )
           }
         >
@@ -155,7 +155,7 @@ export default function CreateTestPageClient({
                 <div className="pt-6">
                   <Separator className="mb-6" />
                   <SelectQuestionsStep
-                    organizationId={organizationId}
+                    organizationSlug={organizationSlug}
                     testData={testData}
                     updateTestData={updateTestData}
                   />

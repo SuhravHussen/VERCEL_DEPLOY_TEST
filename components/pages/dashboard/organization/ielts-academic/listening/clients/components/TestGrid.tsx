@@ -18,7 +18,7 @@ interface TestGridProps {
   selectedTestId?: string;
   onSelectTest?: (test: IELTSListeningTest) => void;
   isLoading: boolean;
-  organizationId?: number;
+  organizationSlug?: string;
 }
 
 export function TestGrid({
@@ -26,7 +26,7 @@ export function TestGrid({
   selectedTestId,
   onSelectTest,
   isLoading,
-  organizationId,
+  organizationSlug,
 }: TestGridProps) {
   if (isLoading) {
     // Display skeleton UI while loading
@@ -151,9 +151,9 @@ export function TestGrid({
                 </span>
               </div>
 
-              {organizationId && (
+              {organizationSlug && (
                 <Link
-                  href={`/dashboard/organization/${organizationId}/ielts/listening/tests/edit/${test.id}`}
+                  href={`/dashboard/organization/${organizationSlug}/ielts/listening/tests/edit/${test.id}`}
                 >
                   <Button
                     variant="outline"

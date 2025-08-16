@@ -23,11 +23,11 @@ import { QuestionCard } from "./questions-page/QuestionCard";
 import { QuestionDetailView } from "./questions-page/QuestionDetailView";
 
 export interface QuestionsPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export default function QuestionsPageClient({
-  organizationId,
+  organizationSlug,
 }: QuestionsPageClientProps) {
   // State for search, filters, pagination
   const [search, setSearch] = useState("");
@@ -40,7 +40,7 @@ export default function QuestionsPageClient({
 
   // Fetch questions data
   const { data, isLoading, isFetching, error } = useGetIeltsWritingQuestions(
-    organizationId,
+    organizationSlug,
     page,
     10,
     search,
@@ -129,7 +129,7 @@ export default function QuestionsPageClient({
   const isDataLoading = isLoading || isFetching;
 
   const handleCreateQuestion = () => {
-    window.location.href = `/dashboard/organization/${organizationId}/ielts/writing/questions/create`;
+    window.location.href = `/dashboard/organization/${organizationSlug}/ielts/writing/questions/create`;
   };
 
   return (
@@ -254,7 +254,7 @@ export default function QuestionsPageClient({
                   selectedQuestion={selectedQuestion}
                   getQuestionTypeLabel={getQuestionTypeLabel}
                   getQuestionTypeFromQuestion={getQuestionTypeFromQuestion}
-                  organizationId={organizationId}
+                  organizationSlug={organizationSlug}
                 />
               )}
             </div>
@@ -288,7 +288,7 @@ export default function QuestionsPageClient({
                 selectedQuestion={selectedQuestion}
                 getQuestionTypeLabel={getQuestionTypeLabel}
                 getQuestionTypeFromQuestion={getQuestionTypeFromQuestion}
-                organizationId={organizationId}
+                organizationSlug={organizationSlug}
               />
             </div>
           </DrawerContent>

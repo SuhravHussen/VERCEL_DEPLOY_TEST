@@ -68,7 +68,7 @@ async function fetchIELTSListeningQuestions({
 }
 
 export function useGetIeltsListeningQuestions(
-  organizationId: number,
+  organizationSlug: string,
   page: number,
   limit: number,
   search?: string,
@@ -80,7 +80,7 @@ export function useGetIeltsListeningQuestions(
   // Create a stable query key for caching
   const queryKey = [
     QUERY_KEYS.IELTS_LISTENING.QUESTIONS,
-    organizationId,
+    organizationSlug,
     page,
     limit,
     search || "",

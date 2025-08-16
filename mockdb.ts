@@ -140,7 +140,7 @@ interface MockDB {
   allExams: ExamModel[];
   getAllExams: () => ExamModel[];
   getAllExamsByOrganization: (
-    organizationId: string,
+    organizationSlug: string,
     filters?: ExamFilters
   ) => ExamModel[];
   getAllExamById: (id: string) => ExamModel | undefined;

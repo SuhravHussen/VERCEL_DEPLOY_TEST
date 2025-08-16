@@ -20,7 +20,7 @@ import Link from "next/link";
 
 interface AudioCardProps {
   item: IELTSListeningTestSection;
-  organizationId: number;
+  organizationSlug: string;
   getQuestionTypeLabel: (type: string) => string;
   isSelected: boolean;
   onSelect: () => void;
@@ -29,7 +29,7 @@ interface AudioCardProps {
 
 export function AudioCard({
   item,
-  organizationId,
+  organizationSlug,
   getQuestionTypeLabel,
   isSelected,
   onSelect,
@@ -137,7 +137,7 @@ export function AudioCard({
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
               <Link
-                href={`/dashboard/organization/${organizationId}/ielts/listening/questions/edit/${
+                href={`/dashboard/organization/${organizationSlug}/ielts/listening/questions/edit/${
                   item.questions[0]?.id || ""
                 }`}
               >

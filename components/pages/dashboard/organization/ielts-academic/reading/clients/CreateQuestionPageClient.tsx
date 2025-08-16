@@ -24,7 +24,7 @@ import { CreateQuestionGroupDto } from "@/types/dto/ielts/reading/question.dto";
 import { IELTSReadingQuestionGroup } from "@/types/exam/ielts-academic/reading/question/question";
 
 interface CreateQuestionPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
 }
 
 export interface Question {
@@ -69,7 +69,7 @@ export const StepperContext = createContext<StepperContextType>({
 });
 
 export default function CreateQuestionPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateQuestionPageClientProps) {
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
   const { success, error } = useToasts();
@@ -200,7 +200,7 @@ export default function CreateQuestionPageClient({
                 setFormData((prev) => ({ ...prev, questions }))
               }
               passage={formData.passage}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

@@ -31,7 +31,7 @@ type SectionKey =
 export function TestSectionsStep({
   formData,
   updateFormData,
-  organizationId,
+  organizationSlug,
 }: TestSectionsStepProps) {
   const context = useContext(StepperContext);
   const [activeSection, setActiveSection] = useState<SectionKey>("section_one");
@@ -53,7 +53,7 @@ export function TestSectionsStep({
     isPending,
     isFetching,
   } = useGetIeltsListeningQuestions(
-    organizationId,
+    organizationSlug,
     page,
     limit,
     debouncedSearch,

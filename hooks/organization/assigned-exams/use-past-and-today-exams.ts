@@ -5,7 +5,7 @@ import { mockIELTSExams } from "@/mockdata/mockIeltsExam";
 import { ExamModel, ExamFilters } from "@/types/exam/exam";
 
 interface UsePastAndTodayExamsParams {
-  organizationId: string;
+  organizationSlug: string;
   page?: number;
   pageSize?: number;
   filters?: ExamFilters;
@@ -25,7 +25,7 @@ interface UsePastAndTodayExamsResult {
 
 // Mock function to simulate fetching exams that are today or already passed
 async function fetchPastAndTodayExams(
-  organizationId: string,
+  organizationSlug: string,
   filters: ExamFilters = {}
 ): Promise<ExamModel[]> {
   // Simulate API delay
@@ -74,7 +74,7 @@ async function fetchPastAndTodayExams(
 }
 
 export function usePastAndTodayExams({
-  organizationId,
+  organizationSlug,
   page = 1,
   pageSize = 6,
   filters = {},
@@ -88,15 +88,15 @@ export function usePastAndTodayExams({
   } = useQuery({
     queryKey: [
       ...QUERY_KEYS.ASSIGNED_EXAMS.BY_ORGANIZATION_FILTERED(
-        organizationId,
+        organizationSlug,
         filters
       ),
       "past-and-today",
     ],
-    queryFn: () => fetchPastAndTodayExams(organizationId, filters),
+    queryFn: () => fetchPastAndTodayExams(organizationSlug, filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    enabled: !!organizationId,
+    enabled: !!organizationSlug,
   });
 
   // Calculate pagination

@@ -32,7 +32,7 @@ import { CreateQuestionGroupDto } from "@/types/dto/ielts/reading/question.dto";
 import { IELTSReadingQuestionGroup } from "@/types/exam/ielts-academic/reading/question/question";
 
 interface EditQuestionPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   questionId: string;
 }
 
@@ -68,7 +68,7 @@ export interface FormData {
 }
 
 export default function EditQuestionPageClient({
-  organizationId,
+  organizationSlug,
   questionId,
 }: EditQuestionPageClientProps) {
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
@@ -161,7 +161,7 @@ export default function EditQuestionPageClient({
       await updateQuestion.mutateAsync(questionData);
       success("Question updated successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/reading/questions`
+        `/dashboard/organization/${organizationSlug}/ielts/reading/questions`
       );
     } catch (e) {
       console.log(e);
@@ -226,7 +226,7 @@ export default function EditQuestionPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts/reading/questions`
+                `/dashboard/organization/${organizationSlug}/ielts/reading/questions`
               )
             }
             className="gap-1.5"
@@ -290,7 +290,7 @@ export default function EditQuestionPageClient({
                 setFormData((prev) => ({ ...prev, questions }))
               }
               passage={formData.passage}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

@@ -12,7 +12,7 @@ import mockdb from "@/mockdb";
  * @returns Query result with question data
  */
 export function useGetIeltsWritingQuestion(
-  organizationId: number,
+  organizationSlug: string,
   questionId: string
 ): UseQueryResult<IELTSWritingTask, Error> {
   return useQuery({
@@ -29,6 +29,6 @@ export function useGetIeltsWritingQuestion(
 
       return question;
     },
-    enabled: !!questionId && !!organizationId,
+    enabled: !!questionId && !!organizationSlug,
   });
 }

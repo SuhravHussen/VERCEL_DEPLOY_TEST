@@ -25,7 +25,7 @@ import {
 } from ".";
 
 export default function CreateListeningTestPageClient({
-  organizationId,
+  organizationSlug,
 }: CreateListeningTestPageClientProps) {
   const router = useRouter();
   const stepperRef = useRef<HTMLDivElement & IStepperMethods>(null);
@@ -64,7 +64,7 @@ export default function CreateListeningTestPageClient({
       const testData: CreateListeningTestDto = {
         title: formData.title,
         description: formData.description || "",
-        organizationId,
+        organizationSlug,
         difficulty: formData.difficulty,
         section_one: formData.section_one,
         section_two: formData.section_two,
@@ -84,7 +84,7 @@ export default function CreateListeningTestPageClient({
       await createTest.mutateAsync(testData);
       success("Test created successfully");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/listening/tests`
+        `/dashboard/organization/${organizationSlug}/ielts/listening/tests`
       );
     } catch (e) {
       console.error(e);
@@ -150,7 +150,7 @@ export default function CreateListeningTestPageClient({
             <TestSectionsStep
               formData={formData}
               updateFormData={updateFormData}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 

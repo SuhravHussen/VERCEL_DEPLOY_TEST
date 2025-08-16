@@ -31,7 +31,7 @@ import { useToasts } from "@/components/ui/toast";
 
 interface PassageCardProps {
   item: IELTSReadingTestSection;
-  organizationId: number;
+  organizationSlug: string;
   getQuestionTypeLabel: (type: string) => string;
   isSelected: boolean;
   onSelect: () => void;
@@ -39,7 +39,7 @@ interface PassageCardProps {
 
 export function PassageCard({
   item,
-  organizationId,
+  organizationSlug,
   getQuestionTypeLabel,
   isSelected,
   onSelect,
@@ -209,7 +209,7 @@ export function PassageCard({
                   <Link
                     href={
                       firstGroupId
-                        ? `/dashboard/organization/${organizationId}/ielts/reading/questions/${firstGroupId}/edit`
+                        ? `/dashboard/organization/${organizationSlug}/ielts/reading/questions/${firstGroupId}/edit`
                         : "#"
                     }
                     aria-disabled={!firstGroupId}

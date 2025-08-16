@@ -29,12 +29,12 @@ import { IELTSListeningQuestionGroup } from "@/types/exam/ielts-academic/listeni
 import { StepperContext, FormData } from "./shared/StepperContext";
 
 interface EditListeningQuestionPageClientProps {
-  organizationId: number;
+  organizationSlug: string;
   questionId: string;
 }
 
 export default function EditListeningQuestionPageClient({
-  organizationId,
+  organizationSlug,
   questionId,
 }: EditListeningQuestionPageClientProps) {
   const router = useRouter();
@@ -97,7 +97,7 @@ export default function EditListeningQuestionPageClient({
 
       toast.success("Question updated successfully!");
       router.push(
-        `/dashboard/organization/${organizationId}/ielts/listening/questions`
+        `/dashboard/organization/${organizationSlug}/ielts/listening/questions`
       );
     } catch (error) {
       console.error("Error updating question:", error);
@@ -157,7 +157,7 @@ export default function EditListeningQuestionPageClient({
             size="sm"
             onClick={() =>
               router.push(
-                `/dashboard/organization/${organizationId}/ielts/listening/questions`
+                `/dashboard/organization/${organizationSlug}/ielts/listening/questions`
               )
             }
             className="gap-1.5"
@@ -219,7 +219,7 @@ export default function EditListeningQuestionPageClient({
               formData={formData.questions}
               updateFormData={updateQuestionsData}
               audio={formData.audio}
-              organizationId={organizationId}
+              organizationSlug={organizationSlug}
             />
           </InteractiveStepperContent>
 
